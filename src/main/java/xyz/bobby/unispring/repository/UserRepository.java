@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository;
 import xyz.bobby.unispring.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {}
+public interface UserRepository extends JpaRepository<User, Integer> {}
