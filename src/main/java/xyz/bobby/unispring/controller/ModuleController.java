@@ -15,12 +15,12 @@ public class ModuleController {
 	@Autowired
 	private ModuleRepository moduleRepository;
 
-	@GetMapping("/module")
+	@GetMapping("/modules")
 	public List<Module> getModules() {
 		return moduleRepository.findAll();
 	}
 
-	@PostMapping(value = "/module", consumes = MediaType.ALL_VALUE)
+	@PostMapping(value = "/modules", consumes = MediaType.ALL_VALUE)
 	public Module createModule(@Valid @RequestBody Module module) {
 		return moduleRepository.save(module);
 	}
@@ -29,5 +29,15 @@ public class ModuleController {
 	public Module getModule(@PathVariable("id") int id) throws ResourceNotFoundException {
 		return moduleRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(Module.class.getSimpleName(), id));
+	}
+
+	@GetMapping(value = "/modules/{id}/enrol/")
+	public void enrolModule(@PathVariable("id") int id)
+			throws ResourceNotFoundException {
+
+		Module module = moduleRepository.findById(id)
+				.orElseThrow(() -> new ResourceNotFoundException(Module.class.getSimpleName(), id));
+
+
 	}
 }

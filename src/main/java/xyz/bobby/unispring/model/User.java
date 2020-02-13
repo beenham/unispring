@@ -4,18 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -35,6 +24,17 @@ public class User {
 	@Length(max = 32)
 	@Getter @Setter
 	private String username;
+
+	@Transient
+	@Length(min = 8, max = 128)
+	@Getter @Setter
+	private String password;
+
+	@NotBlank
+	@Column(length = 24, nullable = false)
+	@Length(max = 24)
+	@Getter @Setter
+	private String passwordHash;
 
 	@NotBlank
 	@Column(length = 64)
@@ -95,7 +95,7 @@ public class User {
 	}
 
 	public User(String forename, String surname, Integer studentNumber, String address, String phoneNumber,
-				String emailAddress, Role role, Gender gender, String nationality) {
+				String emailAddress, Gender gender, String nationality) {
 		super();
 		this.forename = forename;
 		this.surname = surname;
@@ -103,7 +103,6 @@ public class User {
 		this.address = address;
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = emailAddress;
-		this.role = role;
 		this.gender = gender;
 		this.nationality = nationality;
 		this.enrolledModules = new HashSet<>();
