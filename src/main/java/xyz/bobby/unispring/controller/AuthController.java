@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.controller;
 
+import lombok.Setter;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,16 +22,23 @@ public class AuthController {
 
 	@PostMapping(value = "/auth/register", consumes = MediaType.ALL_VALUE)
 	public User register(@Valid @RequestBody User user) {
-		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+		user.setPasswordHash(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		return userRepository.save(user);
 	}
 
-	@PostMapping("/auth/login")
-	public User login(String email, String password, HttpServletRequest req) throws LoginException {
-		User user = userRepository.findByEmailAddressIgnoreCase(email)
+	private static class LoginParams {
+		@Setter
+		String emailAddress;
+		@Setter
+		String password;
+	}
+
+	@PostMapping(value = "/auth/login", consumes = MediaType.ALL_VALUE)
+	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
+		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress)
 				.orElseThrow(LoginException::new);
 
-		boolean correct = BCrypt.checkpw(password, user.getPassword());
+		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
 		if (!correct) throw new LoginException();
 
 		return user;

@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -16,7 +17,9 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
 	@Id
+	@JsonIgnore
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
 	private int id;
 
 	@NotBlank
@@ -27,13 +30,12 @@ public class User {
 
 	@Transient
 	@Length(min = 8, max = 128)
-	@Getter @Setter
+	@Getter(onMethod = @__(@JsonIgnore)) @Setter
 	private String password;
 
-	@NotBlank
-	@Column(length = 24, nullable = false)
-	@Length(max = 24)
-	@Getter @Setter
+	@Column(length = 64, nullable = false)
+	@Length(max = 64)
+	@Getter(onMethod = @__(@JsonIgnore)) @Setter
 	private String passwordHash;
 
 	@NotBlank
@@ -69,12 +71,12 @@ public class User {
 	private String emailAddress;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('staff', 'student')")
+	@Column(columnDefinition = "ENUM('STAFF', 'STUDENT')")
 	@Getter @Setter
 	private Role role;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('male', 'female', 'other')")
+	@Column(columnDefinition = "ENUM('MALE', 'FEMALE', 'OTHER')")
 	@Getter @Setter
 	private Gender gender;
 
