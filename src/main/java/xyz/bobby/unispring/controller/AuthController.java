@@ -27,7 +27,7 @@ public class AuthController {
 
 	@PostMapping("/auth/login")
 	public User login(String email, String password, HttpServletRequest req) throws LoginException {
-		User user = userRepository.findByEmailIgnoreCase(email)
+		User user = userRepository.findByEmailAddressIgnoreCase(email)
 				.orElseThrow(LoginException::new);
 
 		boolean correct = BCrypt.checkpw(password, user.getPassword());
