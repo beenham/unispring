@@ -30,7 +30,7 @@ public class User {
 
 	@Transient
 	@Length(min = 8, max = 128)
-	@Getter(onMethod = @__(@JsonIgnore)) @Setter
+	@Getter @Setter
 	private String password;
 
 	@Column(length = 64, nullable = false)

@@ -59,6 +59,9 @@ public class Module {
 	@Getter @Setter
 	private Status status;
 
+	@Getter @Setter
+	private String password;
+
 	@NotNull
 	@Getter @Setter
 	private int capacity;

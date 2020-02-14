@@ -24,11 +24,6 @@ public class UserController {
 		return userRepository.findAll();
 	}
 
-	@PostMapping(value = "/users", consumes = MediaType.ALL_VALUE)
-	public User createUser(@Valid @RequestBody User user) {
-		return userRepository.save(user);
-	}
-
 	@GetMapping(value = "/users/{id}")
 	public User getUser(@PathVariable("id") int id) throws ResourceNotFoundException {
 		return userRepository.findById(id)
