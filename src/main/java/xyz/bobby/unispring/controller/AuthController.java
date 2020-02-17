@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import xyz.bobby.unispring.exception.LoginException;
 import xyz.bobby.unispring.exception.NotLoggedInException;
@@ -18,13 +19,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @RestController
+@RequestMapping("/auth")
 public class AuthController {
 	private static final String SESSION_USER = "user";
 
 	@Autowired
 	private UserRepository userRepository;
 
-	@PostMapping(value = "/auth/register", consumes = MediaType.ALL_VALUE)
+	@PostMapping(value = "/register", consumes = MediaType.ALL_VALUE)
 	public User register(@Valid @RequestBody User user) {
 		user.setPasswordHash(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		return userRepository.save(user);
@@ -35,7 +37,7 @@ public class AuthController {
 		@Setter String password;
 	}
 
-	@PostMapping(value = "/auth/login", consumes = MediaType.ALL_VALUE)
+	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
 	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress)
 				.orElseThrow(LoginException::new);
@@ -48,7 +50,7 @@ public class AuthController {
 		return user;
 	}
 
-	@GetMapping("/auth/logout")
+	@GetMapping("/logout")
 	public String logout(HttpServletRequest req) {
 		req.getSession().invalidate();
 		return "logout";

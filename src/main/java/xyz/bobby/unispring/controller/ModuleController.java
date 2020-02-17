@@ -18,10 +18,12 @@ import xyz.bobby.unispring.model.Topic;
 import xyz.bobby.unispring.model.User;
 import xyz.bobby.unispring.repository.ModuleRepository;
 import xyz.bobby.unispring.repository.TopicRepository;
+import xyz.bobby.unispring.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/modules")
@@ -30,6 +32,8 @@ public class ModuleController {
 	private ModuleRepository moduleRepository;
 	@Autowired
 	private TopicRepository topicRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	@GetMapping()
 	public List<Module> getModules() {
@@ -51,6 +55,42 @@ public class ModuleController {
 	public Module getModule(@PathVariable int id) throws ResourceNotFoundException {
 		return moduleRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(Module.class.getSimpleName(), id));
+	}
+
+	@GetMapping(value = "/{id}/students")
+	public List<User> getEnrolledStudents(@PathVariable int id) throws ResourceNotFoundException {
+		Module module = getModule(id);
+		return userRepository.findAllById(module.getEnrolledStudents());
+	}
+
+	@GetMapping(value = "/{id}/grades")
+	public Map<Integer, Integer> getStudentGrades(@PathVariable int id) throws ResourceNotFoundException {
+		Module module = getModule(id);
+		return module.getGrades();
+	}
+
+	@PostMapping(value = "/{id}/grades")
+	public void setStudentGrades(@Valid @RequestBody Map<Integer, Integer> studentGrades, @PathVariable int id,
+								 HttpServletRequest req)
+			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
+		AuthController.verifyRole(req, User.Role.STAFF);
+		Module module = getModule(id);
+		studentGrades.keySet().stream()
+				.filter(module.getEnrolledStudents()::contains)
+				.forEach(k -> module.getGrades().put(k, studentGrades.get(k)));
+		moduleRepository.save(module);
+	}
+
+	@PostMapping(value = "/{id}/grades/{sid}")
+	public void setStudentGrade(@PathVariable int id, @PathVariable("sid") int sId, @Valid @RequestBody int grade,
+								HttpServletRequest req)
+			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
+		AuthController.verifyRole(req, User.Role.STAFF);
+		Module module = getModule(id);
+		if (!module.getEnrolledStudents().contains(sId))
+			throw new ResourceNotFoundException(User.class.getSimpleName(), sId);	// todo: exception
+		module.getGrades().put(sId, grade);
+		moduleRepository.save(module);
 	}
 
 	@GetMapping(value = "/{id}/topics")
@@ -121,10 +161,12 @@ public class ModuleController {
 
 		if (enrolled) {
 			module.getEnrolledStudents().add(user.getId());
+			module.getGrades().put(user.getId(), null);
 			if (module.getEnrolledStudents().size() == module.getCapacity())
 				module.setStatus(Module.Status.FULL);
 		} else {
 			module.getEnrolledStudents().remove(user.getId());
+			module.getGrades().remove(user.getId());
 			if (module.getStatus() == Module.Status.FULL)
 				module.setStatus(Module.Status.AVAILABLE);
 		}

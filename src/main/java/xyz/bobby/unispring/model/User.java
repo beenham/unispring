@@ -11,6 +11,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -91,6 +92,13 @@ public class User {
 	@Column(name = "module_id")
 	@Getter @Setter
 	private Set<Integer> enrolledModules;
+
+	@ElementCollection(fetch = FetchType.LAZY)
+	@CollectionTable(name = "module_grades", joinColumns = @JoinColumn(name = "user_id"))
+	@MapKeyColumn(name = "module_id")
+	@Column(name = "grade")
+	@Getter @Setter
+	private Map<Integer, Integer> grades;
 
 	public User() {
 		super();

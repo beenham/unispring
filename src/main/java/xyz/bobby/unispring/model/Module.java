@@ -15,10 +15,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.MapKeyColumn;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Year;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -76,6 +78,13 @@ public class Module {
 	@Column(name = "topic_id")
 	@Getter @Setter
 	private Set<Integer> topics;
+
+	@ElementCollection(fetch = FetchType.LAZY)
+	@CollectionTable(name = "module_grades", joinColumns = @JoinColumn(name = "module_id"))
+	@MapKeyColumn(name = "user_id")
+	@Column(name = "grade")
+	@Getter @Setter
+	private Map<Integer, Integer> grades;
 
 	public enum Status {
 		AVAILABLE, FULL, TERMINATED
