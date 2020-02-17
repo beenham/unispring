@@ -67,5 +67,6 @@ public class ModuleController {
 		} else {
 			module.getEnrolledStudents().remove(user.getId());
 		}
+		moduleRepository.save(module);
 	}
 }

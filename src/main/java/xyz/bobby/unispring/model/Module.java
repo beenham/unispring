@@ -50,12 +50,12 @@ public class Module {
 	private Year year;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('spring', 'summer', 'autumn')")
+	@Column(columnDefinition = "ENUM('SPRING', 'SUMMER', 'AUTUMN')")
 	@Getter @Setter
 	private Trimester trimester;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('available', 'terminated')")
+	@Column(columnDefinition = "ENUM('AVAILABLE', 'TERMINATED')")
 	@Getter @Setter
 	private Status status;
 
