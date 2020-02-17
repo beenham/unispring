@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -37,7 +38,7 @@ public class Module {
 	@Getter @Setter
 	private String name;
 
-	@NotNull
+	@Column(nullable = false)
 	@Getter @Setter
 	private int coordinatorId;
 

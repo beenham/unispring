@@ -29,6 +29,8 @@ public class ModuleController {
 			throws NotLoggedInException, UnauthorizedException {
 		// Only staff can create new modules
 		AuthController.verifyRole(req, User.Role.STAFF);
+		User user = AuthController.getSessionUser(req);
+		module.setCoordinatorId(user.getId());
 
 		return moduleRepository.save(module);
 	}
