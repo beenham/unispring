@@ -42,8 +42,7 @@ public class Module {
 	private int coordinatorId;
 
 	@NotBlank
-	@Getter
-	@Setter
+	@Getter @Setter
 	private String description;
 
 	@Getter @Setter

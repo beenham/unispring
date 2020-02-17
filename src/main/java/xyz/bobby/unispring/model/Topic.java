@@ -17,17 +17,16 @@ import javax.validation.constraints.NotBlank;
 public class Topic {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
 	private int id;
 
 	@NotBlank
 	@Column(unique = true, length = 32)
 	@Length(max = 32)
-	@Getter
-	@Setter
+	@Getter	@Setter
 	private String name;
 
 	@NotBlank
-	@Getter
-	@Setter
+	@Getter @Setter
 	private String description;
 }
