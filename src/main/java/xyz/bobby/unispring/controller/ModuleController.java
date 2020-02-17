@@ -3,6 +3,7 @@ package xyz.bobby.unispring.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import xyz.bobby.unispring.exception.ModuleUnavailable;
 import xyz.bobby.unispring.exception.NotLoggedInException;
 import xyz.bobby.unispring.exception.ResourceNotFoundException;
 import xyz.bobby.unispring.exception.UnauthorizedException;
@@ -43,18 +44,18 @@ public class ModuleController {
 
 	@GetMapping(value = "/modules/{id}/enrol/")
 	public void enrolModule(@PathVariable("id") int id, HttpServletRequest req)
-			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
+			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException, ModuleUnavailable {
 		setModuleEnrolled(id, true, req);
 	}
 
 	@GetMapping(value = "/modules/{id}/unenrol/")
 	public void unenrolModule(@PathVariable("id") int id, HttpServletRequest req)
-			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
+			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException, ModuleUnavailable {
 		setModuleEnrolled(id, false, req);
 	}
 
 	private void setModuleEnrolled(int id, boolean enrolled, HttpServletRequest req)
-			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException {
+			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException, ModuleUnavailable {
 		// Only students can enrol in modules
 		AuthController.verifyRole(req, User.Role.STUDENT);
 
@@ -63,11 +64,17 @@ public class ModuleController {
 		Module module = moduleRepository.findById(id)
 				.orElseThrow(() -> new ResourceNotFoundException(Module.class.getSimpleName(), id));
 
+		if (module.getStatus() == Module.Status.TERMINATED || enrolled && module.getStatus() == Module.Status.FULL)
+			throw new ModuleUnavailable(module.getStatus(), id);
 
 		if (enrolled) {
 			module.getEnrolledStudents().add(user.getId());
+			if (module.getEnrolledStudents().size() == module.getCapacity())
+				module.setStatus(Module.Status.FULL);
 		} else {
 			module.getEnrolledStudents().remove(user.getId());
+			if (module.getStatus() == Module.Status.FULL)
+				module.setStatus(Module.Status.AVAILABLE);
 		}
 		moduleRepository.save(module);
 	}

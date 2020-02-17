@@ -1,6 +1,5 @@
 package xyz.bobby.unispring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -56,7 +55,7 @@ public class Module {
 	private Trimester trimester;
 
 	@Enumerated(EnumType.STRING)
-	@Column(columnDefinition = "ENUM('AVAILABLE', 'TERMINATED')")
+	@Column(columnDefinition = "ENUM('AVAILABLE', 'FULL', 'TERMINATED')")
 	@Getter @Setter
 	private Status status;
 
@@ -80,7 +79,7 @@ public class Module {
 	private Set<Integer> topics;
 
 	public enum Status {
-		AVAILABLE, TERMINATED
+		AVAILABLE, FULL, TERMINATED
 	}
 
 	public enum Trimester {
