@@ -3,23 +3,13 @@ package xyz.bobby.unispring.model;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.context.annotation.Lazy;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.Column;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapKeyColumn;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Year;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,6 +18,7 @@ import java.util.Set;
 public class Module {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Getter
 	private int id;
 
 	@NotBlank
@@ -67,24 +58,17 @@ public class Module {
 	@Getter @Setter
 	private int capacity;
 
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "user_modules", joinColumns = @JoinColumn(name = "module_id"))
-	@Column(name = "user_id")
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Getter @Setter
-	private Set<Integer> enrolledStudents;
+	private Set<User> students;
 
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "module_topics", joinColumns = @JoinColumn(name = "module_id"))
-	@Column(name = "topic_id")
+	@ManyToMany
 	@Getter @Setter
-	private Set<Integer> topics;
+	private List<Topic> topics;
 
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "module_grades", joinColumns = @JoinColumn(name = "module_id"))
-	@MapKeyColumn(name = "user_id")
-	@Column(name = "grade")
+	@OneToMany(fetch = FetchType.LAZY)
 	@Getter @Setter
-	private Map<Integer, Integer> grades;
+	private Set<Grade> grades;
 
 	public enum Status {
 		AVAILABLE, FULL, TERMINATED

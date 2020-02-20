@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.context.annotation.Lazy;
+import xyz.bobby.unispring.controller.UserController;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
@@ -87,36 +89,13 @@ public class User {
 	@Getter @Setter
 	private String nationality;
 
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "user_modules", joinColumns = @JoinColumn(name = "user_id"))
-	@Column(name = "module_id")
+	@ManyToMany(fetch = FetchType.LAZY)
 	@Getter @Setter
-	private Set<Integer> enrolledModules;
+	private Set<Module> modules;
 
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "module_grades", joinColumns = @JoinColumn(name = "user_id"))
-	@MapKeyColumn(name = "module_id")
-	@Column(name = "grade")
+	@OneToMany(fetch = FetchType.LAZY)
 	@Getter @Setter
-	private Map<Integer, Integer> grades;
-
-	public User() {
-		super();
-	}
-
-	public User(String forename, String surname, Integer studentNumber, String address, String phoneNumber,
-				String emailAddress, Gender gender, String nationality) {
-		super();
-		this.forename = forename;
-		this.surname = surname;
-		this.studentNumber = studentNumber;
-		this.address = address;
-		this.phoneNumber = phoneNumber;
-		this.emailAddress = emailAddress;
-		this.gender = gender;
-		this.nationality = nationality;
-		this.enrolledModules = new HashSet<>();
-	}
+	private Set<Grade> grades;
 
 	public enum Role {
 		STAFF, STUDENT

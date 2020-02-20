@@ -60,6 +60,12 @@ public class AuthController {
 		return (User) req.getSession().getAttribute(SESSION_USER);
 	}
 
+	public static void verifyId(HttpServletRequest req, int id) throws NotLoggedInException, UnauthorizedException {
+		User user = getSessionUser(req);
+		if (user == null) throw new NotLoggedInException();
+		if (user.getId() != id) throw new UnauthorizedException(); // TODO: Return other exceptions
+	}
+
 	public static void verifyRole(HttpServletRequest req, User.Role role) throws NotLoggedInException, UnauthorizedException {
 		User user = getSessionUser(req);
 		if (user == null) throw new NotLoggedInException();
