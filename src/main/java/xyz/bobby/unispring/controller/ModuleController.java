@@ -80,7 +80,7 @@ public class ModuleController {
 		@Setter String comment;
 	}
 
-	@GetMapping
+	@GetMapping(value = "/{id}/grades/{sid}")
 	public Grade getStudentGrade(@PathVariable int id, @PathVariable("sid") int sId, HttpServletRequest req)
 		throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
 		// Verify correct student ID or role
