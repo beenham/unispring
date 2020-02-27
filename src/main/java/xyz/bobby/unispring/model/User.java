@@ -1,19 +1,16 @@
 package xyz.bobby.unispring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.context.annotation.Lazy;
-import xyz.bobby.unispring.controller.UserController;
 
 import javax.persistence.*;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -90,10 +87,14 @@ public class User {
 	private String nationality;
 
 	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	@JsonIgnoreProperties({"students", "grades"})
 	@Getter @Setter
 	private Set<Module> modules;
 
 	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
+	@JsonIgnoreProperties({"user"})
 	@Getter @Setter
 	private Set<Grade> grades;
 

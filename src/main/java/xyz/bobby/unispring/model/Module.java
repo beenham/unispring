@@ -1,16 +1,15 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.context.annotation.Lazy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.Year;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -58,7 +57,8 @@ public class Module {
 	@Getter @Setter
 	private int capacity;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "modules")
+	@JsonIgnoreProperties({"modules", "grades"})
 	@Getter @Setter
 	private Set<User> students;
 
@@ -67,6 +67,8 @@ public class Module {
 	private List<Topic> topics;
 
 	@OneToMany(fetch = FetchType.LAZY)
+	@JoinColumn(name = "module_id")
+	@JsonIgnoreProperties({"module"})
 	@Getter @Setter
 	private Set<Grade> grades;
 

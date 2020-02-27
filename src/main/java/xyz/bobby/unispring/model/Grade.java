@@ -1,15 +1,12 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Year;
-import java.util.Set;
 
 @Entity
 @IdClass(Grade.Key.class)
@@ -17,11 +14,13 @@ import java.util.Set;
 public class Grade {
 	@Id
 	@ManyToOne(optional = false)
+	@JsonIgnoreProperties({"students", "grades"})
 	@Getter @Setter
 	private Module module;
 
 	@Id
 	@ManyToOne(optional = false)
+	@JsonIgnoreProperties({"modules", "grades"})
 	@Getter @Setter
 	private User user;
 
@@ -50,9 +49,12 @@ public class Grade {
 	@Getter @Setter
 	private LetterGrade grade;
 
+	public Grade() {}
+
 	public Grade(User user, Module module) {
 		this.user = user;
 		this.module = module;
+		this.grade = LetterGrade.A;
 	}
 
 	public enum LetterGrade {

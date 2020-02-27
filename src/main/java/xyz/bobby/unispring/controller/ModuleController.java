@@ -106,7 +106,7 @@ public class ModuleController {
 		User user = userRepository.getUser(sId);
 
 		// Ensure user is enrolled in module
-		if (module.getStudents().contains(user))
+		if (!module.getStudents().contains(user))
 			throw new ResourceNotFoundException(User.class.getSimpleName(), sId); // TODO: Not enrolled exception
 
 		// Get existing grade entry or create new
@@ -188,6 +188,8 @@ public class ModuleController {
 
 		module.setStatus(module.getStudents().size() < module.getCapacity()
 				? Module.Status.AVAILABLE : Module.Status.FULL);
+		user.getModules().add(module);
+		userRepository.save(user);
 		moduleRepository.save(module);
 	}
 }
