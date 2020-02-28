@@ -29,9 +29,9 @@ public class Module {
 	@Getter @Setter
 	private String name;
 
-	@Column(nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@Getter @Setter
-	private int coordinatorId;
+	private Staff coordinator;
 
 	@NotBlank
 	@Getter @Setter
@@ -60,7 +60,7 @@ public class Module {
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "modules")
 	@JsonIgnoreProperties({"modules", "grades"})
 	@Getter @Setter
-	private Set<User> students;
+	private Set<Student> students;
 
 	@ManyToMany
 	@Getter @Setter

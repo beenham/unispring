@@ -16,6 +16,8 @@ import xyz.bobby.unispring.exception.ResourceNotFoundException;
 import xyz.bobby.unispring.exception.UnauthorizedException;
 import xyz.bobby.unispring.model.Grade;
 import xyz.bobby.unispring.model.Module;
+import xyz.bobby.unispring.model.Staff;
+import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.Topic;
 import xyz.bobby.unispring.model.User;
 import xyz.bobby.unispring.repository.GradeRepository;
@@ -49,9 +51,9 @@ public class ModuleController {
 	public Module createModule(@Valid @RequestBody Module module, HttpServletRequest req)
 			throws NotLoggedInException, UnauthorizedException {
 		// Only staff can create new modules
-		AuthController.verifyRole(req, User.Role.STAFF);
+		AuthController.verifyRole(req, Staff.class);
 		User user = AuthController.getSessionUser(req);
-		module.setCoordinatorId(user.getId());
+		module.setCoordinator((Staff) user);
 
 		return moduleRepository.save(module);
 	}
@@ -61,12 +63,8 @@ public class ModuleController {
 		return moduleRepository.getModule(id);
 	}
 
-	private double getRandomNumber() {
-		return 1;
-	}
-
 	@GetMapping(value = "/{id}/students")
-	public Set<User> getEnrolledStudents(@PathVariable int id) throws ResourceNotFoundException {
+	public Set<Student> getEnrolledStudents(@PathVariable int id) throws ResourceNotFoundException {
 		return moduleRepository.getModule(id).getStudents();
 	}
 
@@ -87,20 +85,20 @@ public class ModuleController {
 		try {
 			AuthController.verifyId(req, sId);
 		} catch (UnauthorizedException e) {
-			AuthController.verifyRole(req, User.Role.STAFF);
+			AuthController.verifyRole(req, Staff.class);
 		}
 
 		Module module = moduleRepository.getModule(id);
-		User user = userRepository.getUser(sId);
+		Student student = (Student) userRepository.getUser(sId);
 
-		return gradeRepository.getGrade(user, module);
+		return gradeRepository.getGrade(student, module);
 	}
 
 	@PostMapping(value = "/{id}/grades/{sid}")
 	public void setStudentGrade(@PathVariable int id, @PathVariable("sid") int sId,
 			@Valid @RequestBody GradeParams params, HttpServletRequest req)
 			throws ResourceNotFoundException, NotLoggedInException, UnauthorizedException {
-		AuthController.verifyRole(req, User.Role.STAFF);
+		AuthController.verifyRole(req, Staff.class);
 
 		Module module = moduleRepository.getModule(id);
 		User user = userRepository.getUser(sId);
@@ -109,8 +107,9 @@ public class ModuleController {
 		if (!module.getStudents().contains(user))
 			throw new ResourceNotFoundException(User.class.getSimpleName(), sId); // TODO: Not enrolled exception
 
+		Student student = (Student) user;
 		// Get existing grade entry or create new
-		Grade grade = gradeRepository.findById(new Grade.Key(user, module)).orElseGet(() -> new Grade(user, module));
+		Grade grade = gradeRepository.findById(new Grade.Key(student, module)).orElseGet(() -> new Grade(student, module));
 		if (params.percent != null) grade.setPercent(params.percent);
 		if (params.comment != null) grade.setComment(params.comment);
 		gradeRepository.save(grade);
@@ -124,10 +123,10 @@ public class ModuleController {
 	@PostMapping(value = "/{id}/topics/{tId}", consumes = MediaType.ALL_VALUE)
 	public Topic addTopic(@PathVariable("id") int id, @PathVariable("tId") int tId, HttpServletRequest req)
 			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException {
-		AuthController.verifyRole(req, User.Role.STAFF);
+		AuthController.verifyRole(req, Staff.class);
 
 		Module module = moduleRepository.getModule(id);
-		AuthController.verifyId(req, module.getCoordinatorId());
+		AuthController.verifyId(req, module.getCoordinator().getId());
 
 		Topic topic = topicRepository.getTopic(tId);
 
@@ -141,10 +140,10 @@ public class ModuleController {
 	@DeleteMapping(value = "/{id}/topics/{tId}")
 	public void removeTopic(@PathVariable("id") int id, @PathVariable("tId") int tId, HttpServletRequest req)
 			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException {
-		AuthController.verifyRole(req, User.Role.STAFF);
+		AuthController.verifyRole(req, Staff.class);
 
 		Module module = moduleRepository.getModule(id);
-		AuthController.verifyId(req, module.getCoordinatorId());
+		AuthController.verifyId(req, module.getCoordinator().getId());
 
 		Topic topic = topicRepository.getTopic(tId);
 		if (!module.getTopics().contains(topic))
@@ -169,27 +168,27 @@ public class ModuleController {
 	private void setModuleEnrolled(int id, boolean enrol, HttpServletRequest req)
 			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException, ModuleUnavailableException {
 		// Only students can enrol in modules
-		AuthController.verifyRole(req, User.Role.STUDENT);
+		AuthController.verifyRole(req, Student.class);
 
-		User user = AuthController.getSessionUser(req);
+		Student student = (Student) AuthController.getSessionUser(req);
 		Module module = moduleRepository.getModule(id);
 
 		// If current enrollment status equals requested, ignore
-		if (module.getStudents().contains(user) == enrol) return;
+		if (module.getStudents().contains(student) == enrol) return;
 
 		if (module.getStatus() == Module.Status.TERMINATED || (module.getStatus() == Module.Status.FULL && enrol))
 			throw new ModuleUnavailableException(module.getStatus(), id);
 
 		if (enrol) {
-			module.getStudents().add(user);
+			module.getStudents().add(student);
 		} else {
-			module.getStudents().remove(user);
+			module.getStudents().remove(student);
 		}
 
 		module.setStatus(module.getStudents().size() < module.getCapacity()
 				? Module.Status.AVAILABLE : Module.Status.FULL);
-		user.getModules().add(module);
-		userRepository.save(user);
+		student.getModules().add(module);
+		userRepository.save(student);
 		moduleRepository.save(module);
 	}
 }

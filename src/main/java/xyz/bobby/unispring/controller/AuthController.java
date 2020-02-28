@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import xyz.bobby.unispring.exception.LoginException;
 import xyz.bobby.unispring.exception.NotLoggedInException;
 import xyz.bobby.unispring.exception.UnauthorizedException;
+import xyz.bobby.unispring.model.Staff;
+import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.User;
+import xyz.bobby.unispring.repository.StaffRepository;
+import xyz.bobby.unispring.repository.StudentRepository;
 import xyz.bobby.unispring.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,11 +29,21 @@ public class AuthController {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private StudentRepository studentRepository;
+	@Autowired
+	private StaffRepository staffRepository;
 
-	@PostMapping(value = "/register", consumes = MediaType.ALL_VALUE)
-	public User register(@Valid @RequestBody User user) {
-		user.setPasswordHash(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-		return userRepository.save(user);
+	@PostMapping(value = "/student/register", consumes = MediaType.ALL_VALUE)
+	public User registerStudent(@Valid @RequestBody Student student) {
+		student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
+		return studentRepository.save(student);
+	}
+
+	@PostMapping(value = "/staff/register", consumes = MediaType.ALL_VALUE)
+	public User registerStaff(@Valid @RequestBody Staff staff) {
+		staff.setPasswordHash(BCrypt.hashpw(staff.getPassword(), BCrypt.gensalt()));
+		return staffRepository.save(staff);
 	}
 
 	private static class LoginParams {
@@ -66,9 +80,9 @@ public class AuthController {
 		if (user.getId() != id) throw new UnauthorizedException(); // TODO: Return other exceptions
 	}
 
-	public static void verifyRole(HttpServletRequest req, User.Role role) throws NotLoggedInException, UnauthorizedException {
+	public static void verifyRole(HttpServletRequest req, Class<?> role) throws NotLoggedInException, UnauthorizedException {
 		User user = getSessionUser(req);
 		if (user == null) throw new NotLoggedInException();
-		if (!user.getRole().equals(role)) throw new UnauthorizedException(); // TODO: Return other exceptions
+		if (!role.isInstance(user)) throw new UnauthorizedException(); // TODO: Return other exceptions
 	}
 }
