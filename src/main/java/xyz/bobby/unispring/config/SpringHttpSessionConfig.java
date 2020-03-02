@@ -1,4 +1,4 @@
-package xyz.bobby.unispring;
+package xyz.bobby.unispring.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

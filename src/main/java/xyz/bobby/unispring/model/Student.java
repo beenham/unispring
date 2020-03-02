@@ -6,6 +6,8 @@ import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -28,13 +30,32 @@ public class Student extends User {
 	@Min(1)
 	private int studentNumber;
 
-	@ManyToMany(fetch = FetchType.LAZY)
+	@Enumerated(EnumType.STRING)
+	@Column(columnDefinition = "ENUM('ONE', 'TWO', 'THREE', 'FOUR', 'MASTERS', 'DOCTORATE')")
+	private Stage stage;
+
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "student_id")
 	@JsonIgnoreProperties({"students", "grades"})
 	private final Set<Module> modules = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "student_id")
 	@JsonIgnoreProperties({"student"})
 	private final Set<Grade> grades = new HashSet<>();
+
+	public enum Stage {
+		ONE("1st"), TWO("2nd"), THREE("3rd"), FOUR("4th"), MASTERS("MSc"), DOCTORATE("PhD");
+
+		private final String s;
+
+		Stage(String s) {
+			this.s = s;
+		}
+
+		@Override
+		public String toString() {
+			return s;
+		}
+	}
 }
