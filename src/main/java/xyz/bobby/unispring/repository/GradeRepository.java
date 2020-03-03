@@ -1,14 +1,13 @@
 package xyz.bobby.unispring.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import xyz.bobby.unispring.exception.ResourceNotFoundException;
 import xyz.bobby.unispring.model.Grade;
 import xyz.bobby.unispring.model.Module;
 import xyz.bobby.unispring.model.Student;
-import xyz.bobby.unispring.model.User;
 
-@Repository
+@RepositoryRestResource
 public interface GradeRepository extends JpaRepository<Grade, Grade.Key> {
 	default Grade getGrade(Student student, Module module) throws ResourceNotFoundException {
 		Grade.Key key = new Grade.Key(student, module);
