@@ -47,13 +47,13 @@ public class Module {
 	private String password;
 	@NotNull private int capacity;
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "modules")
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "modules")
 	@JsonIgnoreProperties({"modules", "grades"})
 	private final Set<Student> students = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.EAGER) private final List<Topic> topics = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.LAZY) private final List<Topic> topics = new ArrayList<>();
 
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "module_id")
 	@JsonIgnoreProperties({"module"})
 	private final Set<Grade> grades = new HashSet<>();

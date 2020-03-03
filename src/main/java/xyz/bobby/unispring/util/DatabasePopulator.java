@@ -14,6 +14,7 @@ import xyz.bobby.unispring.repository.StudentRepository;
 
 import java.time.Year;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
 @Component
 public class DatabasePopulator {
@@ -38,17 +40,27 @@ public class DatabasePopulator {
 		add(5, Student.Stage.DOCTORATE);
 	}};
 	private static final Year year = Year.now().minusYears(4);
+	private static final Logger LOG = Logger.getLogger(DatabasePopulator.class.getCanonicalName());
+	private static final int NUM_STAFF_USERS = 25;        //	recommend max 25
+	private static final int NUM_STUDENT_USERS = 250;    //	recommend max 250
+	private static final int NUM_MODULE_YEARS = 5;        //	recommend max 5
 
 	private static void populatePeople(StudentRepository stuRepo, StaffRepository staRepo) {
 		Random random = new Random();
 
-		for (int i = 0; i < 15; i++)
+		printProgress("Creating staff user", 0, NUM_STAFF_USERS);
+		for (int i = 0; i < NUM_STAFF_USERS; i++) {
 			staRepo.save((Staff) createUser(random, new Staff(), String.format("Sta-%03d", i), 12345900 + i,
 					String.format("sta-%03d@unispring.edu", i), String.format("765-4321-%03d", i)));
+			printProgress("Creating staff user", i, NUM_STAFF_USERS);
+		}
 
-		for (int i = 0; i < 100; i++)
+		printProgress("Creating student user", 0, NUM_STUDENT_USERS);
+		for (int i = 0; i < NUM_STUDENT_USERS; i++) {
 			stuRepo.save((Student) createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i,
 					String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
+			printProgress("Creating student user", i, NUM_STUDENT_USERS);
+		}
 	}
 
 	private static User createUser(Random random, User user, String username, int number,
@@ -88,11 +100,13 @@ public class DatabasePopulator {
 
 		Random random = new Random();
 		List<Staff> staff = staRepo.findAll();
+		printProgress("Creating module", 0, NUM_MODULE_YEARS * 10);
+		int count = 0;
 		for (String key : moduleNames.keySet()) {
 			Staff coordinator = staff.get(random.nextInt(staff.size()));
 			Module.Trimester trimester = random.nextInt(2) % 2 == 0 ? Module.Trimester.AUTUMN : Module.Trimester.SPRING;
 			Module module;
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < NUM_MODULE_YEARS; i++) {
 				modRepo.save(module = createModule(random, coordinator, moduleNames.get(key), key, year.plusYears(i), trimester));
 				List<Student> students = stuRepo.findAllByStage(new Student.Stage[]{Student.Stage.ONE,
 						Student.Stage.TWO, Student.Stage.THREE, Student.Stage.FOUR, Student.Stage.MASTERS}[4 - i]);
@@ -110,6 +124,7 @@ public class DatabasePopulator {
 				toSave.forEach(s -> s.getModules().add(finalModule));
 				stuRepo.saveAll(toSave);
 				modRepo.save(module);
+				printProgress("Creating module", count++, NUM_MODULE_YEARS * 10);
 			}
 		}
 	}
@@ -124,15 +139,38 @@ public class DatabasePopulator {
 		module.setTrimester(trimester);
 		module.setStatus(Module.Status.AVAILABLE);
 		module.setPassword(code.substring(4) + year.toString());
-		module.setCapacity(random.nextInt(15) + 30);
+		module.setCapacity(random.nextInt(15) + 15);
 		return module;
+	}
+
+	private static void printProgress(String message, int current, int total) {
+		StringBuilder string = new StringBuilder();
+		int percent = (current * 100 / total);
+		string.append('\r')
+				.append(message)
+				.append(" ... ")
+				.append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
+				.append(String.format(" %d%% [", percent))
+				.append(String.join("", Collections.nCopies(percent, "=")))
+				.append('>')
+				.append(String.join("", Collections.nCopies(100 - percent, " ")))
+				.append(']')
+				.append(String.join("", Collections.nCopies(Math.max((int) (Math.log10(total)) - (int) (Math.log10(current)), 0), " ")))
+				.append(String.format(" %d/%d\r", current, total));
+		System.out.print(string.toString());
 	}
 
 	@Bean
 	public CommandLineRunner populateDb(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo) {
 		return (args -> {
-			populatePeople(stuRepo, staRepo);
-			populateModules(stuRepo, staRepo, modRepo);
+			if (args.length > 0 && Boolean.parseBoolean(args[0])) {
+				LOG.info(String.format("%s", "Populating Database..."));
+				populatePeople(stuRepo, staRepo);
+				populateModules(stuRepo, staRepo, modRepo);
+				LOG.info(String.format("%s", "Finished Populating Database..."));
+			} else {
+				LOG.info(String.format("%s", "Continue without Populating Database..."));
+			}
 		});
 	}
 
