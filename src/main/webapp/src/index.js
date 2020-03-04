@@ -4,6 +4,9 @@ import InformationArea from './informationArea';
 import Navigation from './nav';
 
 
+import 'babel-polyfill';
+
+
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import LoginModel from './loginRegister';
 

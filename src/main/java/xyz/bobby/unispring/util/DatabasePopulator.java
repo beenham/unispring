@@ -43,28 +43,32 @@ public class DatabasePopulator {
 	private static final Logger LOG = Logger.getLogger(DatabasePopulator.class.getCanonicalName());
 	private static final int NUM_STAFF_USERS = 25;		//	recommend max 25
 	private static final int NUM_STUDENT_USERS = 250;	//	recommend max 250
-	private static final int NUM_MODULE_YEARS = 5;		//	recommend max 5
+	private static final int NUM_MODULE_YEARS = 2;		//	recommend max 5
 	private static final int BASE_MODULE_CAPACITY = 30;	//
 
 	private static void populatePeople(StudentRepository stuRepo, StaffRepository staRepo) {
 		Random random = new Random();
 
 		printProgress("Creating staff user", 0, NUM_STAFF_USERS);
+		Set<Staff> staff = new HashSet<>();
 		for (int i = 0; i < NUM_STAFF_USERS; i++) {
-			staRepo.save((Staff) createUser(random, new Staff(), String.format("Sta-%03d", i), 12345900 + i,
+			staff.add(createUser(random, new Staff(), String.format("Sta-%03d", i), 12345900 + i,
 					String.format("sta-%03d@unispring.edu", i), String.format("765-4321-%03d", i)));
 			printProgress("Creating staff user", i, NUM_STAFF_USERS);
 		}
+		staRepo.saveAll(staff);
 
 		printProgress("Creating student user", 0, NUM_STUDENT_USERS);
+		Set<Student> students = new HashSet<>();
 		for (int i = 0; i < NUM_STUDENT_USERS; i++) {
-			stuRepo.save((Student) createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i,
+			students.add(createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i,
 					String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
 			printProgress("Creating student user", i, NUM_STUDENT_USERS);
 		}
+		stuRepo.saveAll(students);
 	}
 
-	private static User createUser(Random random, User user, String username, int number,
+	private static <T extends User> T createUser(Random random, T user, String username, int number,
 								   String email, String phoneNumber) {
 		user.setUsername(username);
 		user.setGender(random.nextInt(2) == 0 ? User.Gender.FEMALE : User.Gender.MALE);

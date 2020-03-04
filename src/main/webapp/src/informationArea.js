@@ -12,9 +12,9 @@ function InformationArea(){
       return(<div id="infoPage">
         <Router>
           <Switch>
-            <Route path='/Modules' component={ModuleArea}></Route>
-            <Route path='/Profile' component={Profile}></Route>
-            <Route path='/Dashboard' component={Dashboard}></Route>
+            <Route path='/modules' component={ModuleArea}></Route>
+            <Route path='/profile' component={Profile}></Route>
+            <Route path='/dashboard' component={Dashboard}></Route>
           </Switch>
         </Router>
       </div>);

@@ -32,3 +32,4 @@ build/
 
 ### React ###
 /node_modules/
+src/main/resources/static/built

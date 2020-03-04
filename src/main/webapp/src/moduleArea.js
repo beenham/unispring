@@ -26,7 +26,7 @@ function ModuleArea(){
     //     }
     // };
     // oReq.send();
-    const data =  await fetch('http://localhost:8080/people',{
+    const data =  await fetch('http://localhost:8080/modules',{
       method: 'GET',
       mode: 'cors',
       credentials: 'same-origin',

@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -31,6 +32,18 @@ public class Grade {
 		public Key(Student student, Module module) {
 			this.student = student;
 			this.module = module;
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(this.student, this.module);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (!(obj instanceof Key)) return false;
+			Key other = (Key) obj;
+			return other.student == this.student && other.module == this.module;
 		}
 	}
 

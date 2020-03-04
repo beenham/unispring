@@ -25,19 +25,19 @@ function Navigation(){
               <span className="icon has-text-info">
                 <i className="material-icons">apps</i>
               </span>
-                <a href="/Modules">Modules</a>
+                <a href="/modules">Modules</a>
             </li>
             <li>
               <span className="icon has-text-info">
                 <i className="material-icons">account_circle</i>
               </span>
-                <a href="/Profile">Profile</a>
+                <a href="/profile">Profile</a>
               </li>
             <li>
               <span className="icon has-text-info">
                 <i className="material-icons">show_chart</i>
               </span>
-              <a href="/Dashboard">Stats</a>
+              <a href="/dashboard">Stats</a>
               </li>
          </ul>
          <p className="menu-label">
