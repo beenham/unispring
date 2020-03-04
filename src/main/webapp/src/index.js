@@ -1,11 +1,10 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import InformationArea from './informationArea';
 import Navigation from './nav';
 
 
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 import LoginModel from './loginRegister';
 
 class BodyArea extends React.Component{

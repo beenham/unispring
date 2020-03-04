@@ -31,7 +31,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/modules")
+@RequestMapping("/api/modules")
 public class ModuleController {
 	@Autowired
 	private ModuleRepository moduleRepository;
