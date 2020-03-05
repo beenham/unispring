@@ -45,10 +45,16 @@ public class Module {
 	private String password;
 	@NotNull private int capacity;
 
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "modules")
+	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			joinColumns = @JoinColumn(name = "module_id"),
+			inverseJoinColumns = @JoinColumn(name = "student_id"))
 	private final Set<Student> students = new HashSet<>();
 
 	@ManyToMany(fetch = FetchType.LAZY)
+	@JoinTable(
+			joinColumns = @JoinColumn(name = "module_id"),
+			inverseJoinColumns = @JoinColumn(name = "topic_id"))
 	private List<Topic> topics = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY)

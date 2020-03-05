@@ -33,13 +33,12 @@ public class Student extends User {
 	@Column(columnDefinition = "ENUM('ONE', 'TWO', 'THREE', 'FOUR', 'MASTERS', 'DOCTORATE')")
 	private Stage stage;
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "student_id")
-	private final Set<Module> modules = new HashSet<>();
+	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
+	private Set<Module> modules = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "student_id")
-	private final Set<Grade> grades = new HashSet<>();
+	private Set<Grade> grades = new HashSet<>();
 
 	public enum Stage {
 		ONE("1st"), TWO("2nd"), THREE("3rd"), FOUR("4th"), MASTERS("MSc"), DOCTORATE("PhD");
