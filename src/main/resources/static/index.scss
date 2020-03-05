@@ -6,7 +6,7 @@ $info-page-width:85%;
 $main-box-color: white;
 $box-padding:2.5em;
 $menu-text-colour:#fffffff1;
-$small-text-color:#0000004a;
+$small-text-color:#000000d9;
 $euro-symbol-colour:#00d1b2;
 $button-bg-color:#3298dc;
 $menu-icon-color:#e4e4e4;
@@ -40,22 +40,22 @@ p, a, button, input, td{
 }
 ::-webkit-scrollbar {
     width: 4px;
-  }
-  
-  /* Track */
-  ::-webkit-scrollbar-track {
+}
+
+/* Track */
+::-webkit-scrollbar-track {
     background: rgba(0, 0, 0, 0);
-  }
-  
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
     background: #888;
-  }
-  
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
     background: #555;
-  }
+}
 a{
     text-decoration: none;
 }
@@ -116,7 +116,7 @@ body, #root{
             margin-left: 5px;
             display: inline-flex;
             align-items: center;
-            
+
         }
         .menu-list a {
             color: $menu-text-colour;
@@ -141,7 +141,7 @@ body, #root{
     width:$info-page-width;
     margin-left: 15%;
 
-    
+
     .hero-body {
         padding: 1.5rem ;
         border-left: 10px solid $big-title-border;
@@ -150,7 +150,7 @@ body, #root{
             color:$big-titles;
         }
     }
-    
+
 
     #modules{
         .module-area{
@@ -212,84 +212,122 @@ body, #root{
     }
 
     .tile{
-        #myChart{
-            width:100%;
-            height:100%;
-        }
-
         .box{
             border-bottom: 4px solid $button-bg-color;
         }
     }
 }
+
+#myChart{
+    width:100%;
+    height:100%;
+}
 .small-text{
-    font-size: 0.8em;
+    font-size: 0.9em;
+    text-transform: uppercase;
     color: $small-text-color;
     font-weight: 100;
 }
 
-.modal{
-    
-    .modal-close{
-        background: grey;
-        position: absolute;
-    }
+.card-footer-item{
+    cursor: pointer;
+}
+.modal-close{
+    background: grey;
+    position: absolute;
+}
 
-    .custom-modal{
-        width: 60%;
+.custom-modal{
+    width: 70%!important;
+    margin: auto;
+    margin-top: 1em;
 
-        .modal-card-body{
-            padding:0;
+    .modal-card-body{
+        padding:0;
 
-            .image-box{
-                width: 100%;
-                height: 170px;
-                overflow: hidden;
+        .image-box{
+            width: 100%;
+            height: 170px;
+            overflow: hidden;
 
-                img{
-                    width:100%;
-                }
-            }
-
-            .modal-details{
-                padding: 20px;
-
-                .module-icon{
-                    font-size:1.3em;
-                }
-                #tab-content{
-                    section {
-                        display: none;
-                    }
-                    .is-active {
-                        display: block;
-                    }
-                }
-
-                #tag-area{
-                    margin-bottom: 10px;
-                }
-
-                .module-title-tag{
-                    display: flex;
-                    align-items: baseline;
-                    
-                    .tag{
-                        margin-left: 10px;
-                    }
-                }
-
-                .box{
-                    border-bottom: 4px solid $button-bg-color;
-                    
-                    &:not(:last-child){
-                        margin-bottom: 0;
-                        margin-right: 10px;
-                    }
-                }
-                  
+            img{
+                width:100%;
             }
         }
+
+        .modal-details{
+            padding: 20px;
+            #tag-area{
+                margin-bottom: 10px;
+
+                .tag{
+                    margin: 0 5px;
+                }
+            }
+
+            .module-title-tag{
+                display: flex;
+                align-items: baseline;
+
+                .tag{
+                    margin-left: 10px;
+                }
+            }
+
+            .box{
+                border-bottom: 4px solid $button-bg-color;
+
+                &:not(:last-child){
+                    margin-bottom: 0;
+                    margin-right: 10px;
+                }
+            }
+
+        }
+    }
+}
+
+
+.ReactModal__Content{
+    position: absolute!important;
+    top: 0!important;
+    left: 0!important;
+    right: 0!important;
+    bottom: 0!important;
+    background: rgba(0, 0, 0, 0.62)!important;
+    border:none!important;
+    border-radius: none!important;
+    overflow: auto;
+    outline: none;
+    height: 100vh!important;
+}
+
+.react-tabs__tab-list{
+    display:flex;
+    margin: 10px 0;
+
+    .icon{
+        margin-right: 5px;
+    }
+    .module-icon{
+        font-size: 1em;
+        margin-right: 5px;
+    }
+    .react-tabs__tab{
+        display: flex;
+        align-items: center;
+        margin-left: 1.7em;
+        cursor: pointer;
+
+        &:hover{
+            color:$button-bg-color;
+            border-bottom: 1px solid $button-bg-color;
+        }
+    }
+
+    .react-tabs__tab--selected{
+        color:$button-bg-color;
+        border-bottom: 1px solid $button-bg-color;
     }
 }
 
@@ -383,11 +421,11 @@ body, #root{
     width: 40%;
     height: fit-content;
     position: absolute;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	margin: auto;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
     padding: 0.3em;
     padding-bottom: 1em;
     border-radius: 10px;
