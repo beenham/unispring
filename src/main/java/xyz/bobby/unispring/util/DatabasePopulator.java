@@ -4,10 +4,12 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import xyz.bobby.unispring.model.Grade;
 import xyz.bobby.unispring.model.Module;
 import xyz.bobby.unispring.model.Staff;
 import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.User;
+import xyz.bobby.unispring.repository.GradeRepository;
 import xyz.bobby.unispring.repository.ModuleRepository;
 import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
@@ -38,6 +40,14 @@ public class DatabasePopulator {
 		add(25, Student.Stage.FOUR);
 		add(15, Student.Stage.MASTERS);
 		add(5, Student.Stage.DOCTORATE);
+	}};
+	private static final RandomCollection<Grade.LetterGrade> randomGrade = new RandomCollection<>() {{
+		add(15, Grade.LetterGrade.A);
+		add(35, Grade.LetterGrade.B);
+		add(45, Grade.LetterGrade.C);
+		add(30, Grade.LetterGrade.D);
+		add(5, Grade.LetterGrade.E);
+		add(5, Grade.LetterGrade.F);
 	}};
 	private static final Year year = Year.now().minusYears(4);
 	private static final Logger LOG = Logger.getLogger(DatabasePopulator.class.getCanonicalName());
@@ -89,7 +99,8 @@ public class DatabasePopulator {
 		return user;
 	}
 
-	private static void populateModules(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo) {
+	private static void populateModules(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo,
+										GradeRepository gradeRepo) {
 		final Map<String, String> moduleNames = new HashMap<>() {{
 			put("COMP10110", "Computer Programming I");
 			put("COMP10120", "Computer Programming II");
@@ -116,15 +127,19 @@ public class DatabasePopulator {
 				List<Student> students = stuRepo.findAllByStage(new Student.Stage[]{Student.Stage.ONE,
 						Student.Stage.TWO, Student.Stage.THREE, Student.Stage.FOUR, Student.Stage.MASTERS}[4 - i]);
 				Set<Student> toSave = new HashSet<>();
+				Set<Grade> grades = new HashSet<>();
 				while (module.getStatus() == Module.Status.AVAILABLE && students.size() > 0) {
 					Student student;
 					module.getStudents().add(student = students.remove(random.nextInt(students.size())));
 					toSave.add(student);
+					grades.add(new Grade(student, module, randomGrade.next()));
 					if (module.getStudents().size() == module.getCapacity())
 						module.setStatus(Module.Status.FULL);
 				}
-				if (module.getYear().isBefore(year.plusYears(4)) || trimester != Module.Trimester.SPRING)
+				if (module.getYear().isBefore(year.plusYears(4)) || trimester != Module.Trimester.SPRING) {
 					module.setStatus(Module.Status.TERMINATED);
+					gradeRepo.saveAll(grades);
+				}
 				Module finalModule = module;
 				toSave.forEach(s -> s.getModules().add(finalModule));
 				stuRepo.saveAll(toSave);
@@ -166,12 +181,13 @@ public class DatabasePopulator {
 	}
 
 	@Bean
-	public CommandLineRunner populateDb(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo) {
+	public CommandLineRunner populateDb(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo,
+										GradeRepository gradeRepo) {
 		return (args -> {
 			if (args.length > 0 && Boolean.parseBoolean(args[0])) {
 				LOG.info(String.format("%s", "Populating Database..."));
 				populatePeople(stuRepo, staRepo);
-				populateModules(stuRepo, staRepo, modRepo);
+				populateModules(stuRepo, staRepo, modRepo, gradeRepo);
 				LOG.info(String.format("%s", "Finished Populating Database..."));
 			} else {
 				LOG.info(String.format("%s", "Continue without Populating Database..."));
