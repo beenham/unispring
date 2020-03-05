@@ -54,10 +54,54 @@ public class Grade {
 
 	public Grade() {}
 
-	public Grade(Student student, Module module) {
+	public Grade(Student student, Module module, int percent) {
 		this.student = student;
 		this.module = module;
-		this.grade = LetterGrade.A;
+		setPercent(percent);
+	}
+
+	public Grade(Student student, Module module, LetterGrade grade) {
+		this.student = student;
+		this.module = module;
+		setGrade(grade);
+	}
+
+	public void setPercent(int percent) {
+		this.percent = percent;
+		if (percent < 30)
+			this.grade = LetterGrade.F;
+		else if (percent < 40)
+			this.grade = LetterGrade.E;
+		else if (percent < 55)
+			this.grade = LetterGrade.D;
+		else if (percent < 70)
+			this.grade = LetterGrade.C;
+		else if (percent < 85)
+			this.grade = LetterGrade.B;
+		else
+			this.grade = LetterGrade.A;
+	}
+
+	public void setGrade(LetterGrade grade) {
+		switch (grade) {
+			case A:
+				setPercent(90);
+				break;
+			case B:
+				setPercent(75);
+				break;
+			case C:
+				setPercent(60);
+				break;
+			case D:
+				setPercent(45);
+				break;
+			case E:
+				setPercent(35);
+				break;
+			default:
+				setPercent(25);
+		}
 	}
 
 	public enum LetterGrade {
