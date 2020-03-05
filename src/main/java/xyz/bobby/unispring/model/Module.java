@@ -1,6 +1,5 @@
 package xyz.bobby.unispring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.validator.constraints.Length;
@@ -30,7 +29,6 @@ public class Module {
 	@NotBlank private String name;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonIgnoreProperties({"modules"})
 	private Staff coordinator;
 
 	@NotBlank private String description;
@@ -48,15 +46,14 @@ public class Module {
 	@NotNull private int capacity;
 
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "modules")
-	@JsonIgnoreProperties({"modules", "grades"})
 	private final Set<Student> students = new HashSet<>();
 
-	@ManyToMany(fetch = FetchType.LAZY) private final List<Topic> topics = new ArrayList<>();
+	@ManyToMany(fetch = FetchType.LAZY)
+	private List<Topic> topics = new ArrayList<>();
 
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "module_id")
-	@JsonIgnoreProperties({"module"})
-	private final Set<Grade> grades = new HashSet<>();
+	private Set<Grade> grades = new HashSet<>();
 
 	public enum Status {
 		AVAILABLE, FULL, TERMINATED

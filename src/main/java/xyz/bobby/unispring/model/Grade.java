@@ -1,6 +1,5 @@
 package xyz.bobby.unispring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,12 +14,10 @@ import java.util.Objects;
 public class Grade {
 	@Id
 	@ManyToOne(optional = false)
-	@JsonIgnoreProperties({"students", "grades"})
 	private Module module;
 
 	@Id
 	@ManyToOne(optional = false)
-	@JsonIgnoreProperties({"modules", "grades"})
 	private Student student;
 
 	public static class Key implements Serializable {

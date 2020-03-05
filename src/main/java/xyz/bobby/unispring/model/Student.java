@@ -1,6 +1,5 @@
 package xyz.bobby.unispring.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -36,12 +35,10 @@ public class Student extends User {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "student_id")
-	@JsonIgnoreProperties({"students", "grades"})
 	private final Set<Module> modules = new HashSet<>();
 
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinColumn(name = "student_id")
-	@JsonIgnoreProperties({"student"})
 	private final Set<Grade> grades = new HashSet<>();
 
 	public enum Stage {

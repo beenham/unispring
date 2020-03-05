@@ -14,7 +14,6 @@ import javax.validation.constraints.NotBlank;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 	@Id
-	@JsonIgnore
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
