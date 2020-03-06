@@ -6,6 +6,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Data
@@ -72,6 +73,11 @@ public class Grade {
 		setPercent(percent);
 	}
 
+	public Grade(Student student, Module module, int percent, String comment) {
+		this(student, module, percent);
+		this.comment = comment;
+	}
+
 	public Grade(Student student, Module module, LetterGrade grade) {
 		this.student = student;
 		this.module = module;
@@ -79,45 +85,41 @@ public class Grade {
 		setGrade(grade);
 	}
 
-	public void setPercent(int percent) {
-		this.percent = percent;
-		if (percent < 30)
-			this.grade = LetterGrade.F;
-		else if (percent < 40)
-			this.grade = LetterGrade.E;
-		else if (percent < 55)
-			this.grade = LetterGrade.D;
-		else if (percent < 70)
-			this.grade = LetterGrade.C;
-		else if (percent < 85)
-			this.grade = LetterGrade.B;
-		else
-			this.grade = LetterGrade.A;
+	public Grade(Student student, Module module, LetterGrade grade, String comment) {
+		this(student, module, grade);
+		this.comment = comment;
 	}
 
-	public void setGrade(LetterGrade grade) {
-		switch (grade) {
-			case A:
-				setPercent(90);
+	public void setPercent(int percent) {
+		this.percent = percent;
+		for (LetterGrade grade : LetterGrade.values()) {
+			if (percent >= grade.min) {
+				this.grade = grade;
+				this.comment = grade.comment;
 				break;
-			case B:
-				setPercent(75);
-				break;
-			case C:
-				setPercent(60);
-				break;
-			case D:
-				setPercent(45);
-				break;
-			case E:
-				setPercent(35);
-				break;
-			default:
-				setPercent(25);
+			}
 		}
 	}
 
+	public void setGrade(LetterGrade grade) {
+		this.grade = grade;
+		this.percent = grade.avg;
+		this.comment = grade.comment;
+	}
+
 	public enum LetterGrade {
-		A, B, C, D, E, F
+		A(85, 100, "Excellent"), B(70, 85, "Very Good"),
+		C(55, 70, "Good"), D(40, 55, "Permissible"),
+		E(25, 40, "Woeful"), F(0, 25, "Get out of college ya fool");
+
+		int min, max, avg;
+		String comment;
+
+		LetterGrade(int min, int max, String comment) {
+			this.min = min;
+			this.max = max;
+			this.avg = min + ((max - min) / 2);
+			this.comment = comment;
+		}
 	}
 }
