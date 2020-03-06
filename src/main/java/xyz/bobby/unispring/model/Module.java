@@ -57,8 +57,7 @@ public class Module {
 			inverseJoinColumns = @JoinColumn(name = "topic_id"))
 	private List<Topic> topics = new ArrayList<>();
 
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "module_id")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "id.moduleId")
 	private Set<Grade> grades = new HashSet<>();
 
 	public enum Status {

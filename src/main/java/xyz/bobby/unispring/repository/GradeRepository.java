@@ -9,10 +9,10 @@ import xyz.bobby.unispring.model.Student;
 
 @RepositoryRestResource
 public interface GradeRepository extends JpaRepository<Grade, Grade.Key> {
-	default Grade getGrade(Student student, Module module) throws ResourceNotFoundException {
+	default Grade getGrade(int student, int module) throws ResourceNotFoundException {
 		Grade.Key key = new Grade.Key(student, module);
 		return this.findById(key)
 				.orElseThrow(() -> new ResourceNotFoundException(Grade.class.getSimpleName(),
-						"user=%d, module=%d", student.getId(), module.getId()));
+						"user=%d, module=%d", student, module));
 	}
 }
