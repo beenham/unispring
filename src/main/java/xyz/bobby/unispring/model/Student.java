@@ -36,8 +36,7 @@ public class Student extends User {
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "students")
 	private Set<Module> modules = new HashSet<>();
 
-	@OneToMany(fetch = FetchType.EAGER)
-	@JoinColumn(name = "student_id")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "id.studentId")
 	private Set<Grade> grades = new HashSet<>();
 
 	public enum Stage {

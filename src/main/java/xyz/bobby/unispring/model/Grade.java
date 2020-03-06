@@ -4,52 +4,70 @@ import lombok.Data;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 @Data
 @Entity
-@IdClass(Grade.Key.class)
 @Table(name = "grades")
 public class Grade {
-	@Id
-	@ManyToOne(optional = false)
-	private Module module;
+	@EmbeddedId
+	private Grade.Key id;
 
-	@Id
-	@ManyToOne(optional = false)
+	//@ManyToOne(optional = false)
+	//@MapsId("moduleId")
+	//private Module module;
+
+	//@ManyToOne(optional = false)
+	//@MapsId("studentId")
+	//private Student student;
+
+	@ManyToOne
+	@JoinColumn(name = "student_id")
+	@MapsId("student_id")
 	private Student student;
 
+	@ManyToOne
+	@JoinColumn(name = "module_id")
+	@MapsId("module_id")
+	private Module module;
+
+	@Embeddable
 	public static class Key implements Serializable {
-		public Student student;
-		public Module module;
+		@Column(name = "student_id")
+		public int studentId;
+		@Column(name = "module_id")
+		public int moduleId;
 
 		public Key() {}
 
-		public Key(Student student, Module module) {
-			this.student = student;
-			this.module = module;
+		public Key(int student, int module) {
+			this.studentId = student;
+			this.moduleId = module;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(this.student, this.module);
+			return Objects.hash(studentId, moduleId);
 		}
 
 		@Override
 		public boolean equals(Object obj) {
-			if (!(obj instanceof Key)) return false;
-			Key other = (Key) obj;
-			return other.student == this.student && other.module == this.module;
+			if (obj instanceof Grade.Key) {
+				Grade.Key other = (Grade.Key) obj;
+				return this.studentId == other.studentId && this.moduleId == other.moduleId;
+			}
+			return false;
 		}
 	}
 
 	private String comment;
 
-	@NotBlank
+	@NotNull
 	private int percent;
 
-	@NotBlank
+	@NotNull
 	private LetterGrade grade;
 
 	public Grade() {}
@@ -57,12 +75,14 @@ public class Grade {
 	public Grade(Student student, Module module, int percent) {
 		this.student = student;
 		this.module = module;
+		this.id = new Grade.Key(student.getId(), module.getId());
 		setPercent(percent);
 	}
 
 	public Grade(Student student, Module module, LetterGrade grade) {
 		this.student = student;
 		this.module = module;
+		this.id = new Grade.Key(student.getId(), module.getId());
 		setGrade(grade);
 	}
 
