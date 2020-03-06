@@ -15,14 +15,6 @@ public class Grade {
 	@EmbeddedId
 	private Grade.Key id;
 
-	//@ManyToOne(optional = false)
-	//@MapsId("moduleId")
-	//private Module module;
-
-	//@ManyToOne(optional = false)
-	//@MapsId("studentId")
-	//private Student student;
-
 	@ManyToOne
 	@JoinColumn(name = "student_id")
 	@MapsId("student_id")
@@ -67,6 +59,7 @@ public class Grade {
 	@NotNull
 	private int percent;
 
+	@Enumerated(EnumType.STRING)
 	@NotNull
 	private LetterGrade grade;
 
