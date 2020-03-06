@@ -43,7 +43,7 @@ public class DatabasePopulator {
 	private static final Logger LOG = Logger.getLogger(DatabasePopulator.class.getCanonicalName());
 	private static final int NUM_STAFF_USERS = 25;		//	recommend max 25
 	private static final int NUM_STUDENT_USERS = 250;	//	recommend max 250
-	private static final int NUM_MODULE_YEARS = 2;		//	recommend max 5
+	private static final int NUM_MODULE_YEARS = 5;		//	recommend max 5
 	private static final int BASE_MODULE_CAPACITY = 30;	//
 
 	private static void populatePeople(StudentRepository stuRepo, StaffRepository staRepo) {

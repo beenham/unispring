@@ -47,11 +47,11 @@ body, #root {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: nowrap;
-      flex-wrap: nowrap;
+  flex-wrap: nowrap;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   background-color: #ffffff;
 }
 
@@ -59,7 +59,7 @@ body, #root {
   background-color: white;
   padding: 2.5em;
   -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
-          box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
+  box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
 
 #body-area .level {
@@ -103,8 +103,8 @@ body, #root {
   display: -ms-inline-flexbox;
   display: inline-flex;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
 #sideMenu .menu .menu-list a {
@@ -146,13 +146,13 @@ body, #root {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
+  flex-wrap: wrap;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
   -ms-flex-flow: wrap;
-      flex-flow: wrap;
+  flex-flow: wrap;
 }
 
 #infoPage #modules .module-area .card {
@@ -199,84 +199,134 @@ body, #root {
   border-bottom: 3px solid #B86377;
 }
 
-#analytics .tile #myChart {
-  width: 100%;
-  height: 100%;
-}
-
 #analytics .tile .box {
   border-bottom: 4px solid #3298dc;
 }
 
+#myChart {
+  width: 100%;
+  height: 100%;
+}
+
 .small-text {
-  font-size: 0.8em;
-  color: #0000004a;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  color: #000000d9;
   font-weight: 100;
 }
 
-.modal .modal-close {
+.card-footer-item {
+  cursor: pointer;
+}
+
+.modal-close {
   background: grey;
   position: absolute;
 }
 
-.modal .custom-modal {
-  width: 60%;
+.custom-modal {
+  width: 70% !important;
+  margin: auto;
+  margin-top: 1em;
 }
 
-.modal .custom-modal .modal-card-body {
+.custom-modal .modal-card-body {
   padding: 0;
 }
 
-.modal .custom-modal .modal-card-body .image-box {
+.custom-modal .modal-card-body .image-box {
   width: 100%;
   height: 170px;
   overflow: hidden;
 }
 
-.modal .custom-modal .modal-card-body .image-box img {
+.custom-modal .modal-card-body .image-box img {
   width: 100%;
 }
 
-.modal .custom-modal .modal-card-body .modal-details {
+.custom-modal .modal-card-body .modal-details {
   padding: 20px;
 }
 
-.modal .custom-modal .modal-card-body .modal-details .module-icon {
-  font-size: 1.3em;
-}
-
-.modal .custom-modal .modal-card-body .modal-details #tab-content section {
-  display: none;
-}
-
-.modal .custom-modal .modal-card-body .modal-details #tab-content .is-active {
-  display: block;
-}
-
-.modal .custom-modal .modal-card-body .modal-details #tag-area {
+.custom-modal .modal-card-body .modal-details #tag-area {
   margin-bottom: 10px;
 }
 
-.modal .custom-modal .modal-card-body .modal-details .module-title-tag {
+.custom-modal .modal-card-body .modal-details #tag-area .tag {
+  margin: 0 5px;
+}
+
+.custom-modal .modal-card-body .modal-details .module-title-tag {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: baseline;
-      -ms-flex-align: baseline;
-          align-items: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
 }
 
-.modal .custom-modal .modal-card-body .modal-details .module-title-tag .tag {
+.custom-modal .modal-card-body .modal-details .module-title-tag .tag {
   margin-left: 10px;
 }
 
-.modal .custom-modal .modal-card-body .modal-details .box {
+.custom-modal .modal-card-body .modal-details .box {
   border-bottom: 4px solid #3298dc;
 }
 
-.modal .custom-modal .modal-card-body .modal-details .box:not(:last-child) {
+.custom-modal .modal-card-body .modal-details .box:not(:last-child) {
   margin-bottom: 0;
   margin-right: 10px;
+}
+
+.ReactModal__Content {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0, 0, 0, 0.62) !important;
+  border: none !important;
+  border-radius: none !important;
+  overflow: auto;
+  outline: none;
+  height: 100vh !important;
+}
+
+.react-tabs__tab-list {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin: 10px 0;
+}
+
+.react-tabs__tab-list .icon {
+  margin-right: 5px;
+}
+
+.react-tabs__tab-list .module-icon {
+  font-size: 1em;
+  margin-right: 5px;
+}
+
+.react-tabs__tab-list .react-tabs__tab {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  margin-left: 1.7em;
+  cursor: pointer;
+}
+
+.react-tabs__tab-list .react-tabs__tab:hover {
+  color: #3298dc;
+  border-bottom: 1px solid #3298dc;
+}
+
+.react-tabs__tab-list .react-tabs__tab--selected {
+  color: #3298dc;
+  border-bottom: 1px solid #3298dc;
 }
 
 #profile #profile-box {
@@ -289,8 +339,8 @@ body, #root {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
   position: relative;
   margin-top: 10px;
 }
@@ -327,14 +377,14 @@ body, #root {
   display: -ms-inline-grid;
   display: inline-grid;
   -ms-grid-columns: 1fr 2fr;
-      grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 2fr;
   grid-gap: 10px;
   width: 100%;
 }
 
 #profile #profile-fees .fee-box {
   -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
-          box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
+  box-shadow: 0 0.5em 1em -0.125em rgba(10, 10, 10, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
   padding: 1em;
   text-align: center;
   width: 100%;
@@ -392,7 +442,7 @@ body, #root {
   border-radius: 10px;
   background-color: white;
   -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
-          box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
+  box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
 
 #log-in-reg .title {

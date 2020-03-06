@@ -141,7 +141,7 @@ function Module (props){
                                                     <div className="tile is-parent box">
                                                         <article className="tile is-child">
                                                             {/* <canvas id="module-pie-chart" width="100" height="60"></canvas> */}
-                                                            <Pie data={data_pie} id="chart-area"/>
+                                                            <Pie data={props.student_genders_data} id="chart-area"/>
                                                         </article>
                                                     </div>
                                                     <div className="tile is-parent box">
