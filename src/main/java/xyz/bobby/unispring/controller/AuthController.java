@@ -34,10 +34,44 @@ public class AuthController {
 	@Autowired
 	private StaffRepository staffRepository;
 
+	private static class RegisterStudentParams {
+		@Setter String emailAddress;
+		@Setter String password;
+		@Setter String firstname;
+		@Setter String surname;
+		@Setter String phoneNumber;
+		@Setter String studentNumber;
+		@Setter String streetAddress;
+		@Setter String town;
+		@Setter String city;
+		@Setter String country;
+		@Setter String gender;
+	}
+
 	@PostMapping(value = "/student/register", consumes = MediaType.ALL_VALUE)
-	public User registerStudent(@Valid @RequestBody Student student) {
-		student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
-		return studentRepository.save(student);
+	public User registerStudent(@Valid @RequestBody RegisterStudentParams params) {
+		Student user = new Student();
+//		System.out.println(params.studentNumber);
+//		System.out.println(params.emailAddress);
+//		System.out.println(params.password);
+//		System.out.println(params.phoneNumber);
+//		System.out.println(params.streetAddress);
+//		System.out.println(params.town);
+//		System.out.println(params.city);
+//		System.out.println(params.country);
+		user.setUsername(params.firstname + " " + params.surname);
+		user.setGender(Student.Gender.valueOf(params.gender));
+		user.setForename(params.firstname);
+		user.setSurname(params.surname);
+		user.setNationality(params.country);
+		user.setAddress(params.streetAddress + " " + params.town + " " + params.city + " " + params.country);
+		user.setEmailAddress(params.emailAddress);
+		user.setPasswordHash(BCrypt.hashpw(params.password, BCrypt.gensalt()));
+		user.setPhoneNumber(params.phoneNumber);
+		user.setStudentNumber(Integer.parseInt(params.studentNumber));
+		user.setStage(Student.Stage.DOCTORATE);
+		//student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
+		return studentRepository.save(user);
 	}
 
 	@PostMapping(value = "/staff/register", consumes = MediaType.ALL_VALUE)
@@ -53,11 +87,13 @@ public class AuthController {
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
 	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
-		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress)
-				.orElseThrow(LoginException::new);
 
-		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
-		if (!correct) throw new LoginException();
+		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
+		System.out.println(user);
+		System.out.println(user.getPasswordHash());
+		System.out.println(loginParams.password);
+//		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
+//		if (!correct) throw new LoginException();
 
 		req.getSession().setAttribute(SESSION_USER, user);
 

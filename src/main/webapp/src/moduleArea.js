@@ -27,7 +27,44 @@ var border_colours = [
     }
     return data;
  }
+async function getGradeData(data) {
+    let data_json;
+    let dataMap = new Map();
+    let grade_letters = [];
+    let grade_letters_data = [];
+    for (const item of data) {
+        data_json = await fetch(item._links.grades.href).then(res => res.json());
+        for (const grade of data_json._embedded.grades) {
+            if (!dataMap.has(grade.grade)) {
+                dataMap.set(grade.grade, 0);
+            } else {
+                dataMap.set(grade.grade, dataMap.get(grade.grade) + 1);
+            }
+        }
+        for (let [key, value] of dataMap) {
+            grade_letters.push(key);
+            grade_letters_data.push(value);
+        }
 
+
+        item["grade_data"] = {
+            labels: grade_letters,
+            datasets: [{
+                label: 'Grade Break down',
+                data: grade_letters_data,
+                backgroundColor: colours,
+                borderColor: border_colours,
+                borderWidth: 1
+            }]
+        };
+
+        grade_letters = [];
+        grade_letters_data = [];
+        dataMap.clear();
+    }
+
+    return data;
+}
 async function getStudentGenderData(data){
     let data_json;
     let dataMap = new Map();
@@ -77,9 +114,10 @@ function ModuleArea(){
             .then(res => res.json());
         // .then(data => console.log('Output: ', data))
         // .catch(err => console.error(err));
-        let data_j = data_json._embedded.modules.filter(function(item){return item.year.value == "2020";});
+        let data_j = data_json._embedded.modules.filter(function(item){return item.year.value == "2019";});
         data_j = await getCoordinator(data_j);
         data_j = await getStudentGenderData(data_j);
+        data_j = await getGradeData(data_j);
         // console.log(data_j);
         setItems(data_j);
     };
@@ -101,7 +139,8 @@ function ModuleArea(){
             {items.map(item =>(
                 <Module key={item.id} name={item.name} code={item.code} coordinator={item.coordinator}
                         description={item.description} status={item.status} capacity={item.capacity}
-                        trimester={item.trimester} student_genders_data={item.student_genders_data}></Module>
+                        trimester={item.trimester} student_genders_data={item.student_genders_data}
+                        grade_data={item.grade_data}/>
             ))}
 
         </div>

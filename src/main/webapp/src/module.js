@@ -36,27 +36,7 @@ function Module (props){
         '#B86377'
     ];
 
-    var data_pie = {
-        labels: ['Male', 'Female', 'Other'],
-        datasets: [{
-            label: '# of Votes',
-            data: [25, 15, 13],
-            backgroundColor: colours,
-            borderColor: border_colours,
-            borderWidth: 1
-        }]
-    }
 
-    var bar_data= {
-        labels: ['NG - E', 'D', 'C', 'B', 'A'],
-        datasets: [{
-            label: 'Grade Break down',
-            data: [2, 8, 13, 20, 13],
-            backgroundColor: colours,
-            borderColor: border_colours,
-            borderWidth: 1
-        }]
-    }
 
     return(
         <Fragment>
@@ -140,14 +120,12 @@ function Module (props){
 
                                                     <div className="tile is-parent box">
                                                         <article className="tile is-child">
-                                                            {/* <canvas id="module-pie-chart" width="100" height="60"></canvas> */}
                                                             <Pie data={props.student_genders_data} id="chart-area"/>
                                                         </article>
                                                     </div>
                                                     <div className="tile is-parent box">
                                                         <article className="tile is-child">
-                                                            {/* <canvas id="module-bar" width="100" height="60"></canvas> */}
-                                                            < Bar data={bar_data} id="myChart" width={100} height={50}/>
+                                                            < Bar data={props.grade_data} id="myChart" width={100} height={50}/>
                                                         </article>
                                                     </div>
                                                 </div>

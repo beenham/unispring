@@ -1,8 +1,21 @@
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 function Profile(){
+
+    useEffect(() => {
+        fetchItems();
+    }, []);
+
+    const [items, setItems] = useState([]);
+
+    const fetchItems = async() =>{
+        const data_json =  await fetch('http://localhost:8080/api/users/260').then(res => res.json());
+        // console.log(data_json);s
+        //let data_j = data_json._embedded.modules.filter(function(item){return item.year.value == "2019";});
+        setItems(data_json);
+    };
 
     return(<div id="profile" className="main-box">
         <div className="box" id="profile-box">
@@ -16,7 +29,7 @@ function Profile(){
                     <div className="content profile-title-info">
 
                         <h2>John Smith</h2>
-                        <span className="tag is-info">4th year</span>
+                        <span className="tag is-info">{items.stage}</span>
                         <span className="tag is-warning is-light" id="edit-button">Edit Profile</span>
                         <br />
 
@@ -45,15 +58,15 @@ function Profile(){
                                         <tbody>
                                         <tr>
                                             <td>Name:</td>
-                                            <td>Jack Daniels</td>
+                                            <td>{items.forename} {items.surname}</td>
                                         </tr>
                                         <tr>
                                             <td>Email:</td>
-                                            <td>jack.daniels@ucdconnect.ie</td>
+                                            <td>{items.emailAddress}</td>
                                         </tr>
                                         <tr>
                                             <td>Stage:</td>
-                                            <td>4</td>
+                                            <td>{items.stage}</td>
                                         </tr>
                                         <tr>
                                             <td>Bio:</td>

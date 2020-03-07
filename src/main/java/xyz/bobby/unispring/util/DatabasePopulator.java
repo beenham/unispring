@@ -71,15 +71,13 @@ public class DatabasePopulator {
 		printProgress("Creating student user", 0, NUM_STUDENT_USERS);
 		Set<Student> students = new HashSet<>();
 		for (int i = 0; i < NUM_STUDENT_USERS; i++) {
-			students.add(createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i,
-					String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
+			students.add(createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i, String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
 			printProgress("Creating student user", i, NUM_STUDENT_USERS);
 		}
 		stuRepo.saveAll(students);
 	}
 
-	private static <T extends User> T createUser(Random random, T user, String username, int number,
-								   String email, String phoneNumber) {
+	private static <T extends User> T createUser(Random random, T user, String username, int number,String email, String phoneNumber) {
 		user.setUsername(username);
 		user.setGender(random.nextInt(2) == 0 ? User.Gender.FEMALE : User.Gender.MALE);
 		if (user.getGender() == User.Gender.MALE)
