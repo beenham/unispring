@@ -59,7 +59,7 @@ public class DatabasePopulator {
 	private static final int NUM_STUDENT_USERS = 250;	//	recommend max 250
 	private static final int NUM_MODULE_YEARS = 5;		//	recommend max 5
 	private static final int BASE_MODULE_CAPACITY = 30;	//
-	private static final Year year = Year.now().minusYears(NUM_MODULE_YEARS);
+	private static final Year year = Year.now().minusYears(NUM_MODULE_YEARS - 1);
 
 	private static void populatePeople(StudentRepository stuRepo, StaffRepository staRepo) {
 		Random random = new Random();

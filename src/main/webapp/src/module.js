@@ -1,11 +1,13 @@
 import React, { Fragment, useState } from "react";
 import Modal from "react-modal";
-import ModuleIndicator from "./moduleIndicator";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { Bar, Pie } from "react-chartjs-2";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
-import ModuleButton from "./moduleButton";
+
+function ModuleIndicator(props) {
+  return <span className={props.className}>{props.text}</span>;
+}
 
 function ModuleIndicatorArea(props) {
   return (
@@ -18,9 +20,45 @@ function ModuleIndicatorArea(props) {
   );
 }
 
-/**
- * @return {null}
- */
+function ModuleButton(props) {
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
+  return (
+    <Fragment>
+      <Modal isOpen={modalIsOpenEdit}>
+        <div className="custom-modal">
+          <header className="modal-card-head">
+            <p className="modal-card-title">{props.name}</p>
+            <button
+              className="delete"
+              aria-label="close"
+              onClick={() => setModalIsOpenEdit(false)}
+            />
+          </header>
+          <section className="modal-card-body">
+            <div className="image-box">
+              <img src="../images/code1 (2).jpg" alt="" />
+            </div>
+            <div className="modal-details">
+              <div className="module-title-tag">
+                <h2 className="title is-4">{props.name}</h2>
+                <span className="tag is-info">{props.code}</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </Modal>
+      <Tooltip title={props.title} aria-label={props.title} arrow>
+        <Button
+          className="card-footer-item"
+          onClick={() => setModalIsOpenEdit(true)}
+        >
+          <i className="material-icons-outlined">{props.icon}</i>
+        </Button>
+      </Tooltip>
+    </Fragment>
+  );
+}
+
 function ModuleButtonArea(props) {
   if (props.render) {
     return (
@@ -98,7 +136,11 @@ export default function Module(props) {
                         </tr>
                         <tr>
                           <td>Module coordinator</td>
-                          <td>{props.coordinator}</td>
+                          <td>
+                            {props.coordinator.forename +
+                              " " +
+                              props.coordinator.surname}
+                          </td>
                         </tr>
                         <tr>
                           <td>Capacity</td>
@@ -131,7 +173,7 @@ export default function Module(props) {
                           <div className="tile is-parent box">
                             <article className="tile is-child">
                               <Pie
-                                data={props.student_genders_data}
+                                data={props.student_genders_graph}
                                 id="chart-area"
                               />
                             </article>
@@ -139,7 +181,7 @@ export default function Module(props) {
                           <div className="tile is-parent box">
                             <article className="tile is-child">
                               <Bar
-                                data={props.grade_data}
+                                data={props.grade_graph}
                                 id="myChart"
                                 width={100}
                                 height={50}
@@ -172,7 +214,9 @@ export default function Module(props) {
           </div>
 
           <div className="content">
-            <span className="small-text">By {props.coordinator}</span>
+            <span className="small-text">By {props.coordinator.forename +
+            " " +
+            props.coordinator.surname}</span>
           </div>
         </div>
         <footer className="card-footer">

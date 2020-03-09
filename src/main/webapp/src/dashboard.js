@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut, Pie } from "react-chartjs-2";
 import Chart from "react-google-charts";
+import { getGraphData, mapDistinctCount } from "./util";
 
 let colours = [
   "rgb(0, 152, 224, 0.8)",
@@ -20,43 +21,21 @@ let border_colours = [
   "#B86377"
 ];
 
-function mapDistinctCount(data, property) {
-  return data.reduce((acc, o) => {
-    acc[o[property]] = (acc[o[property]] || 0) + 1;
-    return acc;
-  }, {});
-}
-
-async function getGraphData(data, property, colours) {
-  data = mapDistinctCount(data, property);
-
-  let keys = Object.keys(data).sort();
-  let values = keys.map(key => data[key]);
-
-  return {
-    labels: keys,
-    datasets: [
-      {
-        label: "No. of students who achieved this grade",
-        data: values,
-        backgroundColor: colours,
-        borderColor: "#fff",
-        borderWidth: 1
-      }
-    ]
-  };
-}
-
 function DashboardStat(props) {
-    return (
-        <div className="level-item has-text-centered">
-            <div className="dashboard-div">
-                <p className="heading">{props.name}</p>
-                <p className="title">{props.number}</p>
-                <hr style={{backgroundColor: props.colour, width: (100 * props.number / props.max) + '%'}} />
-            </div>
-        </div>
-    );
+  return (
+    <div className="level-item has-text-centered">
+      <div className="dashboard-div">
+        <p className="heading">{props.name}</p>
+        <p className="title">{props.number}</p>
+        <hr
+          style={{
+            backgroundColor: props.colour,
+            width: (100 * props.number) / props.max + "%"
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 export default function Dashboard() {
@@ -67,30 +46,39 @@ export default function Dashboard() {
   const [items, setItems] = useState([]);
 
   const fetchStudents = async () => {
-    let students = (await fetch(
-      "/api/students/?size=" + (2 ** 31 - 1)
-    ).then(res => res.json()))._embedded.students;
-    let staff = (await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res =>
-      res.json()
-    ))._embedded.staff;
-    let grades = (await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
-      res.json()
-    ))._embedded.grades;
+    let students = (
+      await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
+        res.json()
+      )
+    )._embedded.students;
+    let staff = (
+      await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res => res.json())
+    )._embedded.staff;
+    let grades = (
+      await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res => res.json())
+    )._embedded.grades;
 
     let data = {};
     data.stagesBreakdown = mapDistinctCount(students, "stage");
     data.stagesMax = Math.max.apply(Math, Object.values(data.stagesBreakdown));
-    data.studentGenderBreakDown = await getGraphData(
+    data.studentGenderBreakDown = getGraphData(
       students,
       "gender",
-      colours.slice(0, 3)
+      colours.slice(0, 3),
+      "Number of students by gender"
     );
-    data.staffGenderBreakDown = await getGraphData(
+    data.staffGenderBreakDown = getGraphData(
       staff,
       "gender",
-      colours.slice(3, 6)
+      colours.slice(3, 6),
+      "Number of staff by gender"
     );
-    data.gradesBreakdown = await getGraphData(grades, "grade", colours);
+    data.gradesBreakdown = getGraphData(
+      grades,
+      "grade",
+      colours,
+      "Number of students that achieved each grade"
+    );
     data.nationalityBreakdown = mapDistinctCount(students, "nationality");
     setItems(data);
   };
@@ -121,7 +109,7 @@ export default function Dashboard() {
                     stage.slice(1).toLowerCase()
                   }
                   number={(items.stagesBreakdown || {})[stage] || 0}
-                  max={(items.stagesMax || 1)}
+                  max={items.stagesMax || 1}
                   colour={border_colours[index]}
                 />
               );

@@ -8,10 +8,9 @@ export default function Navigation(props) {
   const [items, setItems] = useState([]);
 
   const fetchItems = async () => {
-    let student_modules = await fetch("/api/students/220").then(res =>
-      res.json()
-    );
-    setItems(student_modules);
+    setItems((await fetch("/api/students/220").then(res =>
+        res.json()
+    )));
   };
   return (
     <div id="sideMenu">

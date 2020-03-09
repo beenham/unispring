@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 
 import axios from "axios";
 
-export default class RegisterComponent extends Component {
+export default class Register extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
