@@ -99,11 +99,13 @@ public class DatabasePopulator {
 		user.setNationality(countries.get(random.nextInt(countries.size())));
 		user.setAddress("Address");
 		user.setEmailAddress(email);
-		user.setPasswordHash(BCrypt.hashpw(String.format("%s%02d", user.getForename(), number % 20), BCrypt.gensalt()));
+		user.setPasswordHash(BCrypt.hashpw("password1", BCrypt.gensalt()));
 		user.setPhoneNumber(phoneNumber);
 		if (user instanceof Student) {
-			((Student) user).setStudentNumber(number);
-			((Student) user).setStage(randomStage.next());
+			Student student = (Student) user;
+			student.setStudentNumber(number);
+			student.setStage(randomStage.next());
+			student.setFeesPaid(!student.getStage().equals(Student.Stage.ONE));
 		}
 		return user;
 	}

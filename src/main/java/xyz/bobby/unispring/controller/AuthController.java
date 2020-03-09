@@ -5,6 +5,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,7 +63,8 @@ public class AuthController {
 		user.setPasswordHash(BCrypt.hashpw(params.password, BCrypt.gensalt()));
 		user.setPhoneNumber(params.phoneNumber);
 		user.setStudentNumber(Integer.parseInt(params.studentNumber));
-		user.setStage(Student.Stage.DOCTORATE);
+		user.setStage(Student.Stage.ONE);
+		user.setFeesPaid(false);
 		return studentRepository.save(user);
 	}
 
@@ -78,21 +80,32 @@ public class AuthController {
 	}
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
-	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
+	public Integer login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
 
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
 		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
 		if (!correct) throw new LoginException();
 
-		req.getSession().setAttribute(SESSION_USER, user.getId());
-		System.out.println(SESSION_USER);
-		return user;
+		req.getSession().setAttribute(SESSION_USER, user);
+		return user.getId();
 	}
 
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest req) {
 		req.getSession().invalidate();
 		return "/login";
+	}
+
+	@PostMapping(value = "/profile/{id}/payfees", consumes = MediaType.ALL_VALUE)
+	public boolean payFees(@PathVariable int id, HttpServletRequest req)
+			throws NotLoggedInException, UnauthorizedException {
+		User user = getSessionUser(req);
+		verifyRole(req, Student.class);
+		verifyId(req, id);
+		Student student = (Student) user;
+		student.setFeesPaid(true);
+		studentRepository.save(student);
+		return student.isFeesPaid();
 	}
 
 	public static User getSessionUser(HttpServletRequest req) {

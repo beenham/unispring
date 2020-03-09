@@ -39,6 +39,8 @@ public class Student extends User {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "id.studentId")
 	private Set<Grade> grades = new HashSet<>();
 
+	private boolean feesPaid;
+
 	public enum Stage {
 		ONE("1st"), TWO("2nd"), THREE("3rd"), FOUR("4th"), MASTERS("MSc"), DOCTORATE("PhD");
 
