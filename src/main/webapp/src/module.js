@@ -29,28 +29,10 @@ function ModuleButtonArea(props){
     }
 }
 
+
 function Module (props){
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
-    var colours = [
-        'rgb(0, 152, 224, 0.8)',
-        'rgb(94, 188, 219, 0.8)',
-        'rgb(241, 221, 132, 0.8)',
-        'rgb(245, 181, 135, 0.8)',
-        'rgb(247, 137, 121, 0.8)',
-        'rgb(184, 99, 119, 0.8)'
-    ];
-    var border_colours = [
-        '#0098E0',
-        '#3C778B',
-        '#F1DD84',
-        '#F5B587',
-        '#F78979',
-        '#B86377'
-    ];
-
-
 
     return(
         <Fragment>
@@ -63,7 +45,7 @@ function Module (props){
                     </header>
                     <section className="modal-card-body">
                         <div className="image-box">
-                            <img src="../images/code1 (2).jpg" alt="" />
+                            <img src={props.module_image} alt="" />
                         </div>
                         <div className="modal-details">
                             <div className="module-title-tag">
@@ -154,7 +136,7 @@ function Module (props){
             <div className="card">
                 <div className="card-image">
                     <figure className="image is-4by3">
-                        <img src="../images/code1 (2).jpg" alt="" />
+                        <img src={props.module_image} alt="" />
                     </figure>
                 </div>
                 <div className="card-content">

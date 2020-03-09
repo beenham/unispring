@@ -101,6 +101,14 @@ async function getStudentGenderData(data){
     return data;
 }
 
+function createImage(data, image_number) {
+    for(const item of data){
+        item["module_image"] = "../images/code ("+image_number+").jpg";
+        image_number++;
+    }
+    return data;
+}
+
 function ModuleArea(){
 
     useEffect(() => {
@@ -129,10 +137,12 @@ function ModuleArea(){
         student_modules = await getCoordinator(student_modules);
         student_modules = await getStudentGenderData(student_modules);
         student_modules = await getGradeData(student_modules);
+        student_modules = await createImage(student_modules, 1);
 
         data_j = await getCoordinator(data_j);
         data_j = await getStudentGenderData(data_j);
         data_j = await getGradeData(data_j);
+        data_j = await createImage(data_j, 1);
 
         setItems(student_modules);
         setotherItems(data_j);
@@ -161,7 +171,7 @@ function ModuleArea(){
                 <Module key={item.id} name={item.name} code={item.code} coordinator={item.coordinator}
                         description={item.description} status={item.status} capacity={item.capacity}
                         trimester={item.trimester} student_genders_data={item.student_genders_data}
-                        grade_data={item.grade_data} renderPick={false} renderEdit={false} renderDrop={true}/>
+                        grade_data={item.grade_data} module_image={item.module_image} renderPick={false} renderEdit={false} renderDrop={true}/>
             ))}
 
         </div>
@@ -188,7 +198,7 @@ function ModuleArea(){
                 <Module key={item.id} name={item.name} code={item.code} coordinator={item.coordinator}
                         description={item.description} status={item.status} capacity={item.capacity}
                         trimester={item.trimester} student_genders_data={item.student_genders_data}
-                        grade_data={item.grade_data} renderPick={true} renderEdit={false} renderDrop={false}/>
+                        grade_data={item.grade_data} module_image={item.module_image} renderPick={true} renderEdit={false} renderDrop={false}/>
             ))}
         </div>
     </div>
