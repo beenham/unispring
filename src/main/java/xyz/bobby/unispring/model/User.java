@@ -3,6 +3,7 @@ package xyz.bobby.unispring.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public abstract class User {
 	@Column(length = 64, nullable = false)
 	@Length(max = 64)
 	@Getter(onMethod = @__(@JsonIgnore))
+	@Setter(onMethod = @__(@JsonIgnore))
 	private String passwordHash;
 
 	@NotBlank

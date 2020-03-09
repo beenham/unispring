@@ -1,14 +1,13 @@
-
 import React, {Component, Fragment} from 'react';
 import Navigation from './nav';
 import Profile from './profile';
 
-class UOSDashboardProfile extends Component{
+class UOSDashboardProfile extends Component {
 
-    render(){
+    render() {
 
-        const { main, stage } = this.props;
-        return(
+        const {main, stage} = this.props;
+        return (
             <Fragment>
                 <Navigation stage={stage}/>
                 <Profile/>

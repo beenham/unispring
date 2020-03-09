@@ -49,7 +49,7 @@ public class AuthController {
 		@Setter String gender;
 	}
 
-	@PostMapping(value = "/student/register", consumes = MediaType.ALL_VALUE)
+	@PostMapping(value = "/register/student", consumes = MediaType.ALL_VALUE)
 	public User registerStudent(@Valid @RequestBody RegisterStudentParams params) throws IOException {
 		Student user = new Student();
 		user.setUsername(params.firstname + " " + params.surname);
@@ -66,7 +66,7 @@ public class AuthController {
 		return studentRepository.save(user);
 	}
 
-	@PostMapping(value = "/staff/register", consumes = MediaType.ALL_VALUE)
+	@PostMapping(value = "/register/staff", consumes = MediaType.ALL_VALUE)
 	public User registerStaff(@Valid @RequestBody Staff staff) {
 		staff.setPasswordHash(BCrypt.hashpw(staff.getPassword(), BCrypt.gensalt()));
 		return staffRepository.save(staff);

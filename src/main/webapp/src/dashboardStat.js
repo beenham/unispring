@@ -1,14 +1,13 @@
-
 import React from 'react';
 
-function DashboardStat(props){
+function DashboardStat(props) {
 
-    return(
+    return (
         <div className="level-item has-text-centered">
             <div className="dashboard-div">
                 <p className="heading">{props.name}</p>
                 <p className="title">{props.number}</p>
-                <hr id={props.id} />
+                <hr id={props.id}/>
             </div>
         </div>
     );

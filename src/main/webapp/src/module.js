@@ -1,40 +1,34 @@
-
 import React, {Fragment, useState} from 'react';
 import Modal from 'react-modal';
 import ModuleIndicator from './moduleIndicator';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import {Tab, TabList, TabPanel, Tabs} from 'react-tabs';
 import {Bar, Pie} from 'react-chartjs-2';
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
 import ModuleButton from "./moduleButton";
 
-function ModuleIndicatorArea(props){
-    let full;
-    full = props.status === "FULL";
-    if(full){
-        return <ModuleIndicator className="tag is-danger" text={"Module Full"}/>
-    }else{
-        return <ModuleIndicator className="tag is-warning" text={"Module Terminated"}/>
-    }
+function ModuleIndicatorArea(props) {
+    return <ModuleIndicator className={'tag ' + (props.status === "FULL" ? 'is-danger' : 'is-warning')}
+                            text={"Module " + (props.status === "FULL" ? "Full" : "Terminated")}/>
 }
 
 /**
  * @return {null}
  */
-function ModuleButtonArea(props){
-    if(props.render){
+function ModuleButtonArea(props) {
+    if (props.render) {
         return <ModuleButton title={props.title} icon={props.icon} code={props.code} name={props.name}/>
-    }else{
+    } else {
         return null;
     }
 }
 
 
-function Module (props){
+function Module(props) {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    return(
+    return (
         <Fragment>
             <Modal isOpen={modalIsOpen}>
 
@@ -45,7 +39,7 @@ function Module (props){
                     </header>
                     <section className="modal-card-body">
                         <div className="image-box">
-                            <img src={props.module_image} alt="" />
+                            <img src={props.module_image} alt=""/>
                         </div>
                         <div className="modal-details">
                             <div className="module-title-tag">
@@ -57,11 +51,13 @@ function Module (props){
                             <Tabs>
                                 <TabList>
                                     <Tab>
-                                        <span className="icon is-small"><i className="material-icons module-icon" aria-hidden="true">info</i></span>
+                                        <span className="icon is-small"><i className="material-icons module-icon"
+                                                                           aria-hidden="true">info</i></span>
                                         <span>About</span>
                                     </Tab>
                                     <Tab>
-                                        <span className="icon is-small"><i className="material-icons module-icon" aria-hidden="true">show_chart</i></span>
+                                        <span className="icon is-small"><i className="material-icons module-icon"
+                                                                           aria-hidden="true">show_chart</i></span>
                                         <span>Stats</span>
                                     </Tab>
                                 </TabList>
@@ -103,7 +99,7 @@ function Module (props){
 
                                 </TabPanel>
                                 <TabPanel>
-                                    <section id="module-charts" >
+                                    <section id="module-charts">
                                         <div id="tag-area">
                                             <span className="tag is-info">2020 Data</span>
                                         </div>
@@ -118,7 +114,8 @@ function Module (props){
                                                     </div>
                                                     <div className="tile is-parent box">
                                                         <article className="tile is-child">
-                                                            < Bar data={props.grade_data} id="myChart" width={100} height={50}/>
+                                                            < Bar data={props.grade_data} id="myChart" width={100}
+                                                                  height={50}/>
                                                         </article>
                                                     </div>
                                                 </div>
@@ -136,13 +133,13 @@ function Module (props){
             <div className="card">
                 <div className="card-image">
                     <figure className="image is-4by3">
-                        <img src={props.module_image} alt="" />
+                        <img src={props.module_image} alt=""/>
                     </figure>
                 </div>
                 <div className="card-content">
                     <div className="media">
                         <div className="media-content">
-                            <p className="title is-6" >{props.name}</p>
+                            <p className="title is-6">{props.name}</p>
                             <p className="subtitle is-6">{props.code}</p>
 
                         </div>
@@ -153,12 +150,16 @@ function Module (props){
                     </div>
                 </div>
                 <footer className="card-footer">
-                    <Tooltip title="View Module details" aria-label="View Module details" arrow >
-                        <Button className="card-footer-item" onClick={() => setModalIsOpen(true)}><i className="material-icons-outlined">visibility</i></Button>
+                    <Tooltip title="View Module details" aria-label="View Module details" arrow>
+                        <Button className="card-footer-item" onClick={() => setModalIsOpen(true)}><i
+                            className="material-icons-outlined">visibility</i></Button>
                     </Tooltip>
-                    <ModuleButtonArea render={props.renderPick} title="Choose this Module" icon="check_box" code={props.code} name={props.name}/>
-                    <ModuleButtonArea render={props.renderDrop} title="Drop this module" icon="cancel" code={props.code} name={props.name}/>
-                    <ModuleButtonArea render={props.renderEdit} title="Edit module information" icon="edit" code={props.code} name={props.name}/>
+                    <ModuleButtonArea render={props.renderPick} title="Choose this Module" icon="check_box"
+                                      code={props.code} name={props.name}/>
+                    <ModuleButtonArea render={props.renderDrop} title="Drop this module" icon="cancel" code={props.code}
+                                      name={props.name}/>
+                    <ModuleButtonArea render={props.renderEdit} title="Edit module information" icon="edit"
+                                      code={props.code} name={props.name}/>
                     {/*<Tooltip title="Choose this Module" aria-label="Choose this Module" arrow>*/}
                     {/*    <Button className="card-footer-item"><i className="material-icons-outlined">check_box</i></Button>*/}
                     {/*</Tooltip>*/}

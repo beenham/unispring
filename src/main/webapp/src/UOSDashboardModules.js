@@ -1,14 +1,13 @@
-
 import React, {Component, Fragment} from 'react';
 import Navigation from './nav';
 import ModuleArea from "./moduleArea";
 
-class UOSDashboardModules extends Component{
+class UOSDashboardModules extends Component {
 
-    render(){
+    render() {
 
-        const { main, stage} = this.props;
-        return(
+        const {main, stage} = this.props;
+        return (
             <Fragment>
                 <Navigation stage={stage}/>
                 <ModuleArea/>
