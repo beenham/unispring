@@ -4,6 +4,9 @@ import Modal from 'react-modal';
 import ModuleIndicator from './moduleIndicator';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import {Bar, Pie} from 'react-chartjs-2';
+import Tooltip from "@material-ui/core/Tooltip";
+import Button from "@material-ui/core/Button";
+import ModuleButton from "./moduleButton";
 
 function ModuleIndicatorArea(props){
     let full;
@@ -12,6 +15,17 @@ function ModuleIndicatorArea(props){
         return <ModuleIndicator className="tag is-danger" text={"Module Full"}/>
     }else{
         return <ModuleIndicator className="tag is-warning" text={"Module Terminated"}/>
+    }
+}
+
+/**
+ * @return {null}
+ */
+function ModuleButtonArea(props){
+    if(props.render){
+        return <ModuleButton title={props.title} icon={props.icon} code={props.code} name={props.name}/>
+    }else{
+        return null;
     }
 }
 
@@ -49,7 +63,7 @@ function Module (props){
                     </header>
                     <section className="modal-card-body">
                         <div className="image-box">
-                            <img src="images/code1 (1).jpg" alt="" />
+                            <img src="../images/code1 (2).jpg" alt="" />
                         </div>
                         <div className="modal-details">
                             <div className="module-title-tag">
@@ -109,10 +123,7 @@ function Module (props){
                                 <TabPanel>
                                     <section id="module-charts" >
                                         <div id="tag-area">
-                                            <span className="tag is-info">2019 Data</span>
-                                            <span className="tag is-light">2018 Data</span>
-                                            <span className="tag is-light">2017 Data</span>
-                                            <span className="tag is-light">2016 Data</span>
+                                            <span className="tag is-info">2020 Data</span>
                                         </div>
                                         <div>
                                             <div className="tile is-ancestor main-box">
@@ -139,16 +150,17 @@ function Module (props){
 
                 </div>
             </Modal>
+
             <div className="card">
                 <div className="card-image">
                     <figure className="image is-4by3">
-                        <img src="images/code1 (1).jpg" alt="" />
+                        <img src="../images/code1 (2).jpg" alt="" />
                     </figure>
                 </div>
                 <div className="card-content">
                     <div className="media">
                         <div className="media-content">
-                            <p className="title is-4" >{props.name}</p>
+                            <p className="title is-6" >{props.name}</p>
                             <p className="subtitle is-6">{props.code}</p>
 
                         </div>
@@ -159,10 +171,21 @@ function Module (props){
                     </div>
                 </div>
                 <footer className="card-footer">
-                    <button className="card-footer-item" onClick={() => setModalIsOpen(true)}>View</button>
-                    <button className="card-footer-item">Drop</button>
-                    <button className="card-footer-item">Pick</button>
-                    <button className="card-footer-item">Modify</button>
+                    <Tooltip title="View Module details" aria-label="View Module details" arrow >
+                        <Button className="card-footer-item" onClick={() => setModalIsOpen(true)}><i className="material-icons-outlined">visibility</i></Button>
+                    </Tooltip>
+                    <ModuleButtonArea render={props.renderPick} title="Choose this Module" icon="check_box" code={props.code} name={props.name}/>
+                    <ModuleButtonArea render={props.renderDrop} title="Drop this module" icon="cancel" code={props.code} name={props.name}/>
+                    <ModuleButtonArea render={props.renderEdit} title="Edit module information" icon="edit" code={props.code} name={props.name}/>
+                    {/*<Tooltip title="Choose this Module" aria-label="Choose this Module" arrow>*/}
+                    {/*    <Button className="card-footer-item"><i className="material-icons-outlined">check_box</i></Button>*/}
+                    {/*</Tooltip>*/}
+                    {/*<Tooltip title="Drop this module" aria-label="Drop this module" arrow>*/}
+                    {/*    <Button className="card-footer-item"><i className="material-icons">cancel</i></Button>*/}
+                    {/*</Tooltip>*/}
+                    {/*<Tooltip title="Edit module information" aria-label="Edit module information" arrow>*/}
+                    {/*    <Button className="card-footer-item" onClick={() => setModalIsOpenEdit(true)}><i className="material-icons-outlined">edit</i></Button>*/}
+                    {/*</Tooltip>*/}
                 </footer>
             </div>
         </Fragment>

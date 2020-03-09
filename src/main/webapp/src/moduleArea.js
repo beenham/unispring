@@ -36,7 +36,7 @@ async function getGradeData(data) {
         data_json = await fetch(item._links.grades.href).then(res => res.json());
         for (const grade of data_json._embedded.grades) {
             if (!dataMap.has(grade.grade)) {
-                dataMap.set(grade.grade, 0);
+                dataMap.set(grade.grade, 1);
             } else {
                 dataMap.set(grade.grade, dataMap.get(grade.grade) + 1);
             }
@@ -74,7 +74,7 @@ async function getStudentGenderData(data){
         data_json = await fetch(item._links.students.href).then(res => res.json());
         for (const student of data_json._embedded.students) {
             if(!dataMap.has(student.gender)){
-                dataMap.set(student.gender,0);
+                dataMap.set(student.gender,1);
             }else{
                 dataMap.set(student.gender, dataMap.get(student.gender) + 1);
             }
@@ -108,61 +108,91 @@ function ModuleArea(){
     }, []);
 
     const [items, setItems] = useState([]);
+    const [otheritems, setotherItems] = useState([]);
 
     const fetchItems = async() =>{
-        const data_json =  await fetch('http://localhost:8080/api/modules')
-            .then(res => res.json());
-        // .then(data => console.log('Output: ', data))
-        // .catch(err => console.error(err));
-        let data_j = data_json._embedded.modules.filter(function(item){return item.year.value == "2019";});
+        let student_module_names= [];
+        const number_json_modules =  await fetch('http://localhost:8080/api/modules').then(res => res.json());
+        const data_json =  await fetch('http://localhost:8080/api/modules?size='  + number_json_modules.page.totalElements).then(res => res.json());
+        let student_modules = await fetch("http://localhost:8080/api/students/220/modules").then(res => res.json());
+        student_modules = student_modules._embedded.modules.filter(function(item){
+            student_module_names.push(item.name);
+            return item.year.value == "2019";
+        });
+
+        let data_j = data_json._embedded.modules.filter(function(item){
+            return item.year.value == "2019";
+        }).filter(function(item){
+            return student_module_names.includes(item.name) === false;
+        });
+
+        student_modules = await getCoordinator(student_modules);
+        student_modules = await getStudentGenderData(student_modules);
+        student_modules = await getGradeData(student_modules);
+
         data_j = await getCoordinator(data_j);
         data_j = await getStudentGenderData(data_j);
         data_j = await getGradeData(data_j);
-        // console.log(data_j);
-        setItems(data_j);
+
+        setItems(student_modules);
+        setotherItems(data_j);
     };
-    return(<div className="main-box" id="modules">
-        <section className="hero is-dark">
-            <div className="hero-body">
-                <div className="container">
-                    <h1 className="title">
-                        Modules
-                    </h1>
-                    <h2 className="subtitle">
-                        Your Modules
-                    </h2>
+    return(
+        <div id="infoPage">
+        <div className="main-box" id="modules">
+            <section className="hero">
+                <div className="hero-body">
+                    <div>
+                        <i className="material-icons">apps</i>
+                    </div>
+                    <div className="container">
+                        <h1 className="title">
+                            University of Springfield
+                        </h1>
+                        <h2 className="subtitle">
+                            Your Modules
+                        </h2>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
         <div className="module-area">
             {items.map(item =>(
                 <Module key={item.id} name={item.name} code={item.code} coordinator={item.coordinator}
                         description={item.description} status={item.status} capacity={item.capacity}
                         trimester={item.trimester} student_genders_data={item.student_genders_data}
-                        grade_data={item.grade_data}/>
+                        grade_data={item.grade_data} renderPick={false} renderEdit={false} renderDrop={true}/>
             ))}
 
         </div>
 
 
-        <section className="hero is-dark">
-            <div className="hero-body">
-                <div className="container">
-                    <h1 className="title">
-                        Modules
-                    </h1>
-                    <h2 className="subtitle">
-                        Other Modules
-                    </h2>
+            <section className="hero">
+                <div className="hero-body">
+                    <div>
+                        <i className="material-icons">apps</i>
+                    </div>
+                    <div className="container">
+                        <h1 className="title">
+                            University of Springfield
+                        </h1>
+                        <h2 className="subtitle">
+                            Other Modules
+                        </h2>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
         <div className="module-area">
-            <Module></Module>
+            {otheritems.map(item =>(
+                <Module key={item.id} name={item.name} code={item.code} coordinator={item.coordinator}
+                        description={item.description} status={item.status} capacity={item.capacity}
+                        trimester={item.trimester} student_genders_data={item.student_genders_data}
+                        grade_data={item.grade_data} renderPick={true} renderEdit={false} renderDrop={false}/>
+            ))}
         </div>
-    </div>);
+    </div>
+        </div>);
 }
 
 export default ModuleArea;

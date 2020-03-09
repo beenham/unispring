@@ -9,26 +9,36 @@ function Profile(){
     }, []);
 
     const [items, setItems] = useState([]);
+    const [gradeItems, setGradeItems] = useState([]);
 
     const fetchItems = async() =>{
-        const data_json =  await fetch('http://localhost:8080/api/users/260').then(res => res.json());
-        // console.log(data_json);s
-        //let data_j = data_json._embedded.modules.filter(function(item){return item.year.value == "2019";});
+        let data_json =  await fetch('http://localhost:8080/api/users/220').then(res => res.json());
+        let grades_json =  await fetch('http://localhost:8080/api/students/210/grades').then(res => res.json());
+        for (const item of grades_json._embedded.grades) {
+            console.log("hello");
+            let name = await fetch(item._links.module.href).then(res => res.json());
+            item["module_name"] = name.name;
+        }
+        console.log(data_json);
+        console.log(grades_json);
         setItems(data_json);
+        setGradeItems(grades_json._embedded.grades);
     };
 
-    return(<div id="profile" className="main-box">
+    return(
+        <div id="infoPage">
+        <div id="profile" className="main-box">
         <div className="box" id="profile-box">
             <article className="media">
                 <div className="media-left">
                     <figure className="image is-128x128">
-                        <img src="images/user.jpg" alt="" className="is-rounded" />
+                        <i className="material-icons">face</i>
                     </figure>
                 </div>
                 <div className="media-content">
                     <div className="content profile-title-info">
 
-                        <h2>John Smith</h2>
+                        <h2>{items.forename} {items.surname}</h2>
                         <span className="tag is-info">{items.stage}</span>
                         <span className="tag is-warning is-light" id="edit-button">Edit Profile</span>
                         <br />
@@ -90,12 +100,13 @@ function Profile(){
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        <tr>
-                                            <td>Secure Software Engineering</td>
-                                            <td>85%</td>
-                                            <td>B+</td>
-                                        </tr>
-
+                                            {gradeItems.map(item =>
+                                                <tr>
+                                                    <td>{item.module_name}</td>
+                                                    <td>{item.percent}%</td>
+                                                    <td>{item.grade}</td>
+                                                </tr>
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
@@ -115,22 +126,22 @@ function Profile(){
                                             <p className="control has-icons-left is-small has-icons-right">
                                                 <input className="input is-small" type="text" placeholder="Name" />
                                                 <span className="icon is-small is-left">
-                           <i className="material-icons">person</i>
-                          </span>
+                                                   <i className="material-icons">person</i>
+                                                  </span>
                                                 <span className="icon is-small is-right">
-                            <i className="fas fa-check"></i>
-                          </span>
+                                                <i className="fas fa-check"/>
+                                              </span>
                                             </p>
                                         </div>
                                         <div className="field">
                                             <p className="control has-icons-left has-icons-right is-small">
                                                 <input className="input is-small" type="number" placeholder="Card Number" />
                                                 <span className="icon is-small is-left">
-                           <i className="material-icons">credit_card</i>
-                          </span>
+                                                   <i className="material-icons">credit_card</i>
+                                                  </span>
                                                 <span className="icon is-small is-right">
-                            <i className="fas fa-check"></i>
-                          </span>
+                                                <i className="fas fa-check"/>
+                                              </span>
                                             </p>
                                         </div>
 
@@ -140,11 +151,11 @@ function Profile(){
                                                 <p className="control has-icons-left has-icons-right is-small">
                                                     <input className="input is-small" type="Number" placeholder="Amount to pay" />
                                                     <span className="icon is-small is-left">
-                              <i className="material-icons">euro_symbol</i>
-                             </span>
+                                                      <i className="material-icons">euro_symbol</i>
+                                                     </span>
                                                     <span className="icon is-small is-right">
-                               <i className="fas fa-check"></i>
-                             </span>
+                                                   <i className="fas fa-check"/>
+                                                 </span>
                                                 </p>
                                             </div>
 
@@ -152,11 +163,11 @@ function Profile(){
                                                 <p className="control has-icons-left has-icons-right is-small">
                                                     <input className="input is-small" type="date" placeholder="Expiration date" />
                                                     <span className="icon is-small is-left">
-                              <i className="material-icons">date_range</i>
-                             </span>
+                                                      <i className="material-icons">date_range</i>
+                                                     </span>
                                                     <span className="icon is-small is-right">
-                               <i className="fas fa-check"></i>
-                             </span>
+                                                   <i className="fas fa-check"/>
+                                                 </span>
                                                 </p>
                                             </div>
 
@@ -164,11 +175,11 @@ function Profile(){
                                                 <p className="control has-icons-left has-icons-right is-small">
                                                     <input className="input is-small" type="number" placeholder="CVV number" />
                                                     <span className="icon is-small is-left">
-                              <i className="material-icons"> security</i>
-                             </span>
+                                                      <i className="material-icons"> security</i>
+                                                     </span>
                                                     <span className="icon is-small is-right">
-                               <i className="fas fa-check"></i>
-                             </span>
+                                                   <i className="fas fa-check"/>
+                                                 </span>
                                                 </p>
                                             </div>
 
@@ -178,11 +189,6 @@ function Profile(){
                                             <p className="control">
                                                 <a className="button is-small is-primary">
                                                     Submit
-                                                </a>
-                                            </p>
-                                            <p className="control">
-                                                <a className="button is-small is-light">
-                                                    Cancel
                                                 </a>
                                             </p>
                                         </div>
@@ -196,7 +202,8 @@ function Profile(){
                 </div>
             </article>
         </div>
-    </div>);
+    </div>
+        </div>);
 }
 
 export default Profile;

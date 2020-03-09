@@ -39,6 +39,7 @@ a {
 
 body, #root {
   width: 100%;
+  height: 100vh;
 }
 
 #body-area {
@@ -56,8 +57,7 @@ body, #root {
 }
 
 #body-area .main-box {
-  background-color: white;
-  padding: 2.5em;
+  padding: 1.5em;
   -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
   box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
@@ -68,23 +68,33 @@ body, #root {
 
 #sideMenu {
   width: 15%;
-  padding: 2.5em;
+  padding: 1.5em;
   height: 100vh;
-  background: -webkit-gradient(linear, left top, left bottom, from(#282935eb), to(#00a1ffde));
-  background: linear-gradient(#282935eb, #00a1ffde);
+  background: #efefef;
   position: fixed;
   top: 0;
   left: 0;
-  color: #fffffff1;
+  border-left: 5px solid #0098E0;
+  border-right:1px solid #83838326;
 }
 
 #sideMenu .image {
   margin: 1.5em auto;
 }
 
+#sideMenu .image i {
+  font-size: 6em;
+}
+
+#sideMenu .image .rounded {
+  border-radius: 100px;
+  padding: 3px;
+  border: 2px solid #0098E0;
+}
+
 #sideMenu .title {
   margin: 0.5em 0;
-  color: #fffffff5;
+  color: #373737;
   font-weight: 200;
 }
 
@@ -93,7 +103,7 @@ body, #root {
 }
 
 #sideMenu .menu .menu-label {
-  color: #fffffff1;
+  color: #373737;
 }
 
 #sideMenu .menu .menu-list li {
@@ -105,23 +115,50 @@ body, #root {
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
+  border-radius: 3px;
+  padding-left: 5px;
+}
+
+#sideMenu .menu .menu-list li:nth-child(1):hover {
+  border-left: 2px solid #3C778B;
+  padding-left: 3px;
+}
+
+#sideMenu .menu .menu-list li:nth-child(2):hover {
+  border-left: 2px solid #F1DD84;
+  padding-left: 3px;
+}
+
+#sideMenu .menu .menu-list li:nth-child(3):hover {
+  border-left: 2px solid #F5B587;
+  padding-left: 3px;
+}
+
+#sideMenu .menu .menu-list li:nth-child(4):hover {
+  border-left: 2px solid #F78979;
+  padding-left: 3px;
+}
+
+#sideMenu .menu .menu-list li:nth-child(1):active {
+  border-left: 2px solid #3C778B;
+  padding-left: 3px;
 }
 
 #sideMenu .menu .menu-list a {
-  color: #fffffff1;
+  color: #373737;
   padding: 0.5em 0.2em;
   font-weight: 100;
   letter-spacing: 1px;
 }
 
 #sideMenu .menu .menu-list a:hover {
-  color: #929292;
+  color: #535353;
   background-color: #f5f5f500;
 }
 
 #sideMenu .menu i {
   font-size: 1.1em;
-  color: #e4e4e4;
+  color: #373737;
 }
 
 #infoPage {
@@ -129,14 +166,8 @@ body, #root {
   margin-left: 15%;
 }
 
-#infoPage .hero-body {
-  padding: 1.5rem;
-  border-left: 10px solid #192375eb;
-  background-color: #f7f7f7;
-}
-
-#infoPage .hero-body .title, #infoPage .hero-body .subtitle {
-  color: #23282f;
+#infoPage #modules {
+  background-color: #efefef;
 }
 
 #infoPage #modules .module-area {
@@ -158,15 +189,108 @@ body, #root {
 #infoPage #modules .module-area .card {
   width: 20%;
   margin: 1.5em;
+  margin-bottom: 3em;
 }
 
 #infoPage #modules .module-area .card .media {
   margin-bottom: 0;
 }
 
+#infoPage #modules .module-area .card-footer {
+  position: absolute;
+  bottom: -45px;
+  width: 100%;
+  border: 2px solid white;
+  border-bottom: 0;
+}
+
+#infoPage #modules .module-area .card-footer .MuiButtonBase-root {
+  min-width: 0px;
+}
+
+#infoPage #modules .module-area .card-footer .card-footer-item {
+  border-bottom: 2px solid white;
+}
+
+#infoPage #modules .module-area .card-footer .card-footer-item:nth-child(1):hover {
+  border-bottom: 2px solid #3C778B;
+}
+
+#infoPage #modules .module-area .card-footer .card-footer-item:nth-child(2):hover {
+  border-bottom: 2px solid #F1DD84;
+}
+
+#infoPage #modules .module-area .card-footer .card-footer-item:nth-child(3):hover {
+  border-bottom: 2px solid #F5B587;
+}
+
+#infoPage #modules .module-area .card-footer .card-footer-item:nth-child(4):hover {
+  border-bottom: 2px solid #F78979;
+}
+
+.hero .hero-body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  padding: 0;
+  border-left: 3px solid #0098E0;
+  background-color: #ffffff;
+  border-radius: 3px;
+}
+
+.hero .hero-body .title, .hero .hero-body .subtitle {
+  color: #373737;
+  font-size: 1.1em;
+}
+
+.hero .hero-body .subtitle {
+  font-size: 1em;
+}
+
+.hero .hero-body i {
+  font-size: 3.4em;
+  color: #373737;
+  padding-top: 3px;
+}
+
+#analytics {
+  padding: 1em;
+  padding-top: 0.5em;
+  background-color: #efefef;
+}
+
+#analytics .level {
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+  margin-bottom: 15px;
+}
+
 #analytics .level hr {
   height: 3px;
   margin: .2rem 0;
+}
+
+#analytics .level .dashboard-div {
+  background-color: #33ade6;
+  width: 65%;
+  padding: 5px;
+  text-align: left;
+  padding-left: 10px;
+  border-radius: 3px;
+}
+
+#analytics .level .dashboard-div .heading {
+  margin-bottom: 0;
+  color: #ffffff;
+}
+
+#analytics .level .dashboard-div .title {
+  font-size: 1.2em;
+  color: #ffffff;
 }
 
 #analytics .level #border-one {
@@ -199,8 +323,22 @@ body, #root {
   border-bottom: 3px solid #B86377;
 }
 
+#analytics .tile .tile.is-parent {
+  padding: .30rem;
+}
+
+#analytics .tile .title {
+  margin-bottom: 5px;
+}
+
 #analytics .tile .box {
   border-bottom: 4px solid #3298dc;
+  padding:0.6em;
+}
+
+#analytics .tile .box #dashboard-map {
+  width: 50%;
+  height: 300px;
 }
 
 #myChart {
@@ -329,9 +467,19 @@ body, #root {
   border-bottom: 1px solid #3298dc;
 }
 
+#profile {
+  background-color: #efefef;
+  height: 100vh;
+  position: relative;
+}
+
 #profile #profile-box {
   width: 95%;
-  margin: 0 auto;
+  margin: 11em auto;
+}
+
+#profile #profile-box .image i {
+  font-size: 8em;
 }
 
 #profile #profile-box .profile-title-info {
@@ -362,7 +510,7 @@ body, #root {
 }
 
 #profile .module-icon {
-  font-size: 1.3em;
+  font-size: 1em;
 }
 
 #profile #tab-content section {
@@ -420,53 +568,175 @@ body, #root {
   margin-right: 10px;
 }
 
-#login-reg-bg {
+.login-reg-bg {
   width: 100%;
   height: 100vh;
-  background-color: #ffffff;
+  background: -webkit-gradient(linear, right top, left top, from(#edf0f1), to(#2c3e5054));
+  background: linear-gradient(270deg, #edf0f1, #2c3e5054);
 }
 
-#log-in-reg {
-  width: 40%;
+.register-log-button {
+  width: 98%;
+  background-color: transparent;
+  color: white;
+  border-radius: 50px;
+  border: 1px solid white;
+  margin: 0.7em 0;
+  letter-spacing: 1px;
+  font-weight: 100;
+  margin-bottom: 0;
+  -webkit-transition: ease-in-out 1s width;
+  transition: ease-in-out 1s width;
+  padding: 0.5em;
+  text-align: center;
+}
+
+.register-log-button:hover {
+  background-color: white;
+  color: black;
+  width: 100%;
+  font-weight: 800;
+}
+
+#log-in-reg, #register-area {
+  width: 50%;
   height: -webkit-fit-content;
   height: -moz-fit-content;
   height: fit-content;
+  margin: auto;
+  border-radius: 10px;
+  background-color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(23, 23, 24, 0.53), 0 0 0 1px rgba(10, 10, 10, 0);
+  box-shadow: 0 0.5em 1em -0.125em rgba(23, 23, 24, 0.53), 0 0 0 1px rgba(10, 10, 10, 0);
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  margin: auto;
-  padding: 0.3em;
-  padding-bottom: 1em;
-  border-radius: 10px;
-  background-color: white;
-  -webkit-box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
-  box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
 }
 
-#log-in-reg .title {
+#log-in-reg #header-links, #register-area #header-links {
+  background-color: #383737;
+  padding: 7em 4em;
+  background-image: url("/images/mountain (4).jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+#log-in-reg #header-links .title, #register-area #header-links .title {
+  color: white;
+  font-size: 2em;
+  margin-bottom: 0.2em;
+}
+
+#log-in-reg .title, #register-area .title {
   text-align: center;
   margin: 1em auto;
 }
 
-#log-in-reg .on-button {
+#log-in-reg .on-button, #register-area .on-button {
   background-color: #3298dc;
   color: white;
 }
 
-#log-in-reg #login-area {
-  width: 80%;
+#log-in-reg #login-area, #register-area #login-area {
+  width: 100%;
   margin: 0 auto;
 }
 
-#log-in-reg #register-area {
+#log-in-reg #login-area form, #register-area #login-area form {
   width: 80%;
-  margin: 0 auto;
+  margin: 4.5em auto;
 }
 
-#log-in-reg i {
+#log-in-reg #login-area form #button-area, #register-area #login-area form #button-area {
+  width: 100%;
+  text-align: center;
+}
+
+#log-in-reg #login-area form #button-area button, #register-area #login-area form #button-area button {
+  background-color: #126386;
+  color: #ffffff;
+}
+
+#log-in-reg #login-area form input, #log-in-reg #login-area form select, #register-area #login-area form input, #register-area #login-area form select {
+  background-color: #f1f1f1;
+  border-color: white;
+  border-radius: 4px;
+  color: #bdbdbd;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+#log-in-reg #login-area form input:not(:last-child), #log-in-reg #login-area form select:not(:last-child), #register-area #login-area form input:not(:last-child), #register-area #login-area form select:not(:last-child) {
+  margin-bottom: 1rem;
+}
+
+#log-in-reg i, #register-area i {
   font-size: 1.3em;
+}
+
+#register-area {
+  width: 70%;
+}
+
+#register-area #form-area {
+  width: 100%;
+}
+
+#register-area form {
+  display: block;
+  width: 90%;
+  margin: 3em auto;
+  text-align: center;
+}
+
+#register-area form input, #register-area form select {
+  background-color: #f1f1f1;
+  border-color: white;
+  border-radius: 4px;
+  color: #bdbdbd;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+
+
+#register-area form .form-group-elements {
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
+}
+
+#register-area form .form-group-elements .control {
+  width: 90%;
+  margin: 0 auto;
+}
+
+#register-area form .form-group-elements button {
+  margin: 1em 0;
+  background-color: #126386;
+}
+
+#register-area form #register-address {
+  display: block;
+}
+
+#register-area form #register-address #address-boxes {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: space-evenly;
+  -ms-flex-pack: space-evenly;
+  justify-content: space-evenly;
 }
 
 .footer {
@@ -476,6 +746,6 @@ body, #root {
   width: 100%;
   background-color: #00000000;
   padding: 1rem;
-  color: #fffffff1;
+  color: #373737;
 }
 /*# sourceMappingURL=index.css.map */

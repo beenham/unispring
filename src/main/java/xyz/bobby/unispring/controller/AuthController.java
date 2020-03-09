@@ -21,6 +21,7 @@ import xyz.bobby.unispring.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -49,16 +50,8 @@ public class AuthController {
 	}
 
 	@PostMapping(value = "/student/register", consumes = MediaType.ALL_VALUE)
-	public User registerStudent(@Valid @RequestBody RegisterStudentParams params) {
+	public User registerStudent(@Valid @RequestBody RegisterStudentParams params) throws IOException {
 		Student user = new Student();
-//		System.out.println(params.studentNumber);
-//		System.out.println(params.emailAddress);
-//		System.out.println(params.password);
-//		System.out.println(params.phoneNumber);
-//		System.out.println(params.streetAddress);
-//		System.out.println(params.town);
-//		System.out.println(params.city);
-//		System.out.println(params.country);
 		user.setUsername(params.firstname + " " + params.surname);
 		user.setGender(Student.Gender.valueOf(params.gender));
 		user.setForename(params.firstname);
@@ -70,7 +63,6 @@ public class AuthController {
 		user.setPhoneNumber(params.phoneNumber);
 		user.setStudentNumber(Integer.parseInt(params.studentNumber));
 		user.setStage(Student.Stage.DOCTORATE);
-		//student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
 		return studentRepository.save(user);
 	}
 
@@ -89,21 +81,18 @@ public class AuthController {
 	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
 
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
-		System.out.println(user);
-		System.out.println(user.getPasswordHash());
-		System.out.println(loginParams.password);
-//		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
-//		if (!correct) throw new LoginException();
+		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
+		if (!correct) throw new LoginException();
 
-		req.getSession().setAttribute(SESSION_USER, user);
-
+		req.getSession().setAttribute(SESSION_USER, user.getId());
+		System.out.println(SESSION_USER);
 		return user;
 	}
 
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest req) {
 		req.getSession().invalidate();
-		return "logout";
+		return "/login";
 	}
 
 	public static User getSessionUser(HttpServletRequest req) {

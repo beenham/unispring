@@ -1,18 +1,18 @@
 
 $body-colour:#ffffff;
-$menu-colour:linear-gradient(#282935eb, #00a1ffde);;
+$menu-colour:#373737;
 $side-menu-width:15%;
 $info-page-width:85%;
 $main-box-color: white;
-$box-padding:2.5em;
+$box-padding:1.5em;
 $menu-text-colour:#fffffff1;
 $small-text-color:#000000d9;
 $euro-symbol-colour:#00d1b2;
 $button-bg-color:#3298dc;
 $menu-icon-color:#e4e4e4;
 $menu-title:#fffffff5;
-$big-titles:#23282f;
-$big-title-bg:#f7f7f7;
+$big-titles:#838383;
+$big-title-bg:#ffffff;
 $big-title-border:#192375eb;
 
 $border-one:#0098E0;
@@ -21,6 +21,10 @@ $border-three:#F1DD84;
 $border-four:#F5B587;
 $border-five:#F78979;
 $border-six:#B86377;
+
+$analytics-bg-colour:#efefef;
+
+$button-colour:#126386;
 
 
 *{
@@ -62,6 +66,8 @@ a{
 
 body, #root{
     width:100%;
+    height: 100vh;
+
 }
 
 #body-area{
@@ -72,7 +78,7 @@ body, #root{
     background-color: $body-colour;
 
     .main-box{
-        background-color: $main-box-color;
+        // background-color: $main-box-color;
         padding:$box-padding;
         box-shadow: 0 0.5em 1em -0.125em rgba(197, 165, 165, 0.1), 0 0 0 1px rgba(10,10,10,.02);
     }
@@ -87,19 +93,27 @@ body, #root{
     width:$side-menu-width;
     padding:$box-padding;
     height: 100vh;
-    background: $menu-colour;
+    background: $analytics-bg-colour;
     position: fixed;
     top:0;
     left:0;
     // margin: 1em 0 0 1em;
-    color:$menu-text-colour;
-
+    border-left:5px solid $border-one;
+    border-right:1px solid #83838326;
     .image{
         margin: 1.5em auto;
+        i{
+            font-size: 6em;
+        }
+        .rounded{
+            border-radius: 100px;
+            padding:3px;
+            border:2px solid $border-one;
+        }
     }
     .title{
         margin: 0.5em 0;
-        color:$menu-title;
+        color:$menu-colour;
         font-weight: 200;
 
     }
@@ -108,7 +122,7 @@ body, #root{
         margin:1.5em 0.5em;
 
         .menu-label {
-            color: $menu-text-colour;
+            color: $menu-colour;
         }
 
         .menu-list li{
@@ -116,23 +130,50 @@ body, #root{
             margin-left: 5px;
             display: inline-flex;
             align-items: center;
+            border-radius: 3px;
+            padding-left: 5px;
+
+            &:nth-child(1):hover{
+                border-left: 2px solid $border-two;
+                padding-left: 3px;
+            }
+
+            &:nth-child(2):hover{
+                border-left: 2px solid $border-three;
+                padding-left: 3px;
+            }
+
+            &:nth-child(3):hover{
+                border-left: 2px solid $border-four;
+                padding-left: 3px;
+            }
+
+            &:nth-child(4):hover{
+                border-left: 2px solid $border-five;
+                padding-left: 3px;
+            }
+
+            &:nth-child(1):active{
+                border-left: 2px solid $border-two;
+                padding-left: 3px;
+            }
 
         }
         .menu-list a {
-            color: $menu-text-colour;
+            color: $menu-colour;
             padding: 0.5em 0.2em;
             font-weight: 100;
             letter-spacing: 1px;
 
             &:hover {
-                color:rgb(146, 146, 146);
+                color:rgb(83, 83, 83);
                 background-color: #f5f5f500;
             }
         }
 
         i{
             font-size: 1.1em;
-            color: $menu-icon-color;
+            color: $menu-colour;
         }
     }
 }
@@ -141,18 +182,8 @@ body, #root{
     width:$info-page-width;
     margin-left: 15%;
 
-
-    .hero-body {
-        padding: 1.5rem ;
-        border-left: 10px solid $big-title-border;
-        background-color: $big-title-bg;
-        .title, .subtitle{
-            color:$big-titles;
-        }
-    }
-
-
     #modules{
+        background-color: $analytics-bg-colour;
         .module-area{
             width:95%;
             margin: 0.5em auto;
@@ -164,20 +195,104 @@ body, #root{
             .card{
                 width:20%;
                 margin: 1.5em;
+                margin-bottom: 3em;
+
 
                 .media{
                     margin-bottom: 0;
+                }
+            }
+
+            .card-footer{
+                position: absolute;
+                bottom: -45px;
+                width: 100%;
+                border: 2px solid white;
+                border-bottom: 0;
+
+
+                .MuiButtonBase-root{
+                    min-width: 0px;
+                }
+
+
+                .card-footer-item{
+                    border-bottom: 2px solid white;
+                    &:nth-child(1):hover{
+                        border-bottom: 2px solid $border-two;
+                    }
+
+                    &:nth-child(2):hover{
+                        border-bottom: 2px solid $border-three;
+                    }
+
+                    &:nth-child(3):hover{
+                        border-bottom: 2px solid $border-four;
+                    }
+
+                    &:nth-child(4):hover{
+                        border-bottom: 2px solid $border-five;
+                    }
                 }
             }
         }
     }
 }
 
+.hero {
+    .hero-body{
+        display: flex;
+        align-items: center;
+        padding: 0 ;
+        border-left: 3px solid $border-one;
+        background-color: $big-title-bg;
+        border-radius: 3px;
+        .title, .subtitle{
+            color:$menu-colour;
+            font-size: 1.1em;
+        }
+        .subtitle{
+            font-size: 1em;
+        }
+        i{
+            font-size: 3.4em;
+            color: $menu-colour;
+            padding-top: 3px;
+        }
+    }
+
+}
+
 #analytics{
+
+    padding:1em;
+    padding-top:0.5em;
+    background-color: $analytics-bg-colour;
+
     .level{
+        justify-content: flex-start;
+        margin-bottom: 15px;
         hr{
             height:3px;
             margin: .2rem 0;
+        }
+        .dashboard-div{
+            background-color: #33ade6;
+            width: 65%;
+            padding: 5px;
+            text-align: left;
+            padding-left: 10px;
+            border-radius: 3px;
+
+            .heading{
+                margin-bottom:0;
+                color: $body-colour;
+            }
+
+            .title{
+                font-size: 1.2em;
+                color: $body-colour;
+            }
         }
 
         #border-one{
@@ -212,8 +327,20 @@ body, #root{
     }
 
     .tile{
+
+        .tile.is-parent {
+            padding: .30rem;
+        }
+        .title{
+            margin-bottom: 5px;
+        }
         .box{
             border-bottom: 4px solid $button-bg-color;
+            padding:0.6em;
+            #dashboard-map{
+                width:50%;
+                height:300px;
+            }
         }
     }
 }
@@ -332,9 +459,17 @@ body, #root{
 }
 
 #profile{
+    background-color: $analytics-bg-colour;
+    height: 100vh;
+    position: relative;
     #profile-box{
-        width:95%;
-        margin:0 auto;
+        width: 95%;
+        margin: 11em auto;
+        .image{
+            i{
+                font-size: 8em;
+            }
+        }
         .profile-title-info{
             display: flex;
             align-items: center;
@@ -362,7 +497,7 @@ body, #root{
     }
 
     .module-icon{
-        font-size: 1.3em;
+        font-size: 1em;
     }
 
     #tab-content{
@@ -410,27 +545,62 @@ body, #root{
         }
     }
 }
-
-#login-reg-bg{
+.login-reg-bg{
     width:100%;
-    height: 100vh;
-    background-color: #ffffff;
+    height:100vh;
+    background: linear-gradient(270deg, #edf0f1, #2c3e5054);
 }
 
-#log-in-reg{
-    width: 40%;
+.register-log-button{
+    width:98%;
+    background-color: transparent;
+    color: white;
+    border-radius: 50px;
+    border: 1px solid white;
+    margin: 0.7em 0;
+    letter-spacing: 1px;
+    font-weight: 100;
+    margin-bottom:0;
+    transition: ease-in-out 1s width;
+    padding: 0.5em;
+    text-align: center;
+
+    &:hover{
+        background-color: white;
+        color: black;
+        width:100%;
+        font-weight:800;
+    }
+}
+#log-in-reg, #register-area{
+    width: 50%;
     height: fit-content;
+    margin: auto;
+    border-radius: 10px;
+    background-color: white;
+    display:flex;
+    box-shadow: 0 0.5em 1em -0.125em rgba(23, 23, 24, 0.53), 0 0 0 1px rgba(10, 10, 10, 0);
     position: absolute;
-    top:0;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    margin: auto;
-    padding: 0.3em;
-    padding-bottom: 1em;
-    border-radius: 10px;
-    background-color: white;
-    box-shadow:0 0.5em 1em -0.125em rgba(197, 165, 165, 0.21), 0 0 0 1px rgba(10, 10, 10, 0.02);
+
+    #header-links{
+        background-color: rgb(56, 55, 55);
+        padding: 7em 4em;
+        background-image: url('/images/mountain (4).jpg');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        .title{
+            color:white;
+
+            font-size: 2em;
+            margin-bottom: 0.2em;
+        }
+
+    }
 
     .title{
         text-align: center;
@@ -443,18 +613,90 @@ body, #root{
     }
 
     #login-area {
-        width:80%;
+        width:100%;
         margin: 0 auto;
-    }
+        form{
+            width:80%;
+            margin: 4.5em auto;
 
-    #register-area{
-        width:80%;
-        margin: 0 auto;
+
+
+            #button-area{
+                width:100%;
+                text-align: center;
+
+                button{
+                    background-color: $button-colour;
+                    color:$body-colour;
+                }
+            }
+
+            input, select {
+                background-color: #f1f1f1;
+                border-color: white;
+                border-radius: 4px;
+                color: #bdbdbd;
+                box-shadow:none;
+
+                &:not(:last-child) {
+                    margin-bottom: 1rem;
+                }
+            }
+
+
+        }
     }
 
     i{
         font-size: 1.3em;
     }
+}
+
+#register-area{
+    width:70%;
+
+    #form-area{
+        width:100%;
+    }
+
+    form{
+        display: block;
+        width: 90%;
+        margin: 3em auto;
+        text-align: center;
+
+        input {
+            background-color: #f1f1f1;
+            border-color: white;
+            border-radius: 4px;
+            color: #bdbdbd;
+            box-shadow:none;
+        }
+
+        .form-group-elements{
+            width:100%;
+            display: flex;
+            justify-content: space-evenly;
+
+            .control{
+                width: 90%;
+                margin: 0 auto;
+            }
+
+            button{
+                margin: 1em 0;
+                background-color: $button-colour;
+            }
+        }
+        #register-address{
+            display: block;
+            #address-boxes{
+                display: flex;
+                justify-content: space-evenly;
+            }
+        }
+    }
+
 }
 .footer{
     position: absolute;
@@ -463,5 +705,5 @@ body, #root{
     width:100%;
     background-color: #00000000;
     padding: 1rem;
-    color: $menu-text-colour;
+    color: $menu-colour;
 }
