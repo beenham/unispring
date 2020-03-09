@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-function Navigation(props) {
+export default function Navigation(props) {
   useEffect(() => {
     fetchItems();
   }, []);
@@ -82,5 +82,3 @@ function Navigation(props) {
     </div>
   );
 }
-
-export default Navigation;

@@ -278,10 +278,9 @@ body, #root{
         }
         .dashboard-div{
             background-color: #33ade6;
-            width: 65%;
+            width: 100%;
             padding: 5px;
             text-align: left;
-            padding-left: 10px;
             border-radius: 3px;
 
             .heading{
@@ -293,36 +292,6 @@ body, #root{
                 font-size: 1.2em;
                 color: $body-colour;
             }
-        }
-
-        #border-one{
-            width:55%;
-            border-bottom: 3px solid $border-one;
-        }
-
-        #border-two{
-            width:40%;
-            border-bottom: 3px solid $border-two;
-        }
-
-        #border-three{
-            width:50%;
-            border-bottom: 3px solid $border-three;
-        }
-
-        #border-four{
-            width:70%;
-            border-bottom: 3px solid $border-four;
-        }
-
-        #border-five{
-            width:45%;
-            border-bottom: 3px solid $border-five;
-        }
-
-        #border-six{
-            width:65%;
-            border-bottom: 3px solid $border-six;
         }
     }
 

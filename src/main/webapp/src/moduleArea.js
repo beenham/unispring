@@ -116,7 +116,7 @@ function createImage(data, image_number) {
   return data;
 }
 
-function ModuleArea() {
+export default function ModuleArea() {
   useEffect(() => {
     fetchItems();
   }, []);
@@ -233,5 +233,3 @@ function ModuleArea() {
     </div>
   );
 }
-
-export default ModuleArea;

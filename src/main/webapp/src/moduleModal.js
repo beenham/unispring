@@ -1,6 +1,7 @@
 import React from "react";
+import ModuleArea from "./moduleArea";
 
-function ModuleModal() {
+export default function ModuleModal() {
   return (
     <div className="modal" id="myModal">
       <div className="modal-background"></div>
@@ -110,5 +111,3 @@ function ModuleModal() {
     </div>
   );
 }
-
-export default ModuleModal;

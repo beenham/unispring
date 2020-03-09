@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import axios from "axios";
 
-class RegisterComponent extends Component {
+export default class RegisterComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -125,7 +125,6 @@ class RegisterComponent extends Component {
                             gender: e.target.value
                           })
                         }
-                        value="MALE"
                       >
                         <option value="MALE">Male</option>
                         <option value="FEMALE">Female</option>
@@ -628,5 +627,3 @@ class RegisterComponent extends Component {
     );
   }
 }
-
-export default RegisterComponent;

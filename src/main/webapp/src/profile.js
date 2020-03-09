@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 
-function Profile() {
+export default function Profile() {
   useEffect(() => {
     fetchItems();
   }, []);
@@ -244,5 +244,3 @@ function Profile() {
     </div>
   );
 }
-
-export default Profile;

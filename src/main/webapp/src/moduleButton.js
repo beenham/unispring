@@ -2,8 +2,9 @@ import React, { Fragment, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Tooltip from "@material-ui/core/Tooltip";
 import Modal from "react-modal";
+import ModuleArea from "./moduleArea";
 
-function ModuleButton(props) {
+export default function ModuleButton(props) {
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
   return (
     <Fragment>
@@ -41,5 +42,3 @@ function ModuleButton(props) {
     </Fragment>
   );
 }
-
-export default ModuleButton;

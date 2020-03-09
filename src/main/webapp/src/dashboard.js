@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Bar, Doughnut, Pie } from "react-chartjs-2";
-import DashboardStat from "./dashboardStat";
 import Chart from "react-google-charts";
 
 let colours = [
@@ -21,41 +20,25 @@ let border_colours = [
   "#B86377"
 ];
 
-function studentStageNumbers(json_data) {
-  let dataMap = new Map();
-  for (const item of json_data) {
-    if (!dataMap.has(item.stage)) {
-      dataMap.set(item.stage, 1);
-    } else {
-      dataMap.set(item.stage, dataMap.get(item.stage) + 1);
-    }
-  }
-  return dataMap;
+function mapDistinctCount(data, property) {
+  return data.reduce((acc, o) => {
+    acc[o[property]] = (acc[o[property]] || 0) + 1;
+    return acc;
+  }, {});
 }
 
-async function getGradeData(data) {
-  let dataMap = new Map();
-  let student_grades = [];
-  let student_grades_data = [];
+async function getGraphData(data, property, colours) {
+  data = mapDistinctCount(data, property);
 
-  for (const gradeData of data) {
-    if (!dataMap.has(gradeData.grade)) {
-      dataMap.set(gradeData.grade, 1);
-    } else {
-      dataMap.set(gradeData.grade, dataMap.get(gradeData.grade) + 1);
-    }
-  }
-  for (let [key, value] of dataMap) {
-    student_grades.push(key);
-    student_grades_data.push(value);
-  }
+  let keys = Object.keys(data).sort();
+  let values = keys.map(key => data[key]);
 
   return {
-    labels: student_grades,
+    labels: keys,
     datasets: [
       {
         label: "No. of students who achieved this grade",
-        data: student_grades_data,
+        data: values,
         backgroundColor: colours,
         borderColor: "#fff",
         borderWidth: 1
@@ -64,62 +47,19 @@ async function getGradeData(data) {
   };
 }
 
-async function getGenderData(data, number_one, number_two, number_three) {
-  let dataMap = new Map();
-  let student_genders = [];
-  let student_genders_data = [];
-
-  for (const student of data) {
-    if (!dataMap.has(student.gender)) {
-      dataMap.set(student.gender, 1);
-    } else {
-      dataMap.set(student.gender, dataMap.get(student.gender) + 1);
-    }
-  }
-  for (let [key, value] of dataMap) {
-    student_genders.push(key);
-    student_genders_data.push(value);
-  }
-
-  return {
-    labels: student_genders,
-    datasets: [
-      {
-        data: student_genders_data,
-        backgroundColor: [
-          colours[number_one],
-          colours[number_two],
-          colours[number_three]
-        ],
-        borderColor: "#fff",
-        borderWidth: 1
-      }
-    ]
-  };
+function DashboardStat(props) {
+    return (
+        <div className="level-item has-text-centered">
+            <div className="dashboard-div">
+                <p className="heading">{props.name}</p>
+                <p className="title">{props.number}</p>
+                <hr style={{backgroundColor: props.colour, width: (100 * props.number / props.max) + '%'}} />
+            </div>
+        </div>
+    );
 }
 
-function getNationalityData(data) {
-  let dataMap = new Map();
-  let country_data = [["Country", "Popularity"]];
-
-  for (const student of data) {
-    if (!dataMap.has(student.nationality)) {
-      dataMap.set(student.nationality, 1);
-    } else {
-      dataMap.set(student.nationality, dataMap.get(student.nationality) + 1);
-    }
-  }
-
-  for (let [key, value] of dataMap) {
-    let temp_data = [];
-    temp_data.push(key);
-    temp_data.push(value);
-    country_data.push(temp_data);
-  }
-  return country_data;
-}
-
-function Dashboard() {
+export default function Dashboard() {
   useEffect(() => {
     fetchStudents();
   }, []);
@@ -127,56 +67,32 @@ function Dashboard() {
   const [items, setItems] = useState([]);
 
   const fetchStudents = async () => {
-    const data_json_students = await fetch(
+    let students = (await fetch(
       "/api/students/?size=" + (2 ** 31 - 1)
-    ).then(res => res.json());
-    let data_j_students = data_json_students._embedded.students.filter(function(
-      item
-    ) {
-      return item;
-    });
+    ).then(res => res.json()))._embedded.students;
+    let staff = (await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res =>
+      res.json()
+    ))._embedded.staff;
+    let grades = (await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
+      res.json()
+    ))._embedded.grades;
 
-    const data_json_staff = await fetch(
-      "/api/staff/?size=" + (2 ** 31 - 1)
-    ).then(res => res.json());
-    let data_j_staff = data_json_staff._embedded.staff.filter(function(item) {
-      return item;
-    });
-
-    const data_json_grades = await fetch(
-      "/api/grades/?size=" + (2 ** 31 - 1)
-    ).then(res => res.json());
-    let data_j_grades = data_json_grades._embedded.grades.filter(function(
-      item
-    ) {
-      return item;
-    });
-
-    let stageMap = studentStageNumbers(data_json_students._embedded.students);
-
-    data_json_students["stage_one"] = stageMap.get("ONE");
-    data_json_students["stage_two"] = stageMap.get("TWO");
-    data_json_students["stage_three"] = stageMap.get("THREE");
-    data_json_students["stage_four"] = stageMap.get("FOUR");
-    data_json_students["stage_M"] = stageMap.get("MASTERS");
-    data_json_students["stage_D"] = stageMap.get("DOCTORATE");
-    data_json_students["studentGenderBreakDown"] = await getGenderData(
-      data_j_students,
-      0,
-      4,
-      3
+    let data = {};
+    data.stagesBreakdown = mapDistinctCount(students, "stage");
+    data.stagesMax = Math.max.apply(Math, Object.values(data.stagesBreakdown));
+    data.studentGenderBreakDown = await getGraphData(
+      students,
+      "gender",
+      colours.slice(0, 3)
     );
-    data_json_students["staffGenderBreakDown"] = await getGenderData(
-      data_j_staff,
-      2,
-      5,
-      1
+    data.staffGenderBreakDown = await getGraphData(
+      staff,
+      "gender",
+      colours.slice(3, 6)
     );
-    data_json_students["gradesBreakdown"] = await getGradeData(data_j_grades);
-    data_json_students["nationalityBreakdown"] = getNationalityData(
-      data_j_students
-    );
-    setItems(data_json_students);
+    data.gradesBreakdown = await getGraphData(grades, "grade", colours);
+    data.nationalityBreakdown = mapDistinctCount(students, "nationality");
+    setItems(data);
   };
 
   return (
@@ -194,36 +110,23 @@ function Dashboard() {
           </div>
         </section>
         <nav className="level">
-          <DashboardStat
-            name="Stage One"
-            number={items.stage_one}
-            id={"border-one"}
-          />
-          <DashboardStat
-            name="Stage Two"
-            number={items.stage_two}
-            id={"border-two"}
-          />
-          <DashboardStat
-            name="Stage Three"
-            number={items.stage_three}
-            id={"border-three"}
-          />
-          <DashboardStat
-            name="Stage Four"
-            number={items.stage_four}
-            id={"border-four"}
-          />
-          <DashboardStat
-            name="Masters"
-            number={items.stage_M}
-            id={"border-five"}
-          />
-          <DashboardStat
-            name="Doctorate"
-            number={items.stage_D}
-            id={"border-six"}
-          />
+          {["ONE", "TWO", "THREE", "FOUR", "MASTERS", "DOCTORATE"].map(
+            (stage, index) => {
+              return (
+                <DashboardStat
+                  key={stage}
+                  name={
+                    (["MASTERS", "DOCTORATE"].includes(stage) ? "" : "Stage ") +
+                    stage.charAt(0) +
+                    stage.slice(1).toLowerCase()
+                  }
+                  number={(items.stagesBreakdown || {})[stage] || 0}
+                  max={(items.stagesMax || 1)}
+                  colour={border_colours[index]}
+                />
+              );
+            }
+          )}
         </nav>
 
         <div className="tile is-ancestor">
@@ -250,7 +153,10 @@ function Dashboard() {
                   width="100%"
                   height={"300px"}
                   chartType="GeoChart"
-                  data={items.nationalityBreakdown}
+                  data={[
+                    ["Nationality", "Count"],
+                    ...Object.entries(items.nationalityBreakdown || {})
+                  ]}
                   options={{
                     colorAxis: { colors: ["#0098E0", "#F1DD84", "#B86377"] },
                     datalessRegionColor: "#efefef",
@@ -282,5 +188,3 @@ function Dashboard() {
     </div>
   );
 }
-
-export default Dashboard;

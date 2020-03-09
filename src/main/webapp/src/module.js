@@ -36,7 +36,7 @@ function ModuleButtonArea(props) {
   }
 }
 
-function Module(props) {
+export default function Module(props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
   return (
@@ -223,5 +223,3 @@ function Module(props) {
     </Fragment>
   );
 }
-
-export default Module;
