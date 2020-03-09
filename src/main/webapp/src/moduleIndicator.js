@@ -1,10 +1,7 @@
-import React from 'react';
+import React from "react";
 
 function ModuleIndicator(props) {
-
-    return (
-        <span className={props.className}>{props.text}</span>
-    );
+  return <span className={props.className}>{props.text}</span>;
 }
 
 export default ModuleIndicator;
