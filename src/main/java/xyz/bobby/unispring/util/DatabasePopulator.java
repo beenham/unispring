@@ -49,6 +49,11 @@ public class DatabasePopulator {
 		add(5, Grade.LetterGrade.E);
 		add(5, Grade.LetterGrade.F);
 	}};
+	private static final RandomCollection<User.Gender> randomGender = new RandomCollection<>() {{
+		add(50, User.Gender.MALE);
+		add(35, User.Gender.FEMALE);
+		add(10, User.Gender.OTHER);
+	}};
 	private static final Logger LOG = Logger.getLogger(DatabasePopulator.class.getCanonicalName());
 	private static final int NUM_STAFF_USERS = 25;		//	recommend max 25
 	private static final int NUM_STUDENT_USERS = 250;	//	recommend max 250
@@ -77,20 +82,9 @@ public class DatabasePopulator {
 		stuRepo.saveAll(students);
 	}
 
-	private static User.Gender getGender(int number){
-
-		if(number<1){
-			return User.Gender.MALE;
-		}else if(number<2){
-			return User.Gender.FEMALE;
-		}else{
-			return User.Gender.OTHER;
-		}
-	}
-
 	private static <T extends User> T createUser(Random random, T user, String username, int number,String email, String phoneNumber) {
 		user.setUsername(username);
-		user.setGender(getGender(random.nextInt(3)));
+		user.setGender(randomGender.next());
 		if (user.getGender() == User.Gender.MALE)
 			user.setForename(maleNames.get(random.nextInt(maleNames.size())));
 		else
