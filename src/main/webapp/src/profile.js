@@ -14,21 +14,23 @@ export default class Profile extends React.Component {
     const [grades, setGrades] = useState([]);
     const [fees, setFees] = useState("256");
 
-    useEffect(async () => {
-      const grades = (
-        await fetch(user_data._links.grades.href).then(res => res.json())
-      )._embedded.grades;
-      for (const grade of grades) {
-        let module = await fetch(item._links.module.href).then(res =>
-          res.json()
-        );
-        item["module_name"] = module.name;
-        item["module_year"] = module.year.value;
-      }
+    useEffect(() => {
+      (async () => {
+        const grades = (
+          await fetch(user_data._links.grades.href).then(res => res.json())
+        )._embedded.grades;
+        for (const grade of grades) {
+          let module = await fetch(item._links.module.href).then(res =>
+            res.json()
+          );
+          item["module_name"] = module.name;
+          item["module_year"] = module.year.value;
+        }
 
-      setGrades(grades);
-      setFees(user.feesPaid ? "Fees Paid" : "256");
-    }, []);
+        setGrades(grades);
+        setFees(user.feesPaid ? "Fees Paid" : "256");
+      })();
+    });
 
     function payFees() {
       axios

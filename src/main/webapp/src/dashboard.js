@@ -41,43 +41,50 @@ function DashboardStat(props) {
 export default function Dashboard() {
   const [data, setData] = useState([]);
 
-  useEffect(async () => {
-    const students = (
-      await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
-        res.json()
-      )
-    )._embedded.students;
-    const staff = (
-      await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res => res.json())
-    )._embedded.staff;
-    const grades = (
-      await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res => res.json())
-    )._embedded.grades;
+  useEffect(() => {
+    (async () => {
+      const students = (
+        await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
+          res.json()
+        )
+      )._embedded.students;
+      const staff = (
+        await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res => res.json())
+      )._embedded.staff;
+      const grades = (
+        await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
+          res.json()
+        )
+      )._embedded.grades;
 
-    const data = {};
-    data.stagesBreakdown = mapDistinctCount(students, "stage");
-    data.stagesMax = Math.max.apply(Math, Object.values(data.stagesBreakdown));
-    data.studentGenderBreakDown = getGraphData(
-      students,
-      "gender",
-      colours.slice(0, 3),
-      "Number of students by gender"
-    );
-    data.staffGenderBreakDown = getGraphData(
-      staff,
-      "gender",
-      colours.slice(3, 6),
-      "Number of staff by gender"
-    );
-    data.gradesBreakdown = getGraphData(
-      grades,
-      "grade",
-      colours,
-      "Number of students that achieved each grade"
-    );
-    data.nationalityBreakdown = mapDistinctCount(students, "nationality");
+      const data = {};
+      data.stagesBreakdown = mapDistinctCount(students, "stage");
+      data.stagesMax = Math.max.apply(
+        Math,
+        Object.values(data.stagesBreakdown)
+      );
+      data.studentGenderBreakDown = getGraphData(
+        students,
+        "gender",
+        colours.slice(0, 3),
+        "Number of students by gender"
+      );
+      data.staffGenderBreakDown = getGraphData(
+        staff,
+        "gender",
+        colours.slice(3, 6),
+        "Number of staff by gender"
+      );
+      data.gradesBreakdown = getGraphData(
+        grades,
+        "grade",
+        colours,
+        "Number of students that achieved each grade"
+      );
+      data.nationalityBreakdown = mapDistinctCount(students, "nationality");
 
-    setData(data);
+      setData(data);
+    })();
   });
 
   return (

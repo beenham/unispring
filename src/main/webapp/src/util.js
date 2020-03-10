@@ -1,12 +1,12 @@
 export function setLoggedInUser(user) {
   if (localStorage === undefined) return false;
-  localStorage.setItem('user', user);
+  localStorage.setItem("user", user);
   return true;
 }
 
 export function getLoggedInUser() {
   if (localStorage === undefined) return undefined;
-  return localStorage.getItem('user');
+  return localStorage.getItem("user");
 }
 
 export function isLoggedIn() {

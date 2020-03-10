@@ -96,6 +96,7 @@
 						<argument>--spring.datasource.username=root</argument>
 						<argument>--spring.datasource.password=root</argument>
 						<argument>--spring.jpa.hibernate.dll-auto=update</argument>
+                        <addResources>true</addResources>
 					</arguments>
 				</configuration>
 			</plugin>

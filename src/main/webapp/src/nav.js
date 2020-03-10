@@ -66,7 +66,7 @@ export default class Navigation extends React.Component {
               </span>
               <a
                 onClick={() => this.logout()}
-                href="javascript:void(0)"
+                href="#"
                 className="modal-button"
                 data-target="#log-in-reg"
                 aria-haspopup="true"
