@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Module from "./module";
-import { getGraphData, isLoggedIn } from "./util";
+import { getGraphData, getLoggedInUser, isLoggedIn } from "./util";
 
 let colours = [
   "rgb(0, 152, 224, 0.8)",
@@ -28,7 +28,7 @@ export default function ModuleArea() {
       const userModules = (
         await fetch(
           "/api/students/" +
-            localStorage.user +
+            getLoggedInUser().id +
             "/modules?size=" +
             (2 ** 31 - 1)
         ).then(res => res.json())
