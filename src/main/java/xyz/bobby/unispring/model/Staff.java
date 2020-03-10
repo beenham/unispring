@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,5 +18,6 @@ import java.util.Set;
 public class Staff extends User {
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "coordinator_id")
+	@JsonIgnoreProperties({"coordinator", "grades"})
 	private final Set<Module> modules = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,11 +20,13 @@ public class Grade {
 	@ManyToOne
 	@JoinColumn(name = "student_id")
 	@MapsId("student_id")
+	@JsonIgnoreProperties({"modules", "grades"})
 	private Student student;
 
 	@ManyToOne
 	@JoinColumn(name = "module_id")
 	@MapsId("module_id")
+	@JsonIgnoreProperties({"students", "grades"})
 	private Module module;
 
 	@Embeddable
