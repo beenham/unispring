@@ -17,7 +17,7 @@ export default function Profile() {
         )
       )._embedded.grades;
       for (const grade of grades) {
-        item.module = await fetch(item._links.module.href).then(res =>
+        grade.module = await fetch(grade._links.module.href).then(res =>
           res.json()
         );
       }
