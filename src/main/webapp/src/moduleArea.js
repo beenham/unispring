@@ -28,48 +28,54 @@ export default function ModuleArea() {
 	const [otherModules, setOtherModules] = useState([]);
 
 	const fetchItems = async () => {
-		let userModules = (
-			await fetch("/api/students/220/modules?size=" + (2 ** 31 - 1)).then(res =>
-				res.json()
-			)
-		)._embedded.modules;//.filter(module => module.year.value === 2020);
-		let userModuleIds = userModules.map(module => module.code);
+		if (localStorage && 'user' in localStorage) {
+			console.log("UseR: " + localStorage.user);
+			let userModules = (
+				await fetch("/api/students/" + localStorage.user + "/modules?size=" + (2 ** 31 - 1)).then(res =>
+					res.json()
+				)
+			)._embedded.modules;//.filter(module => module.year.value === 2020);
+			console.log(userModules);
+			let userModuleIds = userModules.map(module => module.code);
 
-		let otherModules = (
-			await fetch(
-				"/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
-			).then(res => res.json())
-		)._embedded.modules.filter(module => !userModuleIds.includes(module.code));
+			let otherModules = (
+				await fetch(
+					"/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
+				).then(res => res.json())
+			)._embedded.modules.filter(module => !userModuleIds.includes(module.code));
 
-		for (const module of [...userModules, ...otherModules]) {
-			const students = (
-				await fetch(module._links.students.href).then(res => res.json())
-			)._embedded.students;
-			module.student_genders_graph = getGraphData(
-				students,
-				"gender",
-				colours,
-				"Number of students by gender"
-			);
+			for (const module of [...userModules, ...otherModules]) {
+				const students = (
+					await fetch(module._links.students.href).then(res => res.json())
+				)._embedded.students;
+				module.student_genders_graph = getGraphData(
+					students,
+					"gender",
+					colours,
+					"Number of students by gender"
+				);
 
-			const grades = (
-				await fetch(module._links.grades.href).then(res => res.json())
-			)._embedded.grades;
-			module.grade_graph = getGraphData(
-				grades,
-				"grade",
-				colours,
-				"Number of students that achieved each grade"
-			);
+				const grades = (
+					await fetch(module._links.grades.href).then(res => res.json())
+				)._embedded.grades;
+				module.grade_graph = getGraphData(
+					grades,
+					"grade",
+					colours,
+					"Number of students that achieved each grade"
+				);
 
-			module.coordinator = await fetch(
-				module._links.coordinator.href
-			).then(res => res.json());
-			module.module_image = "../images/code (" + 1 + ").jpg";
+				module.coordinator = await fetch(
+					module._links.coordinator.href
+				).then(res => res.json());
+				module.module_image = "../images/code (" + 1 + ").jpg";
+			}
+
+			setUserModules(userModules);
+			setOtherModules(otherModules);
+		} else {
+			window.location.replace("/login");
 		}
-
-		setUserModules(userModules);
-		setOtherModules(otherModules);
 	};
 
 	return (
