@@ -25,8 +25,6 @@ let border_colours = [
 ];
 
 function ModuleHistoricData(props) {
-  this.state.enrolled = props.enrolled;
-
   const [students, setStudents] = useState([]);
   const [grades, setGrades] = useState([]);
 
