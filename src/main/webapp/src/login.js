@@ -79,8 +79,8 @@ export default class Login extends React.Component {
 										}
 									/>
 									<span className="icon is-small is-left">
-                    <i className="material-icons-outlined">email</i>
-                  </span>
+										<i className="material-icons-outlined">email</i>
+									</span>
 								</p>
 							</div>
 							<div className="field">
@@ -97,8 +97,8 @@ export default class Login extends React.Component {
 										}
 									/>
 									<span className="icon is-small is-left">
-                    <i className="material-icons-outlined">lock</i>
-                  </span>
+										<i className="material-icons-outlined">lock</i>
+									</span>
 								</p>
 							</div>
 							<div className="field" id="button-area">

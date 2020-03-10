@@ -109,6 +109,7 @@ export default function ModuleArea() {
 										renderPick={index !== 0}
 										renderEdit={false}
 										renderDrop={index === 0}
+										year={item.year.value}
 									/>
 								))}
 							</div>

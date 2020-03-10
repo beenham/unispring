@@ -67,6 +67,7 @@ function ModuleButtonArea(props) {
 				icon={props.icon}
 				code={props.code}
 				name={props.name}
+				year={props.year}
 			/>
 		);
 	} else {
@@ -132,7 +133,7 @@ export default function Module(props) {
 											<tbody>
 											<tr>
 												<td>Module Name:</td>
-												<td>{props.name}</td>
+												<td>{props.name} ({props.year})</td>
 											</tr>
 											<tr>
 												<td>Module coordinator</td>
@@ -208,7 +209,7 @@ export default function Module(props) {
 				<div className="card-content">
 					<div className="media">
 						<div className="media-content">
-							<p className="title is-6">{props.name}</p>
+							<p className="title is-6">{props.name} ({props.year})</p>
 							<p className="subtitle is-6">{props.code}</p>
 						</div>
 					</div>
@@ -238,6 +239,7 @@ export default function Module(props) {
 						icon="check_box"
 						code={props.code}
 						name={props.name}
+						year={props.year}
 					/>
 					<ModuleButtonArea
 						render={props.renderDrop}
@@ -245,6 +247,7 @@ export default function Module(props) {
 						icon="cancel"
 						code={props.code}
 						name={props.name}
+						year={props.year}
 					/>
 					<ModuleButtonArea
 						render={props.renderEdit}
@@ -252,6 +255,7 @@ export default function Module(props) {
 						icon="edit"
 						code={props.code}
 						name={props.name}
+						year={props.year}
 					/>
 					{/*<Tooltip title="Choose this Module" aria-label="Choose this Module" arrow>*/}
 					{/*    <Button className="card-footer-item"><i className="material-icons-outlined">check_box</i></Button>*/}

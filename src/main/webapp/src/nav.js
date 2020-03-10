@@ -15,7 +15,7 @@ export default function Navigation(props) {
 		}
 	};
 
-	function myFunction() {
+	function logout() {
 		localStorage.clear();
 		window.location.replace("/login");
 		return false;
@@ -69,10 +69,10 @@ export default function Navigation(props) {
 				<ul className="menu-list">
 					<li>
 						<span className="icon has-text-info">
-						  <i className="material-icons">power_settings_new</i>
+							<i className="material-icons">power_settings_new</i>
 						</span>
 						<a
-							onClick={() => {myFunction()}}
+							onClick={() => {logout()}}
 							href='#'
 							className="modal-button"
 							data-target="#log-in-reg"
