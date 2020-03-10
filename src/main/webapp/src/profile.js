@@ -10,19 +10,15 @@ export default function Profile() {
   const [gradeItems, setGradeItems] = useState([]);
 
   const fetchItems = async () => {
-    let data_json = await fetch("/api/users/220").then(res => res.json());
-    let grades_json = await fetch("/api/students/210/grades").then(res =>
-      res.json()
-    );
-    for (const item of grades_json._embedded.grades) {
-      console.log("hello");
-      let name = await fetch(item._links.module.href).then(res => res.json());
-      item["module_name"] = name.name;
+    let user_data = await fetch("/api/users/220").then(res => res.json());  // TODO: Get current user id
+    let grade_data = await fetch(user_data._links.grades.href).then(res => res.json());
+    for (const item of grade_data._embedded.grades) {
+      let module = await fetch(item._links.module.href).then(res => res.json());
+      item["module_name"] = module.name;
+      item["module_year"] = module.year.value;
     }
-    console.log(data_json);
-    console.log(grades_json);
-    setItems(data_json);
-    setGradeItems(grades_json._embedded.grades);
+    setItems(user_data);
+    setGradeItems(grade_data._embedded.grades);
   };
 
   return (
@@ -102,10 +98,6 @@ export default function Profile() {
                             <td>Stage:</td>
                             <td>{items.stage}</td>
                           </tr>
-                          <tr>
-                            <td>Bio:</td>
-                            <td>Im in fourth year and fyp is going shite</td>
-                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -125,7 +117,7 @@ export default function Profile() {
                         <tbody>
                           {gradeItems.map(item => (
                             <tr>
-                              <td>{item.module_name}</td>
+                              <td>{item.module_name} ({item.module_year})</td>
                               <td>{item.percent}%</td>
                               <td>{item.grade}</td>
                             </tr>

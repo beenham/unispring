@@ -14,7 +14,7 @@ class App extends React.Component {
     return (
       <div id="body-area">
         <Router>
-          <Route path="/login" exact component={Login} />
+          <Route path="/(login)*" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <Route path="/(modules|profile|stats)"
             render={() => (

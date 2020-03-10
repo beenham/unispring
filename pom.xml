@@ -94,7 +94,6 @@
 					</arguments>
 				</configuration>
 			</plugin>
-
 <!--			React install on run-->
 			<plugin>
 				<groupId>com.github.eirslett</groupId>

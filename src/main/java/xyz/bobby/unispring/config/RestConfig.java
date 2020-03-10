@@ -15,7 +15,6 @@ public class RestConfig implements RepositoryRestConfigurer {
 		return new BackendIdConverter() {
 			@Override
 			public Serializable fromRequestId(String id, Class<?> entityType) {
-				System.out.println(id);
 				if (id == null) return null;
 				String[] parts = id.split("_");
 				return new Grade.Key(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
