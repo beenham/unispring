@@ -1,6 +1,7 @@
 import React from "react";
 
 import axios from "axios";
+import {isLoggedIn, setLoggedInUser} from "./util";
 
 export default class Login extends React.Component {
 	constructor(props) {
@@ -9,18 +10,9 @@ export default class Login extends React.Component {
 			emailAddress: "",
 			password: ""
 		};
-
-		function onOpen() {
-			if (localStorage && 'user' in localStorage) {
-				window.location.replace("/profile");
-			}
-		}
-
-		onOpen();
 	}
 
 	handleClick(event) {
-		let self = this;
 		let payload = {
 			emailAddress: this.state.emailAddress,
 			password: this.state.password
@@ -28,10 +20,9 @@ export default class Login extends React.Component {
 		console.log(payload);
 		axios
 			.post("/api/auth/login", payload)
-			.then(function (response) {
+			.then(response => {
 				if (response.status === 200) {
-					console.log("Login successful:", response);
-					localStorage && (localStorage.user = response.data);
+					setLoggedInUser(response.data);
 					window.location.replace("/modules");
 				}
 				// else if(response.data.code == 204){

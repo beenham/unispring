@@ -1,3 +1,18 @@
+export function setLoggedInUser(user) {
+    if (localStorage === undefined) return false;
+    localStorage.user = user;
+    return true;
+}
+
+export function getLoggedInUser() {
+    if (localStorage === undefined) return undefined;
+    return localStorage.user;
+}
+
+export function isLoggedIn() {
+    return getLoggedInUser() === undefined;
+}
+
 export function mapDistinctCount(data, property) {
 	return data.reduce((acc, o) => {
 		acc[o[property]] = (acc[o[property]] || 0) + 1;

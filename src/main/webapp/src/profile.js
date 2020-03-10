@@ -9,7 +9,7 @@ export default function Profile() {
 
 	const [items, setItems] = useState([]);
 	const [gradeItems, setGradeItems] = useState([]);
-	const [fees, setFees] = useState('256');
+	const [fees, setlFees] = useState('256');
 
 	const fetchItems = async () => {
 		if (localStorage && 'user' in localStorage) {

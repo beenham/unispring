@@ -8,15 +8,20 @@ import Navigation from "./nav";
 import Profile from "./profile";
 import Dashboard from "./dashboard";
 import ModuleArea from "./moduleArea";
+import {isLoggedIn} from "./util";
 
 class App extends React.Component {
+    requireAuth(nextState, replace) {
+        if (!isLoggedIn()) replace({ pathname: 'login' });
+    }
+
 	render() {
 		return (
 			<div id="body-area">
 				<Router>
 					<Route path="/(login)*" exact component={Login}/>
 					<Route path="/register" exact component={Register}/>
-					<Route path="/(modules|profile|stats)"
+					<Route path="/(modules|profile|stats)" onEnter={this.requireAuth()}
 						   render={() => (
 							   <Fragment>
 								   <Navigation/>

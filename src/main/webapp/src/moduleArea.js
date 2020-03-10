@@ -1,6 +1,6 @@
 import React, {Fragment, useEffect, useState} from "react";
 import Module from "./module";
-import {getGraphData} from "./util";
+import {getGraphData, isLoggedIn} from "./util";
 
 let colours = [
 	"rgb(0, 152, 224, 0.8)",
@@ -28,54 +28,50 @@ export default function ModuleArea() {
 	const [otherModules, setOtherModules] = useState([]);
 
 	const fetchItems = async () => {
-		if (localStorage && 'user' in localStorage) {
-			console.log("UseR: " + localStorage.user);
-			let userModules = (
-				await fetch("/api/students/" + localStorage.user + "/modules?size=" + (2 ** 31 - 1)).then(res =>
-					res.json()
-				)
-			)._embedded.modules;//.filter(module => module.year.value === 2020);
-			console.log(userModules);
-			let userModuleIds = userModules.map(module => module.code);
+		if (!isLoggedIn()) window.location.replace("/login");
 
-			let otherModules = (
-				await fetch(
-					"/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
-				).then(res => res.json())
-			)._embedded.modules.filter(module => !userModuleIds.includes(module.code));
+        const userModules = (
+            await fetch("/api/students/" + localStorage.user + "/modules?size=" + (2 ** 31 - 1)).then(res =>
+                res.json()
+            )
+        )._embedded.modules.filter(module => module.year.value === 2020);
+        const userModuleIds = userModules.map(module => module.code);
 
-			for (const module of [...userModules, ...otherModules]) {
-				const students = (
-					await fetch(module._links.students.href).then(res => res.json())
-				)._embedded.students;
-				module.student_genders_graph = getGraphData(
-					students,
-					"gender",
-					colours,
-					"Number of students by gender"
-				);
+        const otherModules = (
+            await fetch(
+                "/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
+            ).then(res => res.json())
+        )._embedded.modules.filter(module => !userModuleIds.includes(module.code));
 
-				const grades = (
-					await fetch(module._links.grades.href).then(res => res.json())
-				)._embedded.grades;
-				module.grade_graph = getGraphData(
-					grades,
-					"grade",
-					colours,
-					"Number of students that achieved each grade"
-				);
+        for (const module of [...userModules, ...otherModules]) {
+            const students = (
+                await fetch(module._links.students.href).then(res => res.json())
+            )._embedded.students;
+            module.student_genders_graph = getGraphData(
+                students,
+                "gender",
+                colours,
+                "Number of students by gender"
+            );
 
-				module.coordinator = await fetch(
-					module._links.coordinator.href
-				).then(res => res.json());
-				module.module_image = "../images/code (" + 1 + ").jpg";
-			}
+            const grades = (
+                await fetch(module._links.grades.href).then(res => res.json())
+            )._embedded.grades;
+            module.grade_graph = getGraphData(
+                grades,
+                "grade",
+                colours,
+                "Number of students that achieved each grade"
+            );
 
-			setUserModules(userModules);
-			setOtherModules(otherModules);
-		} else {
-			window.location.replace("/login");
-		}
+            module.coordinator = await fetch(
+                module._links.coordinator.href
+            ).then(res => res.json());
+            module.module_image = "../images/code (" + 1 + ").jpg";
+        }
+
+        setUserModules(userModules);
+        setOtherModules(otherModules);
 	};
 
 	return (
