@@ -7,20 +7,20 @@ import Button from "@material-ui/core/Button";
 import { getGraphData } from "./util";
 
 let colours = [
-    "rgb(0, 152, 224, 0.8)",
-    "rgb(94, 188, 219, 0.8)",
-    "rgb(241, 221, 132, 0.8)",
-    "rgb(245, 181, 135, 0.8)",
-    "rgb(247, 137, 121, 0.8)",
-    "rgb(184, 99, 119, 0.8)"
+  "rgb(0, 152, 224, 0.8)",
+  "rgb(94, 188, 219, 0.8)",
+  "rgb(241, 221, 132, 0.8)",
+  "rgb(245, 181, 135, 0.8)",
+  "rgb(247, 137, 121, 0.8)",
+  "rgb(184, 99, 119, 0.8)"
 ];
 let border_colours = [
-    "#0098E0",
-    "#3C778B",
-    "#F1DD84",
-    "#F5B587",
-    "#F78979",
-    "#B86377"
+  "#0098E0",
+  "#3C778B",
+  "#F1DD84",
+  "#F5B587",
+  "#F78979",
+  "#B86377"
 ];
 
 function ModuleIndicator(props) {
@@ -86,6 +86,8 @@ export default function Module(props) {
 
   useEffect(() => {
     (async () => {
+      if (!modalIsOpen) return;
+
       setStudents(
         (await fetch(props._links.students.href).then(res => res.json()))
           ._embedded.students

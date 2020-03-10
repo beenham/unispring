@@ -58,7 +58,8 @@ export default function ModuleArea() {
 
               <div className="module-area">
                 {modules.map(item => (
-                  <Module {...item}
+                  <Module
+                    {...item}
                     renderPick={index !== 0}
                     renderEdit={false}
                     renderDrop={index === 0}
