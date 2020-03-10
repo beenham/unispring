@@ -35,15 +35,12 @@ export default class Register extends React.Component {
 			nationality: this.state.country,
 			gender: this.state.gender
 		};
-		console.log(payload);
+
 		axios
-			.post("api/auth/register/student", payload)
+			.post("/api/auth/register/student", payload)
 			.then(function (response) {
-				alert(response);
-				alert(payload);
-				console.log(response);
 				if (response.status === 200) {
-					// window.location.replace("/login");
+					window.location.replace("/login");
 				}
 				// else if(response.data.code == 204){
 				//     console.log("Username password do not match");

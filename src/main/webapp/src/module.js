@@ -59,22 +59,6 @@ function ModuleButton(props) {
 	);
 }
 
-function ModuleButtonArea(props) {
-	if (props.render) {
-		return (
-			<ModuleButton
-				title={props.title}
-				icon={props.icon}
-				code={props.code}
-				name={props.name}
-				year={props.year}
-			/>
-		);
-	} else {
-		return null;
-	}
-}
-
 export default function Module(props) {
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -233,30 +217,33 @@ export default function Module(props) {
 							<i className="material-icons-outlined">visibility</i>
 						</Button>
 					</Tooltip>
-					<ModuleButtonArea
-						render={props.renderPick}
-						title="Choose this Module"
-						icon="check_box"
-						code={props.code}
-						name={props.name}
-						year={props.year}
-					/>
-					<ModuleButtonArea
-						render={props.renderDrop}
-						title="Drop this module"
-						icon="cancel"
-						code={props.code}
-						name={props.name}
-						year={props.year}
-					/>
-					<ModuleButtonArea
-						render={props.renderEdit}
-						title="Edit module information"
-						icon="edit"
-						code={props.code}
-						name={props.name}
-						year={props.year}
-					/>
+                    {props.renderPick &&
+                        <ModuleButton
+                            title="Choose this module"
+                            icon="check_box"
+                            code={props.code}
+                            name={props.name}
+                            year={props.year}
+                        />
+                    }
+                    {props.renderDrop &&
+                        <ModuleButton
+                            title="Drop this module"
+                            icon="cancel"
+                            code={props.code}
+                            name={props.name}
+                            year={props.year}
+                        />
+                    }
+                    {props.renderEdit &&
+                        <ModuleButton
+                            title="Edit module information"
+                            icon="edit"
+                            code={props.code}
+                            name={props.name}
+                            year={props.year}
+                        />
+                    }
 					{/*<Tooltip title="Choose this Module" aria-label="Choose this Module" arrow>*/}
 					{/*    <Button className="card-footer-item"><i className="material-icons-outlined">check_box</i></Button>*/}
 					{/*</Tooltip>*/}
