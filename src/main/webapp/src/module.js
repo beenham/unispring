@@ -316,7 +316,7 @@ export default function Module(props) {
             >
               <Button
                 className="card-footer-item"
-                onClick={() => setModalIsOpenEdit(true)}
+                onClick={() => dropModule()}
               >
                 <i className="material-icons-outlined">cancel</i>
               </Button>
