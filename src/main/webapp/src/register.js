@@ -127,6 +127,7 @@ export default class Register extends React.Component {
                     <div className="select is-small">
                       <select
                         name="gender"
+                        value="MALE"
                         onChange={e =>
                           this.setState({
                             gender: e.target.value

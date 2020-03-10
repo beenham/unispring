@@ -1,16 +1,16 @@
 export function setLoggedInUser(user) {
   if (localStorage === undefined) return false;
-  localStorage.user = user;
+  localStorage.setItem('user', user);
   return true;
 }
 
 export function getLoggedInUser() {
   if (localStorage === undefined) return undefined;
-  return localStorage.user;
+  return localStorage.getItem('user');
 }
 
 export function isLoggedIn() {
-  return getLoggedInUser() === undefined;
+  return getLoggedInUser() !== undefined;
 }
 
 export function mapDistinctCount(data, property) {

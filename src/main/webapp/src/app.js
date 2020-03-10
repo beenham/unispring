@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import Login from "./login";
 import Register from "./register";
 import "babel-polyfill";
@@ -11,29 +11,27 @@ import ModuleArea from "./moduleArea";
 import { isLoggedIn } from "./util";
 
 class App extends React.Component {
-  requireAuth(nextState, replace) {
-    if (!isLoggedIn()) replace({ pathname: "login" });
-  }
-
   render() {
     return (
       <div id="body-area">
         <Router>
-          <Route path="/(login)*" exact component={Login} />
+          <Route path="/login" exact component={Login} />
           <Route path="/register" exact component={Register} />
           <Route
             path="/(modules|profile|stats)"
-            onEnter={this.requireAuth()}
-            render={() => (
-              <Fragment>
-                <Navigation />
-                <Router>
-                  <Route path="/modules" component={ModuleArea} />
-                  <Route path="/profile" component={Profile} />
-                  <Route path="/stats" component={Dashboard} />
-                </Router>
-              </Fragment>
-            )}
+            render={() => {
+              if (!isLoggedIn()) return <Redirect to="/login" />;
+              return (
+                <Fragment>
+                  <Navigation />
+                  <Router>
+                    <Route path="/modules" component={ModuleArea} />
+                    <Route path="/profile" component={Profile} />
+                    <Route path="/stats" component={Dashboard} />
+                  </Router>
+                </Fragment>
+              );
+            }}
           />
         </Router>
       </div>

@@ -65,9 +65,8 @@ public class AuthController {
 	}
 
 	@GetMapping("/logout")
-	public String logout(HttpServletRequest req) {
+	public void logout(HttpServletRequest req) {
 		req.getSession().invalidate();
-		return "/login";
 	}
 
 	@PostMapping(value = "/profile/{id}/payfees", consumes = MediaType.ALL_VALUE)

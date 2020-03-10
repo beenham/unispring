@@ -20,16 +20,10 @@ let border_colours = [
 ];
 
 export default function ModuleArea() {
-  useEffect(() => {
-    fetchItems();
-  }, []);
-
   const [userModules, setUserModules] = useState([]);
   const [otherModules, setOtherModules] = useState([]);
 
-  const fetchItems = async () => {
-    if (!isLoggedIn()) window.location.replace("/login");
-
+  useEffect(async () => {
     const userModules = (
       await fetch(
         "/api/students/" + localStorage.user + "/modules?size=" + (2 ** 31 - 1)
@@ -72,7 +66,7 @@ export default function ModuleArea() {
 
     setUserModules(userModules);
     setOtherModules(otherModules);
-  };
+  }, []);
 
   return (
     <div id="infoPage">
