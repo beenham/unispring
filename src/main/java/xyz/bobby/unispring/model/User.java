@@ -1,6 +1,7 @@
 package xyz.bobby.unispring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +26,8 @@ public abstract class User {
 
 	@Transient
 	@Length(min = 8, max = 128)
+	@JsonProperty
+	@Getter(onMethod = @__(@JsonIgnore))
 	private String password;
 
 	@Column(length = 64, nullable = false)

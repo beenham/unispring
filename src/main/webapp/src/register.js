@@ -6,41 +6,44 @@ export default class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			firstname: "",
-			surname: "",
-			emailAddress: "",
-			studentNumber: "",
-			phoneNumber: "",
+			username: "",
 			password: "",
+			forename: "",
+			surname: "",
 			streetAddress: "",
 			town: "",
 			city: "",
 			country: "",
-			gender: ""
+			phoneNumber: "",
+			emailAddress: "",
+			gender: "MALE",
+			studentNumber: ""
 		};
 	}
 
 	handleClick(event) {
 		let payload = {
-			firstname: this.state.firstname,
+			username: this.state.studentNumber,
+			forename: this.state.forename,
 			surname: this.state.surname,
 			emailAddress: this.state.emailAddress,
 			studentNumber: this.state.studentNumber,
 			phoneNumber: this.state.phoneNumber,
 			password: this.state.password,
-			streetAddress: this.state.streetAddress,
-			town: this.state.town,
-			city: this.state.city,
-			country: this.state.country,
+			address: this.state.streetAddress + ", " + this.state.town + ", " +
+				this.state.city + ", " + this.state.country,
+			nationality: this.state.country,
 			gender: this.state.gender
 		};
 		console.log(payload);
 		axios
-			.post("/register/student", payload)
+			.post("api/auth/register/student", payload)
 			.then(function (response) {
+				alert(response);
+				alert(payload);
 				console.log(response);
 				if (response.status === 200) {
-					window.location.replace("/login");
+					// window.location.replace("/login");
 				}
 				// else if(response.data.code == 204){
 				//     console.log("Username password do not match");
@@ -52,6 +55,7 @@ export default class Register extends React.Component {
 				// }
 			})
 			.catch(function (error) {
+				alert("Oops. Something went wrong.");
 				console.log("error:", error);
 			});
 	}
@@ -84,7 +88,7 @@ export default class Register extends React.Component {
 											name="firstName"
 											onChange={e =>
 												this.setState({
-													firstname: e.target.value
+													forename: e.target.value
 												})
 											}
 										/>

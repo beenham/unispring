@@ -22,7 +22,6 @@ import xyz.bobby.unispring.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -36,36 +35,12 @@ public class AuthController {
 	@Autowired
 	private StaffRepository staffRepository;
 
-	private static class RegisterStudentParams {
-		@Setter String emailAddress;
-		@Setter String password;
-		@Setter String firstname;
-		@Setter String surname;
-		@Setter String phoneNumber;
-		@Setter String studentNumber;
-		@Setter String streetAddress;
-		@Setter String town;
-		@Setter String city;
-		@Setter String country;
-		@Setter String gender;
-	}
-
 	@PostMapping(value = "/register/student", consumes = MediaType.ALL_VALUE)
-	public User registerStudent(@Valid @RequestBody RegisterStudentParams params) throws IOException {
-		Student user = new Student();
-		user.setUsername(params.firstname + " " + params.surname);
-		user.setGender(Student.Gender.valueOf(params.gender));
-		user.setForename(params.firstname);
-		user.setSurname(params.surname);
-		user.setNationality(params.country);
-		user.setAddress(params.streetAddress + " " + params.town + " " + params.city + " " + params.country);
-		user.setEmailAddress(params.emailAddress);
-		user.setPasswordHash(BCrypt.hashpw(params.password, BCrypt.gensalt()));
-		user.setPhoneNumber(params.phoneNumber);
-		user.setStudentNumber(Integer.parseInt(params.studentNumber));
-		user.setStage(Student.Stage.ONE);
-		user.setFeesPaid(false);
-		return studentRepository.save(user);
+	public User registerStudent(@Valid @RequestBody Student student) {
+		student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
+		student.setStage(Student.Stage.ONE);
+		student.setFeesPaid(false);
+		return studentRepository.save(student);
 	}
 
 	@PostMapping(value = "/register/staff", consumes = MediaType.ALL_VALUE)
@@ -81,7 +56,6 @@ public class AuthController {
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
 	public Integer login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
-
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
 		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
 		if (!correct) throw new LoginException();
