@@ -39,51 +39,35 @@ function DashboardStat(props) {
 }
 
 export default function Dashboard() {
-  const [data, setData] = useState([]);
+  const [students, setStudents] = useState([]);
+  const [staff, setStaff] = useState([]);
+  const [grades, setGrades] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const students = (
-        await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
-          res.json()
-        )
-      )._embedded.students;
-      const staff = (
-        await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res => res.json())
-      )._embedded.staff;
-      const grades = (
-        await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
-          res.json()
-        )
-      )._embedded.grades;
+      setStudents(
+        (
+          await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
+            res.json()
+          )
+        )._embedded.students
+      );
 
-      const data = {};
-      data.stagesBreakdown = mapDistinctCount(students, "stage");
-      data.stagesMax = Math.max.apply(
-        Math,
-        Object.values(data.stagesBreakdown)
+      setStaff(
+        (
+          await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res =>
+            res.json()
+          )
+        )._embedded.staff
       );
-      data.studentGenderBreakDown = getGraphData(
-        students,
-        "gender",
-        colours.slice(0, 3),
-        "Number of students by gender"
-      );
-      data.staffGenderBreakDown = getGraphData(
-        staff,
-        "gender",
-        colours.slice(3, 6),
-        "Number of staff by gender"
-      );
-      data.gradesBreakdown = getGraphData(
-        grades,
-        "grade",
-        colours,
-        "Number of students that achieved each grade"
-      );
-      data.nationalityBreakdown = mapDistinctCount(students, "nationality");
 
-      setData(data);
+      setGrades(
+        (
+          await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
+            res.json()
+          )
+        )._embedded.grades
+      );
     })();
   }, []);
 
@@ -104,6 +88,11 @@ export default function Dashboard() {
         <nav className="level">
           {["ONE", "TWO", "THREE", "FOUR", "MASTERS", "DOCTORATE"].map(
             (stage, index) => {
+              const stagesBreakdown = mapDistinctCount(students, "stage");
+              const stagesMax = Math.max.apply(
+                Math,
+                Object.values(stagesBreakdown)
+              );
               return (
                 <DashboardStat
                   key={stage}
@@ -112,8 +101,8 @@ export default function Dashboard() {
                     stage.charAt(0) +
                     stage.slice(1).toLowerCase()
                   }
-                  number={(data.stagesBreakdown || {})[stage] || 0}
-                  max={data.stagesMax || 1}
+                  number={stagesBreakdown[stage] || 0}
+                  max={stagesMax || 1}
                   colour={border_colours[index]}
                 />
               );
@@ -127,13 +116,28 @@ export default function Dashboard() {
               <div className="tile is-parent">
                 <article className="tile is-child box">
                   <p className="title is-6">Student Gender Breakdown</p>
-                  <Pie data={data.studentGenderBreakDown} id="chart-area" />
+                  <Pie
+                    data={getGraphData(
+                      students,
+                      "gender",
+                      colours.slice(0, 3),
+                      "Number of students by gender"
+                    )}
+                    id="chart-area"
+                  />
                 </article>
               </div>
               <div className="tile is-parent">
                 <article className="tile is-child box">
                   <p className="title is-6">Staff Gender Breakdown</p>
-                  <Doughnut data={data.staffGenderBreakDown} />
+                  <Doughnut
+                    data={getGraphData(
+                      staff,
+                      "gender",
+                      colours.slice(3, 6),
+                      "Number of staff by gender"
+                    )}
+                  />
                 </article>
               </div>
             </div>
@@ -147,7 +151,7 @@ export default function Dashboard() {
                   chartType="GeoChart"
                   data={[
                     ["Nationality", "Count"],
-                    ...Object.entries(data.nationalityBreakdown || {})
+                    ...Object.entries(mapDistinctCount(students, "nationality"))
                   ]}
                   options={{
                     colorAxis: { colors: ["#0098E0", "#F1DD84", "#B86377"] },
@@ -167,7 +171,12 @@ export default function Dashboard() {
                   Average Grade Break Down (Undergraduate)
                 </p>
                 <Bar
-                  data={data.gradesBreakdown}
+                  data={getGraphData(
+                    grades,
+                    "grade",
+                    colours,
+                    "Number of students that achieved each grade"
+                  )}
                   id="myChart"
                   width={100}
                   height={150}
