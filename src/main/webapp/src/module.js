@@ -4,7 +4,8 @@ import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { Bar, Pie } from "react-chartjs-2";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
-import { getGraphData } from "./util";
+import { getGraphData, getLoggedInUser } from "./util";
+import axios from "axios";
 
 let colours = [
   "rgb(0, 152, 224, 0.8)",
@@ -23,61 +24,9 @@ let border_colours = [
   "#B86377"
 ];
 
-function ModuleIndicator(props) {
-  return <span className={props.className}>{props.text}</span>;
-}
-
-function ModuleIndicatorArea(props) {
-  return (
-    <ModuleIndicator
-      className={
-        "tag " + (props.status === "FULL" ? "is-danger" : "is-warning")
-      }
-      text={"Module " + (props.status === "FULL" ? "Full" : "Terminated")}
-    />
-  );
-}
-
-function ModuleButton(props) {
-  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
-  return (
-    <Fragment>
-      <Modal isOpen={modalIsOpenEdit}>
-        <div className="custom-modal">
-          <header className="modal-card-head">
-            <p className="modal-card-title">{props.name}</p>
-            <button
-              className="delete"
-              aria-label="close"
-              onClick={() => setModalIsOpenEdit(false)}
-            />
-          </header>
-          <section className="modal-card-body">
-            <div className="image-box">
-              <img src="../images/code1 (2).jpg" alt="" />
-            </div>
-            <div className="modal-details">
-              <div className="module-title-tag">
-                <h2 className="title is-4">{props.name}</h2>
-                <span className="tag is-info">{props.code}</span>
-              </div>
-            </div>
-          </section>
-        </div>
-      </Modal>
-      <Tooltip title={props.title} aria-label={props.title} arrow>
-        <Button
-          className="card-footer-item"
-          onClick={() => setModalIsOpenEdit(true)}
-        >
-          <i className="material-icons-outlined">{props.icon}</i>
-        </Button>
-      </Tooltip>
-    </Fragment>
-  );
-}
-
 function ModuleHistoricData(props) {
+  this.state.enrolled = props.enrolled;
+
   const [students, setStudents] = useState([]);
   const [grades, setGrades] = useState([]);
 
@@ -135,6 +84,7 @@ function ModuleHistoricData(props) {
 
 export default function Module(props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
 
   const [historicModules, setHistoricModules] = useState([]);
   const [coordinator, setCoordinator] = useState({ forename: "", surname: "" });
@@ -143,17 +93,49 @@ export default function Module(props) {
     (async () => {
       if (!modalIsOpen) return;
 
-      setHistoricModules((
+      setHistoricModules(
+        (
           await fetch("/api/modules/search/code?code=" + props.code).then(res =>
-              res.json()
+            res.json()
           )
-      )._embedded.modules.sort((a, b) => b.year.value - a.year.value));
+        )._embedded.modules.sort((a, b) => b.year.value - a.year.value)
+      );
 
       setCoordinator(
         await fetch(props._links.coordinator.href).then(res => res.json())
       );
     })();
   }, [modalIsOpen]);
+
+  function enrolModule() {
+    axios({
+      method: "put",
+      url: props._links.students.href,
+      headers: { "Content-Type": "text/uri-list" },
+      data: getLoggedInUser()._links.self.href
+    })
+      .then(function(response) {
+        if (response.status === 204) {
+          window.location.reload();
+        }
+      })
+      .catch(function(error) {
+        console.log("error:", error);
+      });
+  }
+
+  function dropModule() {
+    axios
+      .delete(props._links.students.href + "/" + getLoggedInUser().id)
+      .then(function(response) {
+        if (response.status === 204) {
+          window.location.reload();
+        }
+      })
+      .catch(function(error) {
+        console.log("error:", error);
+      });
+  }
 
   return (
     <Fragment>
@@ -175,7 +157,15 @@ export default function Module(props) {
               <div className="module-title-tag">
                 <h2 className="title is-4">{props.name}</h2>
                 <span className="tag is-info">{props.code}</span>
-                <ModuleIndicatorArea status={props.status} />
+                <span
+                  className={
+                    "tag " +
+                    (props.status === "FULL" ? "is-danger" : "is-warning")
+                  }
+                >
+                  {"Module " +
+                    (props.status === "FULL" ? "Full" : "Terminated")}
+                </span>
               </div>
 
               <Tabs>
@@ -300,31 +290,74 @@ export default function Module(props) {
             </Button>
           </Tooltip>
           {props.renderPick && (
-            <ModuleButton
+            <Tooltip
               title="Choose this module"
-              icon="check_box"
-              code={props.code}
-              name={props.name}
-              year={props.year}
-            />
+              aria-label="Choose this module"
+              arrow
+            >
+              <span>
+                <Button
+                  className="card-footer-item"
+                  onClick={() => enrolModule()}
+                  disabled={["FULL", "TERMINATED"].includes(props.status)}
+                >
+                  <i className="material-icons-outlined">check_box</i>
+                </Button>
+              </span>
+            </Tooltip>
           )}
           {props.renderDrop && (
-            <ModuleButton
+            <Tooltip
               title="Drop this module"
-              icon="cancel"
-              code={props.code}
-              name={props.name}
-              year={props.year}
-            />
+              aria-label="Drop this module"
+              arrow
+            >
+              <Button
+                className="card-footer-item"
+                onClick={() => setModalIsOpenEdit(true)}
+              >
+                <i className="material-icons-outlined">cancel</i>
+              </Button>
+            </Tooltip>
           )}
           {props.renderEdit && (
-            <ModuleButton
-              title="Edit module information"
-              icon="edit"
-              code={props.code}
-              name={props.name}
-              year={props.year}
-            />
+            <Fragment>
+              <Modal isOpen={modalIsOpenEdit}>
+                <div className="custom-modal">
+                  <header className="modal-card-head">
+                    <p className="modal-card-title">{props.name}</p>
+                    <button
+                      className="delete"
+                      aria-label="close"
+                      onClick={() => setModalIsOpenEdit(false)}
+                    />
+                  </header>
+                  <section className="modal-card-body">
+                    <div className="image-box">
+                      <img src={props.module_image} alt="" />
+                    </div>
+                    <div className="modal-details">
+                      <div className="module-title-tag">
+                        <h2 className="title is-4">{props.name}</h2>
+                        <span className="tag is-info">{props.code}</span>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </Modal>
+              <Tooltip
+                title="Edit module information"
+                aria-label="Edit module information"
+                arrow
+              >
+                <Button
+                  className="card-footer-item"
+                  onClick={() => setModalIsOpenEdit(true)}
+                >
+                  <i className="material-icons-outlined">edit</i>
+                </Button>
+              </Tooltip>
+            </Fragment>
           )}
         </footer>
       </div>

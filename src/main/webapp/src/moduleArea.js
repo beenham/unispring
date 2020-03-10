@@ -1,45 +1,40 @@
 import React, { Fragment, useEffect, useState } from "react";
 import Module from "./module";
-import { getGraphData, getLoggedInUser, isLoggedIn } from "./util";
+import { getLoggedInUser } from "./util";
 
 export default function ModuleArea() {
-  const [userModules, setUserModules] = useState([]);
-  const [otherModules, setOtherModules] = useState([]);
+  const [modules, setModules] = useState([]);
 
   useEffect(() => {
     (async () => {
-      const userModules = (
+      const userModuleIds = (
         await fetch(
-          "/api/students/" +
-            getLoggedInUser().id +
-            "/modules?size=" +
-            (2 ** 31 - 1)
+          getLoggedInUser()._links.modules.href + "?size=" + (2 ** 31 - 1)
         ).then(res => res.json())
-      )._embedded.modules.filter(module => module.year.value === 2020);
-      const userModuleIds = userModules.map(module => module.code);
+      )._embedded.modules
+        .filter(module => module.year.value === 2020)
+        .map(module => module.code);
 
-      const otherModules = (
+      const modules = (
         await fetch(
           "/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
         ).then(res => res.json())
-      )._embedded.modules.filter(
-        module => !userModuleIds.includes(module.code)
-      );
+      )._embedded.modules;
 
-      for (const module of [...userModules, ...otherModules]) {
-        module.module_image = "../images/code (" + 1 + ").jpg";
+      for (const module of modules) {
+        module.enrolled = userModuleIds.includes(module.code);
         module.year = module.year.value;
+        module.module_image = "../images/code (" + 1 + ").jpg";
       }
 
-      setUserModules(userModules);
-      setOtherModules(otherModules);
+      setModules(modules);
     })();
   }, []);
 
   return (
     <div id="infoPage">
       <div className="main-box" id="modules">
-        {[userModules, otherModules].map((modules, index) => {
+        {[true, false].map((enrolled, index) => {
           return (
             <Fragment key={index}>
               <section className="hero">
@@ -50,21 +45,23 @@ export default function ModuleArea() {
                   <div className="container">
                     <h1 className="title">University of Springfield</h1>
                     <h2 className="subtitle">
-                      {index === 0 ? "Your Modules" : "Other Modules"}
+                      {enrolled ? "Your Modules" : "Other Modules"}
                     </h2>
                   </div>
                 </div>
               </section>
 
               <div className="module-area">
-                {modules.map(item => (
-                  <Module
-                    {...item}
-                    renderPick={index !== 0}
-                    renderEdit={false}
-                    renderDrop={index === 0}
-                  />
-                ))}
+                {modules
+                  .filter(module => module.enrolled === enrolled)
+                  .map(module => (
+                    <Module
+                      {...module}
+                      renderPick={!enrolled}
+                      renderEdit={false}
+                      renderDrop={enrolled}
+                    />
+                  ))}
               </div>
             </Fragment>
           );

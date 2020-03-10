@@ -22,8 +22,11 @@ export default class Login extends React.Component {
       })
       .then(response => {
         if (response.status === 200) {
-          setLoggedInUser(response.data);
-          window.location.replace("/modules");
+          let id = response.data;
+          axios.get("/api/users/" + id).then(response => {
+            setLoggedInUser({ ...response.data, id: id });
+            window.location.replace("/modules");
+          });
         }
         // else if(response.data.code == 204){
         //     console.log("Username password do not match");

@@ -16,13 +16,13 @@ export function isLoggedIn() {
 }
 
 export function sortObject(object, reverse = false) {
-    const ordered = {};
-    let keys = Object.keys(object).sort();
-    if (reverse) keys = keys.reverse();
-    keys.forEach(function(key) {
-        ordered[key] = object[key];
-    });
-    return ordered;
+  const ordered = {};
+  let keys = Object.keys(object).sort();
+  if (reverse) keys = keys.reverse();
+  keys.forEach(function(key) {
+    ordered[key] = object[key];
+  });
+  return ordered;
 }
 
 export function mapDistinctCount(data, property) {

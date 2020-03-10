@@ -55,13 +55,13 @@ public class AuthController {
 	}
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
-	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
+	public Integer login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
 		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
 		if (!correct) throw new LoginException();
 
 		req.getSession().setAttribute(SESSION_USER, user);
-		return user;
+		return user.getId();
 	}
 
 	@GetMapping("/logout")
