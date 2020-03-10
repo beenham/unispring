@@ -108,6 +108,8 @@ export default function Module(props) {
   }, [modalIsOpen]);
 
   function enrolModule() {
+    if (["FULL", "TERMINATED"].includes(props.status)) return;
+
     axios({
       method: "put",
       url: props._links.students.href,
@@ -291,19 +293,21 @@ export default function Module(props) {
           </Tooltip>
           {props.renderPick && (
             <Tooltip
-              title="Choose this module"
+              title={
+                "Choose this module" +
+                (["FULL", "TERMINATED"].includes(props.status)
+                  ? " (" + props.status + ")"
+                  : "")
+              }
               aria-label="Choose this module"
               arrow
             >
-              <span>
-                <Button
-                  className="card-footer-item"
-                  onClick={() => enrolModule()}
-                  disabled={["FULL", "TERMINATED"].includes(props.status)}
-                >
-                  <i className="material-icons-outlined">check_box</i>
-                </Button>
-              </span>
+              <Button
+                className="card-footer-item"
+                onClick={() => enrolModule()}
+              >
+                <i className="material-icons-outlined">check_box</i>
+              </Button>
             </Tooltip>
           )}
           {props.renderDrop && (
