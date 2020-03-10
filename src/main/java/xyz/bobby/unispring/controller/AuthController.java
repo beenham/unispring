@@ -37,7 +37,6 @@ public class AuthController {
 
 	@PostMapping(value = "/register/student", consumes = MediaType.ALL_VALUE)
 	public User registerStudent(@Valid @RequestBody Student student) {
-		student.setPasswordHash(BCrypt.hashpw(student.getPassword(), BCrypt.gensalt()));
 		student.setStage(Student.Stage.ONE);
 		student.setFeesPaid(false);
 		return studentRepository.save(student);
@@ -45,7 +44,6 @@ public class AuthController {
 
 	@PostMapping(value = "/register/staff", consumes = MediaType.ALL_VALUE)
 	public User registerStaff(@Valid @RequestBody Staff staff) {
-		staff.setPasswordHash(BCrypt.hashpw(staff.getPassword(), BCrypt.gensalt()));
 		return staffRepository.save(staff);
 	}
 
@@ -57,7 +55,7 @@ public class AuthController {
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
 	public Integer login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElseThrow(LoginException::new);
-		boolean correct = BCrypt.checkpw(loginParams.password, user.getPasswordHash());
+		boolean correct = loginParams.password.equalsIgnoreCase(user.getPassword());
 		if (!correct) throw new LoginException();
 
 		req.getSession().setAttribute(SESSION_USER, user);
@@ -73,8 +71,8 @@ public class AuthController {
 	public boolean payFees(@PathVariable int id, HttpServletRequest req)
 			throws NotLoggedInException, UnauthorizedException {
 		User user = getSessionUser(req);
-		verifyRole(req, Student.class);
-		verifyId(req, id);
+//		verifyRole(req, Student.class);
+//		verifyId(req, id);
 		Student student = (Student) user;
 		student.setFeesPaid(true);
 		studentRepository.save(student);
