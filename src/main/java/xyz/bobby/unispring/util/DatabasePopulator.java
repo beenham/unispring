@@ -4,6 +4,7 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import xyz.bobby.unispring.config.ApplicationConfig;
 import xyz.bobby.unispring.model.Grade;
 import xyz.bobby.unispring.model.Module;
 import xyz.bobby.unispring.model.Staff;
@@ -169,27 +170,26 @@ public class DatabasePopulator {
 	}
 
 	private static void printProgress(String message, int current, int total) {
-		StringBuilder string = new StringBuilder();
 		int percent = (current * 100 / total);
-		string.append('\r')
-				.append(message)
-				.append(" ... ")
-				.append(String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")))
-				.append(String.format(" %d%% [", percent))
-				.append(String.join("", Collections.nCopies(percent, "=")))
-				.append('>')
-				.append(String.join("", Collections.nCopies(100 - percent, " ")))
-				.append(']')
-				.append(String.join("", Collections.nCopies(Math.max((int) (Math.log10(total)) - (int) (Math.log10(current)), 0), " ")))
-				.append(String.format(" %d/%d\r", current, total));
-		System.out.print(string.toString());
+		String string = '\r' +
+				message +
+				" ... " +
+				String.join("", Collections.nCopies(percent == 0 ? 2 : 2 - (int) (Math.log10(percent)), " ")) +
+				String.format(" %d%% [", percent) +
+				String.join("", Collections.nCopies(percent, "=")) +
+				'>' +
+				String.join("", Collections.nCopies(100 - percent, " ")) +
+				']' +
+				String.join("", Collections.nCopies(Math.max((int) (Math.log10(total)) - (int) (Math.log10(current)), 0), " ")) +
+				String.format(" %d/%d\r", current, total);
+		System.out.print(string);
 	}
 
 	@Bean
 	public CommandLineRunner populateDb(StudentRepository stuRepo, StaffRepository staRepo, ModuleRepository modRepo,
-										GradeRepository gradeRepo) {
+										GradeRepository gradeRepo, ApplicationConfig config) {
 		return (args -> {
-			if (args.length > 0 && Boolean.parseBoolean(args[0])) {
+			if (config.getPopulateDb()) {
 				LOG.info(String.format("%s", "Populating Database..."));
 				populatePeople(stuRepo, staRepo);
 				populateModules(stuRepo, staRepo, modRepo, gradeRepo);

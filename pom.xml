@@ -73,14 +73,28 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-hibernate5</artifactId>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>com.beust</groupId>
+			<artifactId>jcommander</artifactId>
+			<version>1.78</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<arguments>
+						<argument>--spring.datasource.url=jdbc:mysql://127.0.0.1:3306/unispring</argument>
+						<argument>--spring.datasource.username=root</argument>
+						<argument>--spring.datasource.password=root</argument>
+						<argument>--spring.jpa.hibernate.dll-auto=update</argument>
+					</arguments>
+				</configuration>
 			</plugin>
+
 <!--			React install on run-->
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
