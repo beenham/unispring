@@ -12,14 +12,14 @@ export default class Login extends React.Component {
     };
   }
 
-  handleClick(event) {
-    let payload = {
-      emailAddress: this.state.emailAddress,
-      password: this.state.password
-    };
-    console.log(payload);
+  handleSubmit(event) {
+    event.preventDefault();
+
     axios
-      .post("/api/auth/login", payload)
+      .post("/api/auth/login", {
+        emailAddress: this.state.emailAddress,
+        password: this.state.password
+      })
       .then(response => {
         if (response.status === 200) {
           setLoggedInUser(response.data);
@@ -54,7 +54,7 @@ export default class Login extends React.Component {
             </div>
           </div>
           <div id="login-area">
-            <form action="/api/auth/login" method="post">
+            <form onSubmitCapture={event => this.handleSubmit(event)}>
               <h1 className="title">Login</h1>
               <div className="field">
                 <p className="control has-icons-left is-small has-icons-right">
@@ -93,11 +93,7 @@ export default class Login extends React.Component {
                 </p>
               </div>
               <div className="field" id="button-area">
-                <button
-                  className="button is-small"
-                  type="button"
-                  onClick={event => this.handleClick(event)}
-                >
+                <button className="button is-small" type="submit">
                   Login
                 </button>
               </div>

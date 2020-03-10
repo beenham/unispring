@@ -17,17 +17,15 @@ export default function Profile() {
         )
       )._embedded.grades;
       for (const grade of grades) {
-        let module = await fetch(item._links.module.href).then(res =>
+        item.module = await fetch(item._links.module.href).then(res =>
           res.json()
         );
-        item["module_name"] = module.name;
-        item["module_year"] = module.year.value;
       }
 
       setGrades(grades);
       setFees(user.feesPaid ? "Fees Paid" : "256");
     })();
-  });
+  }, []);
 
   function payFees() {
     axios
@@ -139,7 +137,7 @@ export default function Profile() {
                           {grades.map(item => (
                             <tr>
                               <td>
-                                {item.module_name} ({item.module_year})
+                                {item.module.name} ({item.module.year.value})
                               </td>
                               <td>{item.percent}%</td>
                               <td>{item.grade}</td>

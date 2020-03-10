@@ -1,9 +1,27 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import Modal from "react-modal";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import { Bar, Pie } from "react-chartjs-2";
 import Tooltip from "@material-ui/core/Tooltip";
 import Button from "@material-ui/core/Button";
+import { getGraphData } from "./util";
+
+let colours = [
+    "rgb(0, 152, 224, 0.8)",
+    "rgb(94, 188, 219, 0.8)",
+    "rgb(241, 221, 132, 0.8)",
+    "rgb(245, 181, 135, 0.8)",
+    "rgb(247, 137, 121, 0.8)",
+    "rgb(184, 99, 119, 0.8)"
+];
+let border_colours = [
+    "#0098E0",
+    "#3C778B",
+    "#F1DD84",
+    "#F5B587",
+    "#F78979",
+    "#B86377"
+];
 
 function ModuleIndicator(props) {
   return <span className={props.className}>{props.text}</span>;
@@ -61,6 +79,28 @@ function ModuleButton(props) {
 
 export default function Module(props) {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [students, setStudents] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [coordinator, setCoordinator] = useState({ forename: "", surname: "" });
+
+  useEffect(() => {
+    (async () => {
+      setStudents(
+        (await fetch(props._links.students.href).then(res => res.json()))
+          ._embedded.students
+      );
+
+      setGrades(
+        (await fetch(props._links.grades.href).then(res => res.json()))
+          ._embedded.grades
+      );
+
+      setCoordinator(
+        await fetch(props._links.coordinator.href).then(res => res.json())
+      );
+    })();
+  }, [modalIsOpen]);
 
   return (
     <Fragment>
@@ -124,9 +164,7 @@ export default function Module(props) {
                         <tr>
                           <td>Module coordinator</td>
                           <td>
-                            {props.coordinator.forename +
-                              " " +
-                              props.coordinator.surname}
+                            {coordinator.forename + " " + coordinator.surname}
                           </td>
                         </tr>
                         <tr>
@@ -160,7 +198,12 @@ export default function Module(props) {
                           <div className="tile is-parent box">
                             <article className="tile is-child">
                               <Pie
-                                data={props.student_genders_graph}
+                                data={getGraphData(
+                                  students,
+                                  "gender",
+                                  colours,
+                                  "Number of students by gender"
+                                )}
                                 id="chart-area"
                               />
                             </article>
@@ -168,7 +211,12 @@ export default function Module(props) {
                           <div className="tile is-parent box">
                             <article className="tile is-child">
                               <Bar
-                                data={props.grade_graph}
+                                data={getGraphData(
+                                  grades,
+                                  "grade",
+                                  colours,
+                                  "Number of students that achieved each grade"
+                                )}
                                 id="myChart"
                                 width={100}
                                 height={50}
@@ -200,12 +248,6 @@ export default function Module(props) {
               </p>
               <p className="subtitle is-6">{props.code}</p>
             </div>
-          </div>
-
-          <div className="content">
-            <span className="small-text">
-              By {props.coordinator.forename + " " + props.coordinator.surname}
-            </span>
           </div>
         </div>
         <footer className="card-footer">
@@ -248,15 +290,6 @@ export default function Module(props) {
               year={props.year}
             />
           )}
-          {/*<Tooltip title="Choose this Module" aria-label="Choose this Module" arrow>*/}
-          {/*    <Button className="card-footer-item"><i className="material-icons-outlined">check_box</i></Button>*/}
-          {/*</Tooltip>*/}
-          {/*<Tooltip title="Drop this module" aria-label="Drop this module" arrow>*/}
-          {/*    <Button className="card-footer-item"><i className="material-icons">cancel</i></Button>*/}
-          {/*</Tooltip>*/}
-          {/*<Tooltip title="Edit module information" aria-label="Edit module information" arrow>*/}
-          {/*    <Button className="card-footer-item" onClick={() => setModalIsOpenEdit(true)}><i className="material-icons-outlined">edit</i></Button>*/}
-          {/*</Tooltip>*/}
         </footer>
       </div>
     </Fragment>
