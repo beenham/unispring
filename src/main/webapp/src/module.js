@@ -77,17 +77,12 @@ function ModuleButton(props) {
   );
 }
 
-export default function Module(props) {
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-
+function ModuleHistoricData(props) {
   const [students, setStudents] = useState([]);
   const [grades, setGrades] = useState([]);
-  const [coordinator, setCoordinator] = useState({ forename: "", surname: "" });
 
   useEffect(() => {
     (async () => {
-      if (!modalIsOpen) return;
-
       setStudents(
         (await fetch(props._links.students.href).then(res => res.json()))
           ._embedded.students
@@ -97,6 +92,62 @@ export default function Module(props) {
         (await fetch(props._links.grades.href).then(res => res.json()))
           ._embedded.grades
       );
+    })();
+  }, []);
+
+  return (
+    <div>
+      <div className="tile is-ancestor main-box">
+        <div className="tile is-horizontal is-12">
+          <div className="tile is-parent box">
+            <article className="tile is-child">
+              <Pie
+                data={getGraphData(
+                  students,
+                  "gender",
+                  colours,
+                  "Number of students by gender"
+                )}
+                id="chart-area"
+              />
+            </article>
+          </div>
+          <div className="tile is-parent box">
+            <article className="tile is-child">
+              <Bar
+                data={getGraphData(
+                  grades,
+                  "grade",
+                  colours,
+                  "Number of students that achieved each grade"
+                )}
+                id="myChart"
+                width={100}
+                height={50}
+              />
+            </article>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function Module(props) {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [historicModules, setHistoricModules] = useState([]);
+  const [coordinator, setCoordinator] = useState({ forename: "", surname: "" });
+
+  useEffect(() => {
+    (async () => {
+      if (!modalIsOpen) return;
+
+      setHistoricModules((
+          await fetch("/api/modules/search/code?code=" + props.code).then(res =>
+              res.json()
+          )
+      )._embedded.modules.sort((a, b) => b.year.value - a.year.value));
 
       setCoordinator(
         await fetch(props._links.coordinator.href).then(res => res.json())
@@ -190,45 +241,28 @@ export default function Module(props) {
                   </section>
                 </TabPanel>
                 <TabPanel>
-                  <section id="module-charts">
-                    <div id="tag-area">
-                      <span className="tag is-info">2020 Data</span>
-                    </div>
-                    <div>
-                      <div className="tile is-ancestor main-box">
-                        <div className="tile is-horizontal is-12">
-                          <div className="tile is-parent box">
-                            <article className="tile is-child">
-                              <Pie
-                                data={getGraphData(
-                                  students,
-                                  "gender",
-                                  colours,
-                                  "Number of students by gender"
-                                )}
-                                id="chart-area"
-                              />
-                            </article>
-                          </div>
-                          <div className="tile is-parent box">
-                            <article className="tile is-child">
-                              <Bar
-                                data={getGraphData(
-                                  grades,
-                                  "grade",
-                                  colours,
-                                  "Number of students that achieved each grade"
-                                )}
-                                id="myChart"
-                                width={100}
-                                height={50}
-                              />
-                            </article>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
+                  <Tabs id="module-charts">
+                    <TabList>
+                      {historicModules.map(historicModule => {
+                        return (
+                          <Tab>
+                            <div id="tag-area">
+                              <span className="tag is-info">
+                                {historicModule.year.value} Data
+                              </span>
+                            </div>
+                          </Tab>
+                        );
+                      })}
+                    </TabList>
+                    {historicModules.map(historicModule => {
+                      return (
+                        <TabPanel>
+                          <ModuleHistoricData {...historicModule} />
+                        </TabPanel>
+                      );
+                    })}
+                  </Tabs>
                 </TabPanel>
               </Tabs>
             </div>

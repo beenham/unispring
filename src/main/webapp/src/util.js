@@ -15,6 +15,16 @@ export function isLoggedIn() {
   return getLoggedInUser() !== undefined;
 }
 
+export function sortObject(object, reverse = false) {
+    const ordered = {};
+    let keys = Object.keys(object).sort();
+    if (reverse) keys = keys.reverse();
+    keys.forEach(function(key) {
+        ordered[key] = object[key];
+    });
+    return ordered;
+}
+
 export function mapDistinctCount(data, property) {
   return data.reduce((acc, o) => {
     acc[o[property]] = (acc[o[property]] || 0) + 1;
