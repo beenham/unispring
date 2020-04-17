@@ -76,7 +76,15 @@ public class DatabasePopulator {
 
 		printProgress("Creating student user", 0, NUM_STUDENT_USERS);
 		Set<Student> students = new HashSet<>();
-		for (int i = 0; i < NUM_STUDENT_USERS; i++) {
+		Student student = createUser(random, new Student(), "Beeno", 12345600, String.format("stu-%03d@unispring.edu", 0), String.format("123-4567-%03d", 0));
+		student.setForename("Conor");
+		student.setSurname("Beenham");
+		student.setGender(User.Gender.MALE);
+		student.setPassword("BeenosPassword123");
+		student.setNationality("Ireland");
+		students.add(student);
+
+		for (int i = 1; i < NUM_STUDENT_USERS; i++) {
 			students.add(createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i, String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
 			printProgress("Creating student user", i, NUM_STUDENT_USERS);
 		}
