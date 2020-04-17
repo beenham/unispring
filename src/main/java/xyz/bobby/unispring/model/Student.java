@@ -2,6 +2,8 @@ package xyz.bobby.unispring.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,6 +25,8 @@ import java.util.Set;
 @Entity
 @Table(name = "students")
 public class Student extends User {
+	private static final GrantedAuthority ROLE = new SimpleGrantedAuthority("ROLE_STUDENT");
+
 	@NotNull
 	@Column(unique = true)
 	@Digits(integer = 8, fraction = 0)
@@ -39,6 +44,11 @@ public class Student extends User {
 	private Set<Grade> grades = new HashSet<>();
 
 	private boolean feesPaid;
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return Set.of(ROLE);
+	}
 
 	public enum Stage {
 		ONE("1st"), TWO("2nd"), THREE("3rd"), FOUR("4th"), MASTERS("MSc"), DOCTORATE("PhD");

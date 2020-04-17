@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -14,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 @Entity
 @Table(name = "users")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class User {
+public abstract class User implements UserDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -24,17 +25,10 @@ public abstract class User {
 	@Length(max = 32)
 	private String username;
 
-	@Transient
+	@Column(length = 64, nullable = false)
 	@Length(min = 8, max = 128)
-	@JsonProperty
 	@Getter(onMethod = @__(@JsonIgnore))
 	private String password;
-
-	@Column(length = 64, nullable = false)
-	@Length(max = 64)
-	@Getter(onMethod = @__(@JsonIgnore))
-	@Setter(onMethod = @__(@JsonIgnore))
-	private String passwordHash;
 
 	@NotBlank
 	@Column(length = 64)
@@ -64,6 +58,26 @@ public abstract class User {
 	@Column(length = 64)
 	@Length(max = 64)
 	private String nationality;
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 
 	public enum Gender {
 		MALE, FEMALE, OTHER

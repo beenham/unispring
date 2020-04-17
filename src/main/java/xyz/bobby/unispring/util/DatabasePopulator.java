@@ -1,8 +1,10 @@
 package xyz.bobby.unispring.util;
 
-import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import xyz.bobby.unispring.config.ApplicationConfig;
 import xyz.bobby.unispring.model.Grade;
@@ -85,7 +87,7 @@ public class DatabasePopulator {
 		user.setNationality(countries.get(random.nextInt(countries.size())));
 		user.setAddress("Address");
 		user.setEmailAddress(email);
-		user.setPasswordHash(BCrypt.hashpw(String.format("%s%02d", user.getForename(), number % 100), BCrypt.gensalt()));
+		user.setPassword(BCrypt.hashpw(String.format("%s%02d", user.getForename(), number % 100), BCrypt.gensalt()));
 		user.setPhoneNumber(phoneNumber);
 		if (user instanceof Student) {
 			Student student = (Student) user;
