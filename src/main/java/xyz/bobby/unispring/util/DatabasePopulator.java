@@ -102,7 +102,7 @@ public class DatabasePopulator {
 		user.setNationality(countries.get(random.nextInt(countries.size())));
 		user.setAddress("Address");
 		user.setEmailAddress(email);
-		user.setPassword(String.format("%s%02d", user.getForename(), number % 100));
+		user.setPasswordHash(BCrypt.hashpw("password1", BCrypt.gensalt()));
 		user.setPhoneNumber(phoneNumber);
 		if (user instanceof Student) {
 			Student student = (Student) user;

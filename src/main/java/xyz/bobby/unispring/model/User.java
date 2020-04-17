@@ -24,8 +24,17 @@ public abstract class User {
 	@Length(max = 32)
 	private String username;
 
-	@Length(min = 4, max = 128)
+	@Transient
+	@Length(min = 8, max = 128)
+	@JsonProperty
+	@Getter(onMethod = @__(@JsonIgnore))
 	private String password;
+
+	@Column(length = 64, nullable = false)
+	@Length(max = 64)
+	@Getter(onMethod = @__(@JsonIgnore))
+	@Setter(onMethod = @__(@JsonIgnore))
+	private String passwordHash;
 
 	@NotBlank
 	@Column(length = 64)
