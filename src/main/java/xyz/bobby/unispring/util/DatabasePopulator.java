@@ -16,16 +16,7 @@ import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
 
 import java.time.Year;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Component
@@ -66,7 +57,7 @@ public class DatabasePopulator {
 		Random random = new Random();
 
 		printProgress("Creating staff user", 0, NUM_STAFF_USERS);
-		Set<Staff> staff = new HashSet<>();
+		List<Staff> staff = new ArrayList<>();
 		for (int i = 0; i < NUM_STAFF_USERS; i++) {
 			staff.add(createUser(random, new Staff(), String.format("Sta-%03d", i), 12345900 + i,
 					String.format("sta-%03d@unispring.edu", i), String.format("765-4321-%03d", i)));
@@ -75,16 +66,8 @@ public class DatabasePopulator {
 		staRepo.saveAll(staff);
 
 		printProgress("Creating student user", 0, NUM_STUDENT_USERS);
-		Set<Student> students = new HashSet<>();
-		Student student = createUser(random, new Student(), "Beeno", 12345600, String.format("stu-%03d@unispring.edu", 0), String.format("123-4567-%03d", 0));
-		student.setForename("Conor");
-		student.setSurname("Beenham");
-		student.setGender(User.Gender.MALE);
-		student.setPassword("BeenosPassword123");
-		student.setNationality("Ireland");
-		students.add(student);
-
-		for (int i = 1; i < NUM_STUDENT_USERS; i++) {
+		List<Student> students = new ArrayList<>();
+		for (int i = 0; i < NUM_STUDENT_USERS; i++) {
 			students.add(createUser(random, new Student(), String.format("Stu-%03d", i), 12345600 + i, String.format("stu-%03d@unispring.edu", i), String.format("123-4567-%03d", i)));
 			printProgress("Creating student user", i, NUM_STUDENT_USERS);
 		}
@@ -102,7 +85,7 @@ public class DatabasePopulator {
 		user.setNationality(countries.get(random.nextInt(countries.size())));
 		user.setAddress("Address");
 		user.setEmailAddress(email);
-		user.setPasswordHash(BCrypt.hashpw("password1", BCrypt.gensalt()));
+		user.setPasswordHash(BCrypt.hashpw(String.format("%s%02d", user.getForename(), number % 100), BCrypt.gensalt()));
 		user.setPhoneNumber(phoneNumber);
 		if (user instanceof Student) {
 			Student student = (Student) user;
