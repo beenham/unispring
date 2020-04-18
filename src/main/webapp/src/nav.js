@@ -33,7 +33,10 @@ export default class Navigation extends React.Component {
         </div>
         <div className="has-text-centered">
           <div>
-            <span className="tag is-info">STAGE {user.stage}</span>
+              {user.stage !== undefined
+                      ? <span className="tag is-info">STAGE {user.stage}</span>
+                      : <span className="tag is-danger">STAFF</span>
+              }
           </div>
         </div>
 
