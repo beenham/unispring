@@ -20,13 +20,14 @@ export default function ModuleArea() {
           "/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
         ).then(res => res.json())
       )._embedded.modules;
-
+      let modulenumber= 1;
       for (const module of modules) {
         module.enrolled = userModuleIds.includes(module.code);
         module.year = module.year.value;
-        module.module_image = "../images/code (" + 1 + ").jpg";
+        module.module_image = "../images/code (" + modulenumber + ").jpg";
+        modulenumber++;
       }
-
+        modulenumber=1;
       setModules(modules);
     })();
   }, []);
