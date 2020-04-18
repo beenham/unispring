@@ -29,6 +29,8 @@ public interface StudentRepository extends CrudRepository<Student, Integer> {
 	@Override
 	List<Student> findAll();
 
+	List<Student> findAllBy();
+
 	@RestResource(exported = false)
 	@Override
 	Iterable<Student> findAllById(Iterable<Integer> iterable);

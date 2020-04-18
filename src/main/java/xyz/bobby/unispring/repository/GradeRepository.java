@@ -22,11 +22,13 @@ import java.util.Optional;
 
 @RepositoryRestResource
 public interface GradeRepository extends CrudRepository<Grade, Grade.Key> {
-	@PostFilter("principal == filterObject.getStudent() || hasPermission('MODULE_' + #filterObject.getModule().getId())")
+	@PostFilter("principal == filterObject.getStudent() || hasAuthority('MODULE_' + filterObject.getModule().getId())")
 	@Override
 	List<Grade> findAll();
 
-	@PreAuthorize("principal.getId() == #key.studentId || hasPermission('MODULE_' + #key.moduleId)")
+	List<Grade> findAllBy();
+
+	@PreAuthorize("principal.getId() == #key.studentId || hasAuthority('MODULE_' + #key.moduleId)")
 	@Override
 	Optional<Grade> findById(@P("key") Grade.Key grade);
 

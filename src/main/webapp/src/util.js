@@ -32,9 +32,7 @@ export function mapDistinctCount(data, property) {
   }, {});
 }
 
-export function getGraphData(data, property, colours, title) {
-  data = mapDistinctCount(data, property);
-
+export function getGraphData(data, colours, title) {
   let keys = Object.keys(data).sort();
   let values = keys.map(key => data[key]);
 

@@ -39,34 +39,22 @@ function DashboardStat(props) {
 }
 
 export default function Dashboard() {
-  const [students, setStudents] = useState([]);
-  const [staff, setStaff] = useState([]);
-  const [grades, setGrades] = useState([]);
+  const [stats, setStats] = useState({
+      studentNationalityBreakdown: {},
+      studentStageBreakdown: {},
+      studentGenderBreakdown: {},
+
+      staffGenderBreakdown: {},
+
+      gradeBreakdown: {}
+  });
 
   useEffect(() => {
     (async () => {
-      setStudents(
-        (
-          await fetch("/api/students/?size=" + (2 ** 31 - 1)).then(res =>
+      setStats(
+          await fetch("/api/stats").then(res =>
             res.json()
           )
-        )._embedded.students
-      );
-
-      setStaff(
-        (
-          await fetch("/api/staff/?size=" + (2 ** 31 - 1)).then(res =>
-            res.json()
-          )
-        )._embedded.staff
-      );
-
-      setGrades(
-        (
-          await fetch("/api/grades/?size=" + (2 ** 31 - 1)).then(res =>
-            res.json()
-          )
-        )._embedded.grades
       );
     })();
   }, []);
@@ -88,7 +76,7 @@ export default function Dashboard() {
         <nav className="level">
           {["ONE", "TWO", "THREE", "FOUR", "MASTERS", "DOCTORATE"].map(
             (stage, index) => {
-              const stagesBreakdown = mapDistinctCount(students, "stage");
+              const stagesBreakdown = stats.studentStageBreakdown;
               const stagesMax = Math.max.apply(
                 Math,
                 Object.values(stagesBreakdown)
@@ -118,8 +106,7 @@ export default function Dashboard() {
                   <p className="title is-6">Student Gender Breakdown</p>
                   <Pie
                     data={getGraphData(
-                      students,
-                      "gender",
+                      stats.studentGenderBreakdown,
                       colours.slice(0, 3),
                       "Number of students by gender"
                     )}
@@ -132,8 +119,7 @@ export default function Dashboard() {
                   <p className="title is-6">Staff Gender Breakdown</p>
                   <Doughnut
                     data={getGraphData(
-                      staff,
-                      "gender",
+                      stats.staffGenderBreakdown,
                       colours.slice(3, 6),
                       "Number of staff by gender"
                     )}
@@ -151,7 +137,7 @@ export default function Dashboard() {
                   chartType="GeoChart"
                   data={[
                     ["Nationality", "Count"],
-                    ...Object.entries(mapDistinctCount(students, "nationality"))
+                    ...Object.entries(stats.studentNationalityBreakdown)
                   ]}
                   options={{
                     colorAxis: { colors: ["#0098E0", "#F1DD84", "#B86377"] },
@@ -172,8 +158,7 @@ export default function Dashboard() {
                 </p>
                 <Bar
                   data={getGraphData(
-                    grades,
-                    "grade",
+                    stats.gradeBreakdown,
                     colours,
                     "Number of students that achieved each grade"
                   )}

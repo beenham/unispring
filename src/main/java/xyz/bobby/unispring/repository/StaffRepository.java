@@ -26,6 +26,8 @@ public interface StaffRepository extends CrudRepository<Staff, Integer> {
 	@Override
 	List<Staff> findAll();
 
+	List<Staff> findAllBy();
+
 	@RestResource(exported = false)
 	@Override
 	Iterable<Staff> findAllById(Iterable<Integer> iterable);
