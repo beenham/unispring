@@ -8,26 +8,24 @@ export default function ModuleArea() {
   useEffect(() => {
     (async () => {
       const userModuleIds = (
-        await fetch(
-          getLoggedInUser()._links.modules.href + "?size=" + (2 ** 31 - 1)
-        ).then(res => res.json())
-      )._embedded.modules
-        .filter(module => module.year.value === 2020)
+        await fetch("/api/modules/enrolled/").then(res => {
+          if (res.status !== 200) window.location.replace("/login");
+          return res.json();
+        })
+      )
+        .filter(module => module.year === 2020)
         .map(module => module.code);
 
-      const modules = (
-        await fetch(
-          "/api/modules/search/year?year=2020&size=" + (2 ** 31 - 1)
-        ).then(res => res.json())
-      )._embedded.modules;
-      let modulenumber= 1;
+      const modules = await fetch("/api/modules/year/2020").then(res => {
+        if (res.status !== 200) window.location.replace("/login");
+        return res.json();
+      });
+      let moduleNumber = 1;
       for (const module of modules) {
         module.enrolled = userModuleIds.includes(module.code);
-        module.year = module.year.value;
-        module.module_image = "../images/code (" + modulenumber + ").jpg";
-        modulenumber++;
+        module.module_image = "../images/code (" + moduleNumber + ").jpg";
+        moduleNumber++;
       }
-        modulenumber=1;
       setModules(modules);
     })();
   }, []);

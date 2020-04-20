@@ -135,7 +135,7 @@ public class DatabasePopulator {
 					if (module.getStudents().size() == module.getCapacity())
 						module.setStatus(Module.Status.FULL);
 				}
-				if (module.getYear().isBefore(year.plusYears(4)) || trimester != Module.Trimester.SPRING) {
+				if (Year.of(module.getYear()).isBefore(year.plusYears(4)) || trimester != Module.Trimester.SPRING) {
 					module.setStatus(Module.Status.TERMINATED);
 					gradeRepo.saveAll(grades);
 				}
@@ -154,7 +154,7 @@ public class DatabasePopulator {
 		module.setName(name);
 		module.setCoordinator(coordinator);
 		module.setDescription("Lorem Ipsum this is a description");
-		module.setYear(year);
+		module.setYear(year.getValue());
 		module.setTrimester(trimester);
 		module.setStatus(Module.Status.AVAILABLE);
 		module.setPassword(code.substring(4) + year.toString());

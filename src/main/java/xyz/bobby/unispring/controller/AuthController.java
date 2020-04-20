@@ -1,18 +1,11 @@
 package xyz.bobby.unispring.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +16,7 @@ import xyz.bobby.unispring.exception.UnauthorizedException;
 import xyz.bobby.unispring.model.Staff;
 import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.User;
+import xyz.bobby.unispring.model.View;
 import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
 import xyz.bobby.unispring.repository.UserRepository;
@@ -37,9 +31,6 @@ public class AuthController {
 	private static final String SESSION_USER = "user";
 
 	@Autowired
-	private AuthenticationManager authManager;
-
-	@Autowired
 	private UserRepository userRepository;
 	@Autowired
 	private StudentRepository studentRepository;
@@ -48,6 +39,8 @@ public class AuthController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	private @Autowired HttpServletRequest request;
 
 	@PostMapping(value = "/register/student", consumes = MediaType.ALL_VALUE)
 	public User registerStudent(@Valid @RequestBody Student student) {
@@ -69,27 +62,17 @@ public class AuthController {
 	}
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
-	public Integer login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
-		UsernamePasswordAuthenticationToken authReq
-				= new UsernamePasswordAuthenticationToken(loginParams.emailAddress, loginParams.password);
-
-		Authentication auth;
-		try {
-			auth = authManager.authenticate(authReq);
-		} catch (AuthenticationException e) {
-			e.printStackTrace();
+	@JsonView(View.Internal.class)
+	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
+		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElse(null);
+		if (user == null || !passwordEncoder.matches(loginParams.password, user.getPassword())) {
 			throw new LoginException();
 		}
 
-		SecurityContext sc = SecurityContextHolder.getContext();
-		sc.setAuthentication(auth);
 		HttpSession session = req.getSession(true);
-		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, sc);
+		session.setAttribute(SESSION_USER, user);
 
-		User user = (User) auth.getPrincipal();
-
-		req.getSession().setAttribute(SESSION_USER, auth.getPrincipal());
-		return user.getId();
+		return user;
 	}
 
 	@GetMapping("/logout")
@@ -97,30 +80,41 @@ public class AuthController {
 		req.getSession().invalidate();
 	}
 
-	@PostMapping(value = "/profile/{id}/payfees", consumes = MediaType.ALL_VALUE)
-	public boolean payFees(@PathVariable int id) throws NotLoggedInException, UnauthorizedException {
-		User user = getSessionUser();
-		verifyRole(Student.class);
-		verifyId(id);
-		Student student = (Student) user;
+	@PostMapping(value = "/payfees", consumes = MediaType.ALL_VALUE)
+	public void payFees(HttpServletRequest req) throws NotLoggedInException, UnauthorizedException {
+		Student student = requireRole(req, Student.class);
 		student.setFeesPaid(true);
 		studentRepository.save(student);
-		return student.isFeesPaid();
 	}
 
-	public static User getSessionUser() {
-		return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public static void refreshSessionUser(HttpServletRequest req) {
+		setSessionUser(req, getSessionUser(req));
 	}
 
-	public static void verifyId(int id) throws NotLoggedInException, UnauthorizedException {
-		User user = getSessionUser();
+	public static void setSessionUser(HttpServletRequest req, User user) {
+		req.getSession().setAttribute(SESSION_USER, user);
+	}
+
+	public static User getSessionUser(HttpServletRequest req) {
+		return (User) req.getSession().getAttribute(SESSION_USER);
+	}
+
+	public static void verifyId(HttpServletRequest req, int id) throws NotLoggedInException, UnauthorizedException {
+		User user = getSessionUser(req);
 		if (user == null) throw new NotLoggedInException();
 		if (user.getId() != id) throw new UnauthorizedException(); // TODO: Return other exceptions
 	}
 
-	public static void verifyRole(Class<?> role) throws NotLoggedInException, UnauthorizedException {
-		User user = getSessionUser();
+	public static void verifyRole(HttpServletRequest req, Class<?> role) throws NotLoggedInException, UnauthorizedException {
+		User user = getSessionUser(req);
 		if (user == null) throw new NotLoggedInException();
 		if (!role.isInstance(user)) throw new UnauthorizedException(); // TODO: Return other exceptions
+	}
+
+	public static <T extends User> T requireRole(HttpServletRequest req, Class<T> role) throws NotLoggedInException, UnauthorizedException {
+		User user = getSessionUser(req);
+		if (user == null) throw new NotLoggedInException();
+		if (!role.isInstance(user)) throw new UnauthorizedException();
+		return (T) user;
 	}
 }

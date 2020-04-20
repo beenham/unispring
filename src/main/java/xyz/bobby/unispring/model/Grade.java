@@ -1,5 +1,6 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,11 +20,13 @@ public class Grade {
 	@ManyToOne
 	@JoinColumn(name = "student_id")
 	@MapsId("student_id")
+	@JsonView(View.ExtendedPublic.class)
 	private Student student;
 
 	@ManyToOne
 	@JoinColumn(name = "module_id")
 	@MapsId("module_id")
+	@JsonView(View.Public.class)
 	private Module module;
 
 	@Embeddable
@@ -58,10 +61,12 @@ public class Grade {
 	private String comment;
 
 	@NotNull
+	@JsonView(View.Public.class)
 	private int percent;
 
 	@Enumerated(EnumType.STRING)
 	@NotNull
+	@JsonView(View.Public.class)
 	private LetterGrade grade;
 
 	public Grade() {}

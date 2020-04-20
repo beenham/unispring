@@ -1,5 +1,7 @@
 package xyz.bobby.unispring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,21 +21,8 @@ import java.util.stream.Collectors;
 @Data
 @Entity
 public class Staff extends User {
-	private static final GrantedAuthority ROLE = new SimpleGrantedAuthority("ROLE_STAFF");
-
 	@OneToMany(fetch = FetchType.LAZY)
 	@JoinColumn(name = "coordinator_id")
+	@JsonView(View.ExtendedPublic.class)
 	private final Set<Module> modules = new HashSet<>();
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return new HashSet<>() {{
-			add(ROLE);
-			addAll(modules.stream()
-					.map(module -> "MODULE_" + module.getId())
-					.map(SimpleGrantedAuthority::new)
-					.collect(Collectors.toList())
-			);
-		}};
-	}
 }

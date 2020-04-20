@@ -38,9 +38,9 @@ public class StatsController {
 
 	@GetMapping
 	private Object stats() {
-		List<Student> students = studentRepository.findAllBy();
-		List<Staff> staff = staffRepository.findAllBy();
-		List<Grade> grades = gradeRepository.findAllBy();
+		List<Student> students = studentRepository.findAll();
+		List<Staff> staff = staffRepository.findAll();
+		List<Grade> grades = gradeRepository.findAll();
 
 		Stats stats = new Stats();
 

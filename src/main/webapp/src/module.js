@@ -25,23 +25,6 @@ let border_colours = [
 ];
 
 function ModuleHistoricData(props) {
-  const [students, setStudents] = useState([]);
-  const [grades, setGrades] = useState([]);
-
-  useEffect(() => {
-    (async () => {
-      setStudents(
-        (await fetch(props._links.students.href).then(res => res.json()))
-          ._embedded.students
-      );
-
-      setGrades(
-        (await fetch(props._links.grades.href).then(res => res.json()))
-          ._embedded.grades
-      );
-    })();
-  }, []);
-
   return (
     <div>
       <div className="tile is-ancestor main-box">
@@ -50,8 +33,7 @@ function ModuleHistoricData(props) {
             <article className="tile is-child">
               <Pie
                 data={getGraphData(
-                  students,
-                  "gender",
+                  props.genderStats,
                   colours,
                   "Number of students by gender"
                 )}
@@ -63,8 +45,7 @@ function ModuleHistoricData(props) {
             <article className="tile is-child">
               <Bar
                 data={getGraphData(
-                  grades,
-                  "grade",
+                  props.gradeStats,
                   colours,
                   "Number of students that achieved each grade"
                 )}
@@ -85,7 +66,6 @@ export default function Module(props) {
   const [modalIsOpenEdit, setModalIsOpenEdit] = useState(false);
 
   const [historicModules, setHistoricModules] = useState([]);
-  const [coordinator, setCoordinator] = useState({ forename: "", surname: "" });
 
   useEffect(() => {
     (async () => {
@@ -93,14 +73,8 @@ export default function Module(props) {
 
       setHistoricModules(
         (
-          await fetch("/api/modules/search/code?code=" + props.code).then(res =>
-            res.json()
-          )
-        )._embedded.modules.sort((a, b) => b.year.value - a.year.value)
-      );
-
-      setCoordinator(
-        await fetch(props._links.coordinator.href).then(res => res.json())
+          await fetch("/api/modules/code/" + props.code).then(res => res.json())
+        ).sort((a, b) => b.year - a.year)
       );
     })();
   }, [modalIsOpen]);
@@ -108,14 +82,10 @@ export default function Module(props) {
   function enrolModule() {
     if (["FULL", "TERMINATED"].includes(props.status)) return;
 
-    axios({
-      method: "put",
-      url: props._links.students.href,
-      headers: { "Content-Type": "text/uri-list" },
-      data: getLoggedInUser()._links.self.href
-    })
+    axios
+      .put("/api/modules/" + props.id + "/enrolment")
       .then(function(response) {
-        if (response.status === 204) {
+        if (response.status === 200) {
           window.location.reload();
         }
       })
@@ -125,10 +95,12 @@ export default function Module(props) {
   }
 
   function dropModule() {
+    if (["TERMINATED"].includes(props.status)) return;
+
     axios
-      .delete(props._links.students.href + "/" + getLoggedInUser().id)
+      .delete("/api/modules/" + props.id + "/enrolment")
       .then(function(response) {
-        if (response.status === 204) {
+        if (response.status === 200) {
           window.location.reload();
         }
       })
@@ -207,7 +179,9 @@ export default function Module(props) {
                         <tr>
                           <td>Module coordinator</td>
                           <td>
-                            {coordinator.forename + " " + coordinator.surname}
+                            {props.coordinator.forename +
+                              " " +
+                              props.coordinator.surname}
                           </td>
                         </tr>
                         <tr>
@@ -238,7 +212,7 @@ export default function Module(props) {
                           <Tab>
                             <div id="tag-area">
                               <span className="tag is-info">
-                                {historicModule.year.value} Data
+                                {historicModule.year} Data
                               </span>
                             </div>
                           </Tab>
@@ -310,14 +284,16 @@ export default function Module(props) {
           )}
           {props.renderDrop && (
             <Tooltip
-              title="Drop this module"
+              title={
+                "Drop this module" +
+                (["TERMINATED"].includes(props.status)
+                  ? " (" + props.status + ")"
+                  : "")
+              }
               aria-label="Drop this module"
               arrow
             >
-              <Button
-                className="card-footer-item"
-                onClick={() => dropModule()}
-              >
+              <Button className="card-footer-item" onClick={() => dropModule()}>
                 <i className="material-icons-outlined">cancel</i>
               </Button>
             </Tooltip>

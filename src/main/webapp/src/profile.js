@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
 import axios from "axios";
-import { getLoggedInUser } from "./util";
+import { getLoggedInUser, setLoggedInUser } from "./util";
 
 export default function Profile() {
   const user = getLoggedInUser();
@@ -11,28 +11,22 @@ export default function Profile() {
 
   useEffect(() => {
     (async () => {
-      const grades = (
-        await fetch("/api/students/" + user.id + "/grades").then(res =>
-          res.json()
-        )
-      )._embedded.grades;
-      for (const grade of grades) {
-        grade.module = await fetch(grade._links.module.href).then(res =>
-          res.json()
-        );
-      }
-
-      setGrades(grades);
+      setGrades(await fetch("/api/grades/self").then(res => res.json()));
       setFees(user.feesPaid ? "Fees Paid" : "256");
     })();
   }, []);
 
   function payFees() {
     axios
-      .post("/api/auth/profile/" + getLoggedInUser().id + "/payfees")
+      .post("/api/auth/payfees")
       .then(function(response) {
         if (response.status === 200) {
-          window.location.replace("/profile");
+          // Update local state
+          let user = getLoggedInUser();
+          user.feesPaid = true;
+          setLoggedInUser(user);
+
+          window.location.reload();
         }
       })
       .catch(function(error) {
@@ -55,7 +49,7 @@ export default function Profile() {
                 <h2>
                   {user.forename} {user.surname}
                 </h2>
-                <span className="tag is-info">{user.stage}</span>
+                <span className="tag is-info">STAGE {user.stage}</span>
                 <span className="tag is-warning is-light" id="edit-button">
                   Edit Profile
                 </span>
@@ -137,7 +131,7 @@ export default function Profile() {
                           {grades.map(item => (
                             <tr>
                               <td>
-                                {item.module.name} ({item.module.year.value})
+                                {item.module.name} ({item.module.year})
                               </td>
                               <td>{item.percent}%</td>
                               <td>{item.grade}</td>
