@@ -7,25 +7,51 @@ export default function ModuleArea() {
 
   useEffect(() => {
     (async () => {
-      const userModuleIds = (
-        await fetch("/api/modules/enrolled/").then(res => {
-          if (res.status !== 200) window.location.replace("/login");
-          return res.json();
-        })
-      )
-        .filter(module => module.year === 2020)
-        .map(module => module.code);
+      let isStudent = getLoggedInUser().stage !== undefined;
 
-      const modules = await fetch("/api/modules/year/2020").then(res => {
+      let moduleLink = isStudent ? "/api/modules/enrolled/" : "/api/modules/coordinating/";
+
+      // console.log(isStudent , moduleLink);
+
+      const modules = await fetch(moduleLink).then(res => {
         if (res.status !== 200) window.location.replace("/login");
         return res.json();
       });
+
       let moduleNumber = 1;
       for (const module of modules) {
-        module.enrolled = userModuleIds.includes(module.code);
-        module.module_image = "../images/code (" + moduleNumber + ").jpg";
+        module.enrolled = true;
+        module.module_image = "../images/code (" + (moduleNumber % 10 + 1) + ").jpg";
         moduleNumber++;
       }
+
+      if (isStudent) {
+        const otherModules = await fetch("/api/modules/year/2020").then(res => {
+          if (res.status !== 200) window.location.replace("/login");
+          return res.json();
+        });
+
+        for (const module of otherModules) {
+          let found = false;
+          for(let i = 0; i < modules.length; i++) {
+            if (modules[i].code === module.code) {
+              found = true;
+              break;
+            }
+          }
+
+          if (found) {
+            otherModules.pop.apply(otherModules, module);
+            continue;
+          }
+
+          module.enrolled = false;
+          module.module_image = "../images/code (" + (moduleNumber % 10 + 1) + ").jpg";
+          moduleNumber++;
+        }
+        modules.push.apply(modules, otherModules);
+      }
+
       setModules(modules);
     })();
   }, []);

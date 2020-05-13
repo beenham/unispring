@@ -7,10 +7,12 @@ import xyz.bobby.unispring.exception.ModuleUnavailableException;
 import xyz.bobby.unispring.exception.NotLoggedInException;
 import xyz.bobby.unispring.exception.ResourceNotFoundException;
 import xyz.bobby.unispring.exception.UnauthorizedException;
+import xyz.bobby.unispring.model.Staff;
 import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.View;
 import xyz.bobby.unispring.repository.ModuleRepository;
 import xyz.bobby.unispring.model.Module;
+import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,8 @@ public class ModuleController {
 	private ModuleRepository moduleRepository;
 	@Autowired
 	private StudentRepository studentRepository;
+	@Autowired
+	private StaffRepository staffRepository;
 
 	@GetMapping(value = "/year/{year}")
 	@JsonView(View.Public.class)
@@ -44,6 +48,14 @@ public class ModuleController {
 		Student student = AuthController.requireRole(req, Student.class);
 		student = studentRepository.getOne(student.getId());
 		return student.getModules();
+	}
+
+	@GetMapping(value = "/coordinating")
+	@JsonView(View.Public.class)
+	public Set<Module> getCoordinatingModules(HttpServletRequest req) throws NotLoggedInException, UnauthorizedException {
+		Staff staff = AuthController.requireRole(req, Staff.class);
+		staff = staffRepository.getOne(staff.getId());
+		return staff.getModules();
 	}
 
 	@GetMapping(value = "/{id}")
