@@ -23,14 +23,20 @@ export default class Register extends React.Component {
   }
 
   handleClick(event) {
+    event.preventDefault();
+
     if (this.state.password !== this.state.password2) {
-        alert("Passwords do not match");
-        return false;
+      alert("Passwords do not match");
+      return false;
     }
 
-    if (!/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/.test(this.state.password)) {
-        alert("Password is too weak. Requires 1 capital letter, 1 special character, 1 number and must be at least 8 characters long.");
-        return false;
+    if (
+      !/^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$/.test(this.state.password)
+    ) {
+      alert(
+        "Password is too weak. Requires 1 capital letter, 1 special character, 1 number and must be at least 8 characters long."
+      );
+      return false;
     }
 
     let payload = {
@@ -88,7 +94,7 @@ export default class Register extends React.Component {
             </div>
           </div>
           <div id="form-area">
-            <form>
+            <form onSubmit={event => this.handleClick(event)}>
               <h1 className="title">Register</h1>
               <div className="form-group-elements">
                 <div className="field">
@@ -98,7 +104,7 @@ export default class Register extends React.Component {
                       className="input is-small"
                       type="text"
                       name="firstName"
-                      minLength="1"
+                      required
                       onChange={e =>
                         this.setState({
                           forename: e.target.value
@@ -118,7 +124,7 @@ export default class Register extends React.Component {
                       className="input is-small"
                       type="text"
                       name="sureName"
-                      minLength="1"
+                      required
                       onChange={e =>
                         this.setState({
                           surname: e.target.value
@@ -163,6 +169,7 @@ export default class Register extends React.Component {
                       type="number"
                       name="studentNumber"
                       minLength="8"
+                      required
                       onChange={e =>
                         this.setState({
                           studentNumber: e.target.value
@@ -184,6 +191,7 @@ export default class Register extends React.Component {
                       className="input is-small"
                       type="email"
                       name="emailAddress"
+                      required
                       onChange={e =>
                         this.setState({
                           emailAddress: e.target.value
@@ -207,6 +215,7 @@ export default class Register extends React.Component {
                       type="password"
                       name="password"
                       minLength="8"
+                      required
                       onChange={e =>
                         this.setState({ password: e.target.value })
                       }
@@ -228,6 +237,7 @@ export default class Register extends React.Component {
                       type="password"
                       name="password"
                       minLength="8"
+                      required
                       onChange={e =>
                         this.setState({ password2: e.target.value })
                       }
@@ -248,6 +258,7 @@ export default class Register extends React.Component {
                       className="input is-small"
                       type="number"
                       name="phoneNumber"
+                      required
                       onChange={e =>
                         this.setState({
                           phoneNumber: e.target.value
@@ -263,12 +274,13 @@ export default class Register extends React.Component {
               <div className="form-group-elements" id="register-address">
                 <div id="address-boxes">
                   <div className="field">
-                      <label className="label is-small">Street Address</label>
+                    <label className="label is-small">Street Address</label>
                     <div className="control has-icons-left has-icons-right">
                       <input
                         className="input is-small"
                         type="text"
                         name="streetAddress"
+                        required
                         onChange={e =>
                           this.setState({
                             streetAddress: e.target.value
@@ -282,12 +294,13 @@ export default class Register extends React.Component {
                   </div>
 
                   <div className="field">
-                      <label className="label is-small">Town</label>
+                    <label className="label is-small">Town</label>
                     <div className="control has-icons-left has-icons-right">
                       <input
                         className="input is-small"
                         type="text"
                         name="town"
+                        required
                         onChange={e =>
                           this.setState({
                             town: e.target.value
@@ -301,12 +314,13 @@ export default class Register extends React.Component {
                   </div>
 
                   <div className="field">
-                      <label className="label is-small">City</label>
+                    <label className="label is-small">City</label>
                     <div className="control has-icons-left has-icons-right">
                       <input
                         className="input is-small"
                         type="text"
                         name="city"
+                        required
                         onChange={e =>
                           this.setState({
                             city: e.target.value
@@ -320,11 +334,12 @@ export default class Register extends React.Component {
                   </div>
 
                   <div className="field">
-                      <label className="label is-small">Country</label>
+                    <label className="label is-small">Country</label>
                     <div className="control has-icons-left has-icons-right">
                       <div className="select is-small">
                         <select
                           name="country"
+                          required
                           onChange={e =>
                             this.setState({
                               country: e.target.value
@@ -629,11 +644,7 @@ export default class Register extends React.Component {
               </div>
 
               <div className="field form-group-elements">
-                <button
-                  className="button is-primary is-small"
-                  type="button"
-                  onClick={event => this.handleClick(event)}
-                >
+                <button className="button is-primary is-small" type="submit">
                   Register
                 </button>
               </div>
