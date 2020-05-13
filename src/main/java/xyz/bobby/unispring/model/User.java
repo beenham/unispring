@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @Data
 @Entity
@@ -28,6 +29,7 @@ public abstract class User {
 
 	@Column(length = 64, nullable = false)
 	@Length(min = 8, max = 128)
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$")
 	@Getter(onMethod = @__(@JsonIgnore))
 	private String password;
 
