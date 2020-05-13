@@ -128,6 +128,7 @@ public class DatabasePopulator {
 				Set<Student> toSave = new HashSet<>();
 				Set<Grade> grades = new HashSet<>();
 				while (module.getStatus() == Module.Status.AVAILABLE && students.size() > 0) {
+					if (module.getStudents().size() == module.getCapacity() - 1 && Math.random() < 0.5) break;
 					Student student;
 					module.getStudents().add(student = students.remove(random.nextInt(students.size())));
 					toSave.add(student);
