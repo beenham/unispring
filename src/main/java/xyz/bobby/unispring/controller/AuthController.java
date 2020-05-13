@@ -20,15 +20,18 @@ import xyz.bobby.unispring.model.View;
 import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
 import xyz.bobby.unispring.repository.UserRepository;
+import xyz.bobby.unispring.util.DatabasePopulator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 	private static final String SESSION_USER = "user";
+	private static final Logger LOG = Logger.getLogger(AuthController.class.getCanonicalName());
 
 	@Autowired
 	private UserRepository userRepository;
@@ -69,6 +72,8 @@ public class AuthController {
 			throw new LoginException();
 		}
 
+		LOG.info(String.format("LOGIN SUCCESSFUL: User %s (ID: %d) logged in successfully from %s.", user.getUsername(), user.getId(), req.getRemoteAddr()));
+
 		HttpSession session = req.getSession(true);
 		session.setAttribute(SESSION_USER, user);
 
@@ -85,6 +90,8 @@ public class AuthController {
 		Student student = requireRole(req, Student.class);
 		student.setFeesPaid(true);
 		studentRepository.save(student);
+
+		LOG.info(String.format("PAID FEES: Student %s (ID: %d) has paid their fees.", student.getUsername(), student.getId()));
 	}
 
 	public static void refreshSessionUser(HttpServletRequest req) {
