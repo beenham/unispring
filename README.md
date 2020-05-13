@@ -11,7 +11,4 @@ use of Spring, Spring Security, Restful APIs and React.
 ## Details to run
 - To recreate and populate the database add this argument: --spring.jpa.hibernate.ddl-auto=create
 
-#### Default student login:
-- Username: Beeno
-- Email: stu-000@unispring.edu
-- Password: BeenosPassword123
+To access the webpage, use https://localhost or http://localhost:8082
