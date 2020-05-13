@@ -14,7 +14,7 @@ export default class Register extends React.Component {
       streetAddress: "",
       town: "",
       city: "",
-      country: "",
+      country: "IE",
       phoneNumber: "",
       emailAddress: "",
       gender: "MALE",
@@ -340,6 +340,7 @@ export default class Register extends React.Component {
                         <select
                           name="country"
                           required
+                          value={this.state.country}
                           onChange={e =>
                             this.setState({
                               country: e.target.value
@@ -468,7 +469,9 @@ export default class Register extends React.Component {
                           <option value="ID">Indonesia</option>
                           <option value="IR">Iran, Islamic Republic of</option>
                           <option value="IQ">Iraq</option>
-                          <option value="IE">Ireland</option>
+                          <option value="IE" selected>
+                            Ireland
+                          </option>
                           <option value="IM">Isle of Man</option>
                           <option value="IL">Israel</option>
                           <option value="IT">Italy</option>
