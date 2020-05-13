@@ -8,11 +8,15 @@ export function getLoggedInUser() {
   if (localStorage === undefined) return undefined;
   const user = localStorage.getItem("user");
   if (user === undefined) return undefined;
-  return JSON.parse(user);
+  try {
+      return JSON.parse(user);
+  } catch (err) {
+      return undefined;
+  }
 }
 
 export function isLoggedIn() {
-  return getLoggedInUser() !== undefined;
+  return typeof getLoggedInUser() === "object";
 }
 
 export function sortObject(object, reverse = false) {
