@@ -74,7 +74,7 @@ export default class Register extends React.Component {
         // }
       })
       .catch(function(error) {
-        alert("Oops. Something went wrong.");
+        alert("Oops. Something went wrong. Please ensure that you have not already registerd with this email or student number.");
         console.log("error:", error);
       });
   }
