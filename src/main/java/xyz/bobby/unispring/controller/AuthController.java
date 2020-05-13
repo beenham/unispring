@@ -3,6 +3,8 @@ package xyz.bobby.unispring.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,13 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import xyz.bobby.unispring.exception.IpBlockedException;
 import xyz.bobby.unispring.exception.LoginException;
 import xyz.bobby.unispring.exception.NotLoggedInException;
 import xyz.bobby.unispring.exception.UnauthorizedException;
-import xyz.bobby.unispring.model.Staff;
-import xyz.bobby.unispring.model.Student;
-import xyz.bobby.unispring.model.User;
-import xyz.bobby.unispring.model.View;
+import xyz.bobby.unispring.model.*;
+import xyz.bobby.unispring.repository.FailedLoginRepository;
 import xyz.bobby.unispring.repository.StaffRepository;
 import xyz.bobby.unispring.repository.StudentRepository;
 import xyz.bobby.unispring.repository.UserRepository;
@@ -39,6 +40,9 @@ public class AuthController {
 	private StudentRepository studentRepository;
 	@Autowired
 	private StaffRepository staffRepository;
+
+	@Autowired
+	private FailedLoginRepository failedLoginRepository;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -66,16 +70,25 @@ public class AuthController {
 
 	@PostMapping(value = "/login", consumes = MediaType.ALL_VALUE)
 	@JsonView(View.Internal.class)
-	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException {
+	public User login(@Valid @RequestBody LoginParams loginParams, HttpServletRequest req) throws LoginException, IpBlockedException {
+		if (failedLoginRepository.countByIpAddress(req.getRemoteAddr()) >= 3) {
+			throw new IpBlockedException();
+		}
+
 		User user = userRepository.findByEmailAddressIgnoreCase(loginParams.emailAddress).orElse(null);
 		if (user == null || !passwordEncoder.matches(loginParams.password, user.getPassword())) {
+			FailedLogin failedLogin = new FailedLogin();
+			failedLogin.setIpAddress(req.getRemoteAddr());
+			failedLoginRepository.save(failedLogin);
 			throw new LoginException();
 		}
 
-		LOG.info(String.format("LOGIN SUCCESSFUL: User %s (ID: %d) logged in successfully from %s.", user.getUsername(), user.getId(), req.getRemoteAddr()));
+		failedLoginRepository.deleteByIpAddress(req.getRemoteAddr());
 
 		HttpSession session = req.getSession(true);
 		session.setAttribute(SESSION_USER, user);
+
+		LOG.info(String.format("LOGIN SUCCESSFUL: User %s (ID: %d) logged in successfully from %s.", user.getUsername(), user.getId(), req.getRemoteAddr()));
 
 		return user;
 	}

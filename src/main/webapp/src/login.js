@@ -36,6 +36,11 @@ export default class Login extends React.Component {
       })
       .catch(function(error) {
         console.log("error:", error);
+          if (error.response.status === 401) {
+              alert("Incorrect password");
+          } else if (error.response.status === 403) {
+              alert("IP banned for too many failed attempts. Try again after 15 minutes.");
+          }
       });
   }
 
