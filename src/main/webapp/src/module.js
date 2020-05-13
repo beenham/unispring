@@ -90,7 +90,9 @@ export default function Module(props) {
         }
       })
       .catch(function(error) {
-        console.log("error:", error);
+        if (error.response.status === 402) {
+          alert("Fees must be paid before enrolling in module");
+        }
       });
   }
 

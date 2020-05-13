@@ -3,10 +3,7 @@ package xyz.bobby.unispring.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import xyz.bobby.unispring.exception.ModuleUnavailableException;
-import xyz.bobby.unispring.exception.NotLoggedInException;
-import xyz.bobby.unispring.exception.ResourceNotFoundException;
-import xyz.bobby.unispring.exception.UnauthorizedException;
+import xyz.bobby.unispring.exception.*;
 import xyz.bobby.unispring.model.Staff;
 import xyz.bobby.unispring.model.Student;
 import xyz.bobby.unispring.model.View;
@@ -66,21 +63,23 @@ public class ModuleController {
 
 	@PutMapping(value = "/{id}/enrolment")
 	@JsonView(View.ExtendedPublic.class)
-	public void enrolModule(HttpServletRequest req, @PathVariable int id) throws ResourceNotFoundException, NotLoggedInException, ModuleUnavailableException, UnauthorizedException {
+	public void enrolModule(HttpServletRequest req, @PathVariable int id) throws ResourceNotFoundException, NotLoggedInException, ModuleUnavailableException, UnauthorizedException, FeesNotPaidException {
 		setModuleEnrolled(req, id, true);
 	}
 
 	@DeleteMapping(value = "/{id}/enrolment")
 	@JsonView(View.ExtendedPublic.class)
-	public void unenrolModule(HttpServletRequest req, @PathVariable int id) throws ResourceNotFoundException, NotLoggedInException, ModuleUnavailableException, UnauthorizedException {
+	public void unenrolModule(HttpServletRequest req, @PathVariable int id) throws ResourceNotFoundException, NotLoggedInException, ModuleUnavailableException, UnauthorizedException, FeesNotPaidException {
 		setModuleEnrolled(req, id, false);
 	}
 
 	private void setModuleEnrolled(HttpServletRequest req, int id, boolean enrol)
-			throws NotLoggedInException, UnauthorizedException, ResourceNotFoundException, ModuleUnavailableException {
+			throws NotLoggedInException, UnauthorizedException, FeesNotPaidException, ResourceNotFoundException, ModuleUnavailableException {
 		// Only students can enrol in modules
 		Student student = AuthController.requireRole(req, Student.class);
 		Module module = moduleRepository.getModule(id);
+
+		if (enrol && !student.isFeesPaid()) throw new FeesNotPaidException();
 
 		// If current enrollment status equals requested, ignore
 		if (module.getStudents().contains(student) == enrol) return;
