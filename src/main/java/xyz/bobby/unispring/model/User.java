@@ -1,6 +1,7 @@
 package xyz.bobby.unispring.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import lombok.Data;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public abstract class User {
 	@Column(length = 64, nullable = false)
 	@Length(min = 8, max = 128)
 	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9]).{8,}$")
-	@Getter(onMethod = @__(@JsonIgnore))
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String password;
 
 	@NotBlank
