@@ -12,7 +12,7 @@
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.5.0",
     "chart.js": "^2.9.3",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
     "react-bootstrap-easy-dialog": "^0.3.3",
@@ -51,6 +51,6 @@
     "react-router-dom": "^5.2.0",
     "webpack-cli": "^3.3.11",
     "sass-loader": "^8.0.2",
-    "node-sass": "^4.14.1"
+    "node-sass": "^7.0.0"
   }
 }
